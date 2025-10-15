@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>账号登录 — 以史为鉴，凝聚力量</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="wrap">
+            <h1>账号登录</h1>
+        </div>
+    </header>
+
+    <main class="wrap">
+        <section class="card login-card">
+            <h2>账号登录</h2>
+            <form id="login-form" class="login-form" novalidate>
+                <div class="form-field">
+                    <label for="account">用户名 / 邮箱</label>
+                    <input id="account" name="account" type="text" class="form-input" placeholder="例如：user 或 user@example.com" autocomplete="username" required>
+                </div>
+
+                <div class="form-field">
+                    <label for="password">密码</label>
+                    <div class="password-wrapper">
+                        <input id="password" name="password" type="password" class="form-input" placeholder="请输入密码" autocomplete="current-password" required minlength="6">
+                        <button type="button" id="togglePwd" class="toggle-pwd" aria-label="显示或隐藏密码">显示</button>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary" id="loginBtn">登录</button>
+                    <a href="forgot.html" class="forgot-link">忘记密码？</a>
+                    <a href="register.html" class="forgot-link" style="margin-left:8px">去注册</a>
+                </div>
+                <p class="form-tip">提示：本演示版本已接入后端登录接口。</p>
+               
+                <div class="form-message" id="loginMessage" role="alert" aria-live="polite"></div>
+            </form>
+
+           
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="wrap">© 2025 以史为鉴，凝聚力量 — 登录页面</div>
+    </footer>
+
+    <script src="main.js"></script>
+    <script src="login.js"></script>
+</body>
+</html>
+

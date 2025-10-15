@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>找回密码 — 以史为鉴，凝聚力量</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+   
+
+    <main class="wrap">
+        <section class="card login-card">
+            <h2>重置密码</h2>
+            <form id="forgot-form" class="login-form" novalidate>
+                <div class="form-field">
+                    <label for="reset-email">注册邮箱</label>
+                    <input id="reset-email" name="email" type="email" class="form-input" placeholder="例如：user@example.com" autocomplete="email" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary" id="resetBtn">发送重置链接</button>
+                    <a href="login.html" class="forgot-link">返回登录</a>
+                </div>
+                <div class="form-tip">提示：演示版将模拟发送成功提示，不会实际发送邮件。</div>
+                <div class="form-message" id="resetMessage" role="alert" aria-live="polite"></div>
+            </form>
+            <div class="scenarios-actions" style="margin-top: 12px;">
+                <a href="login.html" class="btn btn-secondary">← 返回登录</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="wrap">© 2025 以史为鉴，凝聚力量 — 找回密码</div>
+    </footer>
+
+    <script src="main.js"></script>
+    <script src="forgot.js"></script>
+</body>
+</html>

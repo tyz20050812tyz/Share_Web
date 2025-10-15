@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主题讨论区 — 抗日精神与民族复兴</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="wrap">
+            <h1>主题讨论区</h1>
+            <nav class="main-nav">
+                <a href="index.html">主页</a>
+                <a href="ai.html">智能问答</a>
+                <a href="knowledge.html">知识分享</a>
+                <a href="culture.html">文化传播</a>
+                <a href="discuss.html">讨论区</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="wrap">
+        <section class="card">
+            <div class="section-title">发布你的观点</div>
+            <div class="grid-3" style="grid-template-columns: 1fr;">
+                <div class="post-card">
+                    <label>昵称：<input id="author" type="text" placeholder="例如：抗战精神观察者" style="width:100%"></label>
+                    <label style="margin-top:8px; display:block;">内容：<textarea id="content" rows="4" placeholder="围绕抗日精神、民族团结、家国担当、文化传承、复兴之路等发表见解与经验" style="width:100%"></textarea></label>
+                    <div class="md-toolbar" id="md-toolbar" style="margin-top:6px; display:flex; flex-wrap:wrap; gap:6px;">
+                        <span class="muted" style="font-size:12px;">Markdown 快捷：</span>
+                        <button type="button" class="btn btn-secondary md-btn" data-act="bold" title="加粗">B</button>
+                        <button type="button" class="btn btn-secondary md-btn" data-act="italic" title="斜体"><i>i</i></button>
+                        <button type="button" class="btn btn-secondary md-btn" data-act="code" title="行内代码">{ }</button>
+                        <button type="button" class="btn btn-secondary md-btn" data-act="quote" title="引用">&gt;</button>
+                        <button type="button" class="btn btn-secondary md-btn" data-act="link" title="链接">🔗</button>
+                        <button type="button" class="btn btn-secondary md-btn" data-act="h1" title="标题1">H1</button>
+                        <button type="button" class="btn btn-secondary md-btn" data-act="h2" title="标题2">H2</button>
+                        <button type="button" class="btn btn-secondary md-btn" data-act="ul" title="无序列表">• 列表</button>
+                        <button type="button" class="btn btn-secondary" id="md-toggle" title="预览切换">预览</button>
+                    </div>
+                    <div id="md-preview" class="markdown-body" style="display:none; border:1px dashed var(--border); border-radius:8px; padding:10px; margin-top:6px;"></div>
+                    <div class="tag-select" style="margin-top:8px;">
+                        <span class="tag" data-tag="抗战意志">抗战意志</span>
+                        <span class="tag" data-tag="民族团结">民族团结</span>
+                        <span class="tag" data-tag="家国担当">家国担当</span>
+                        <span class="tag" data-tag="文化传承">文化传承</span>
+                        <span class="tag" data-tag="复兴之路">复兴之路</span>
+                    </div>
+                    <div class="media-inputs" style="margin-top:8px;">
+                        <label>图片：<input id="image" type="file" accept="image/*"></label>
+                        <div id="image-preview" class="image-preview" style="margin-top:6px; display:flex; gap:6px; flex-wrap:wrap;"></div>
+                        <div id="image-status" class="image-status" style="margin-top:6px; font-size:12px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span>已选 <span id="img-count">0</span>/6 张</span>
+                                <span>总大小 <span id="img-size">0</span> / 2MB</span>
+                            </div>
+                            <div class="image-progress" style="margin-top:4px; height:6px; background:#eee; border-radius:999px;">
+                                <div id="image-progress-bar" style="width:0%; height:100%; background: var(--accent); border-radius:999px;"></div>
+                            </div>
+                            <div id="img-hint" class="muted" style="margin-top:4px;">提示：单张≤300KB，最多6张，总计≤2MB</div>
+                        </div>
+                        <div class="muted" style="font-size:12px; margin-top:4px;">支持粘贴图片（≤300KB），支持 Markdown（**加粗**、[链接](https://...)、引用 >）</div>
+                    </div>
+                    <div class="post-actions" style="margin-top:8px;">
+                        <button id="publish" class="btn" style="background: var(--accent); color:#fff; border:none;">发布</button>
+                        <button id="clearAll" class="btn btn-secondary">清空所有帖子（仅本机）</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <div class="section-title">讨论广场</div>
+            <div class="forum-toolbar" aria-label="讨论区工具条">
+                <div class="toolbar-left">
+                    <input id="forum-search" type="text" placeholder="搜索昵称或内容" class="toolbar-input">
+                    <div class="tag-filter" role="group" aria-label="标签筛选">
+                        <span class="tag" data-tag="">全部</span>
+                        <span class="tag" data-tag="抗战意志">抗战意志</span>
+                        <span class="tag" data-tag="民族团结">民族团结</span>
+                        <span class="tag" data-tag="家国担当">家国担当</span>
+                        <span class="tag" data-tag="文化传承">文化传承</span>
+                        <span class="tag" data-tag="复兴之路">复兴之路</span>
+                    </div>
+                    <div class="advanced-filter" style="margin-top:6px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                        <label style="font-size:12px; color:#666;"><input type="checkbox" id="only-pinned"> 仅置顶</label>
+                        <label style="font-size:12px; color:#666;"><input type="checkbox" id="only-images"> 仅含图片</label>
+                        <label style="font-size:12px; color:#666;"><input type="checkbox" id="only-links"> 仅含链接</label>
+                    </div>
+                </div>
+                <div class="toolbar-right">
+                    <label class="toolbar-label" for="forum-sort">排序</label>
+                    <select id="forum-sort" class="toolbar-select">
+                        <option value="newest">最新</option>
+                        <option value="hot">最热</option>
+                    </select>
+                    <input id="my-name" type="text" placeholder="我的昵称" class="toolbar-input" style="width:120px; margin-left:8px;">
+                    <label class="toolbar-label" style="margin-left:6px;"><input type="checkbox" id="only-mine"> 仅看我的</label>
+                    <button id="export-json" class="btn btn-secondary" style="margin-left:8px;">导出JSON</button>
+                    <button id="export-zip" class="btn btn-secondary">导出评论图片ZIP</button>
+                    <button id="profile-btn" class="btn btn-secondary">个人主页</button>
+                </div>
+            </div>
+            <div class="forum-grid" style="margin-top:8px; display:grid; grid-template-columns: 2fr 1fr; gap:12px; align-items:start;">
+                <div class="forum-main">
+                    <div id="page-guide" class="guide-container" style="margin-bottom:10px;"></div>
+                    <div id="post-list"></div>
+                </div>
+                <aside class="forum-sidebar">
+                    <div class="sidebar-card">
+                        <div class="sidebar-title">热门标签榜</div>
+                        <div style="margin:6px 0;">
+                            <select id="hot-range" class="toolbar-select" style="width:100%;">
+                                <option value="today">今日</option>
+                                <option value="week">本周</option>
+                                <option value="all" selected>全部</option>
+                            </select>
+                        </div>
+                        <div id="hot-tags"></div>
+                    </div>
+                    <div class="sidebar-card">
+                        <div class="sidebar-title">今日话题</div>
+                        <div id="today-topic"></div>
+                    </div>
+                    <div class="sidebar-card">
+                        <div class="sidebar-title">页面摘要</div>
+                        <div id="summary-text" class="muted" style="font-size:13px;"></div>
+                        <div class="sidebar-actions" style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap; align-items:center;">
+                            <label style="font-size:12px;"><input type="checkbox" id="summary-only-filter"> 仅筛选结果</label>
+                            <button id="gen-summary" class="btn btn-secondary">生成摘要</button>
+                            <button id="speak-summary" class="btn btn-secondary">朗读摘要 🔊</button>
+                            <button id="insert-guide" class="btn btn-secondary" title="将摘要插入帖子列表顶部">插入导读</button>
+                            <button id="clear-guide" class="btn btn-secondary">清除导读</button>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </section>
+
+        <div class="scenarios-actions">
+            <p class="tip">提示：数据保存在浏览器本地（localStorage），仅本机可见。建议勿上传敏感信息，如需权威咨询请参考官方渠道。</p>
+            <a href="index.html" class="btn btn-secondary">← 返回主页</a>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="wrap">© 2025 海南自由贸易港封关运作</div>
+    </footer>
+
+    <!-- 个人主页弹窗 -->
+    <div id="profile-modal" class="modal" style="display:none;">
+        <div class="modal-content" style="max-width:640px;">
+            <button id="profile-close" class="btn btn-secondary" style="position:absolute; right:12px; top:12px;">关闭</button>
+            <h3 style="margin-top:0;">个人主页</h3>
+            <div id="profile-body" class="markdown-body"></div>
+        </div>
+    </div>
+
+    <!-- Markdown 与安全过滤 -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.5/dist/purify.min.js"></script>
+    <!-- 压缩工具（导出图片为ZIP） -->
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <!-- 通用脚本（用户栏与退出） -->
+    <script src="main.js"></script>
+    <script>
+    const STORE_KEY = 'forum_posts_v1';
+    const PREF_SORT_KEY = 'forum_pref_sort';
+    const PREF_TAG_KEY = 'forum_pref_tag';
+    const PREF_SEARCH_KEY = 'forum_pref_search';
+    const PREF_TAGS_MULTI_KEY = 'forum_pref_tags_multi';
+    const PINNED_ONLY_KEY = 'forum_pinned_only';
+    const ONLY_IMAGES_KEY = 'forum_only_images';
+    const ONLY_LINKS_KEY = 'forum_only_links';
+    const MY_NAME_KEY = 'forum_my_name';
+    const ONLY_MINE_KEY = 'forum_only_mine';
+    const HOT_TAG_RANGE_KEY = 'forum_hot_range';
+    const LOGIN_USER_KEY = 'login_user';
+    const LOGIN_ROLE_KEY = 'login_role';
+    const MAX_IMAGE_COUNT = 6;
+    const MAX_TOTAL_SIZE = 2 * 1024 * 1024; // 2MB
+    let sortMode = localStorage.getItem(PREF_SORT_KEY) || 'newest';
+    let activeTag = localStorage.getItem(PREF_TAG_KEY) || '';
+    let keyword = localStorage.getItem(PREF_SEARCH_KEY) || '';
+    let activeTags = JSON.parse(localStorage.getItem(PREF_TAGS_MULTI_KEY) || '[]');
+    let pinnedOnly = localStorage.getItem(PINNED_ONLY_KEY) === 'true';
+    let onlyImages = localStorage.getItem(ONLY_IMAGES_KEY) === 'true';
+    let onlyLinks = localStorage.getItem(ONLY_LINKS_KEY) === 'true';
+    let myName = localStorage.getItem(MY_NAME_KEY) || '';
+    let onlyMine = localStorage.getItem(ONLY_MINE_KEY) === 'true';
+    let hotRange = localStorage.getItem(HOT_TAG_RANGE_KEY) || 'all';
+    const currentUser = localStorage.getItem(LOGIN_USER_KEY) || '';
+    const currentRole = localStorage.getItem(LOGIN_ROLE_KEY) || 'user';
+    const isAdmin = currentRole === 'admin';
+    if (!myName && currentUser) { myName = currentUser; try { localStorage.setItem(MY_NAME_KEY, myName); } catch {} }
+    // === 后端同步：集中存储，所有人可见 ===
+    const API_BASE = '/api/forum';
+    async function apiGet(path, headers={}) {
+        try { const resp = await fetch(path, { headers }); if (!resp.ok) throw new Error(resp.statusText); return await resp.json(); } catch (e) { console.warn('apiGet failed:', e.message); return null; }
+    }
+    async function apiPost(path, data, headers={}) {
+        try { const resp = await fetch(path, { method: 'POST', headers: { 'Content-Type': 'application/json', ...headers }, body: JSON.stringify(data||{}) }); return resp; } catch (e) { console.warn('apiPost failed:', e.message); return { ok: false, status: 0 }; }
+    }
+        function adminHeaders() { return { 'x-auth-user': encodeURIComponent(currentUser || ''), 'x-auth-role': currentRole || '' }; }
+    async function syncFromServer() {
+        const data = await apiGet(`${API_BASE}/posts`);
+        const list = data && (Array.isArray(data.posts) ? data.posts : (Array.isArray(data) ? data : [])) || [];
+        savePosts(list);
+        return list;
+    }
+    function loadPosts() {
+        try { return JSON.parse(localStorage.getItem(STORE_KEY)) || []; } catch { return []; }
+    }
+    function savePosts(list) {
+        try { localStorage.setItem(STORE_KEY, JSON.stringify(list)); } catch {}
+    }
+    function renderPosts(list) {
+        const box = document.getElementById('post-list');
+        if (!box) return;
+        if (!list.length) { box.innerHTML = '<div class="muted">目前还没有帖子，快来发布第一条吧！</div>'; return; }
+        const html = list.slice().reverse().map(p => {
+            const time = new Date(p.ts).toLocaleString();
+            const commentsHtml = (p.comments || []).map(c => {
+                const ct = new Date(c.ts).toLocaleString();
+                return `<div class="post-card" style="margin-top:6px;">
+                    <div style="font-size:12px; color:#666;">${ct} · ${escapeHtml(c.author || '匿名')}</div>
+                    <div>${escapeHtml(c.content || '')}</div>
+                </div>`;
+            }).join('');
+            return `<div class="post-card" data-id="${p.id}">
+                <div style="font-size:12px; color:#666;">${time} · ${escapeHtml(p.author || '匿名')}</div>
+                <div style="margin-top:4px;">${escapeHtml(p.content || '')}</div>
+                <div class="post-actions" style="margin-top:6px;">
+                    <button class="btn btn-secondary like-btn">👍 点赞</button>
+                    <span class="like-count">${p.likes || 0} 赞</span>
+                </div>
+                <details style="margin-top:8px;">
+                    <summary>发表评论</summary>
+                    <div style="margin-top:6px;">
+                        <input class="c-author" type="text" placeholder="昵称" style="width: 40%;"> 
+                        <input class="c-content" type="text" placeholder="评论内容" style="width: 58%;"> 
+                        <button class="btn btn-secondary c-submit">发布评论</button>
+                    </div>
+                    <div class="comments">${commentsHtml}</div>
+                </details>
+            </div>`;
+        }).join('');
+        box.innerHTML = html;
+
+        // 绑定交互
+        box.querySelectorAll('.like-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const card = btn.closest('.post-card');
+                const id = card?.dataset?.id;
+                const posts = loadPosts();
+                const p = posts.find(x => String(x.id) === String(id));
+                if (p) {
+                    await apiPost(`${API_BASE}/like`, { id });
+                    p.likes = (p.likes || 0) + 1;
+                    savePosts(posts); renderPosts(posts);
+                }
+            });
+        });
+        box.querySelectorAll('.c-submit').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const card = btn.closest('.post-card');
+                const id = card?.dataset?.id;
+                const author = card.querySelector('.c-author').value.trim();
+                const content = card.querySelector('.c-content').value.trim();
+                if (!content) return;
+                const posts = loadPosts();
+                const p = posts.find(x => String(x.id) === String(id));
+                if (!p) return;
+                p.comments = p.comments || [];
+                const payload = { id, author, content, images: [] };
+                await apiPost(`${API_BASE}/comment`, payload);
+                p.comments.push({ author, content, ts: Date.now() });
+                savePosts(posts);
+                renderPosts(posts);
+            });
+        });
+    }
+    // 新增：视图应用与增强渲染
+    function getHotScore(p) {
+        const likes = p.likes || 0;
+        const comments = (p.comments || []).length;
+        const reactions = p.reactions ? Object.values(p.reactions).reduce((a,b)=>a+b,0) : 0;
+        return likes * 2 + comments + reactions;
+    }
+    function applyView(list) {
+        let arr = list.slice();
+        if (keyword) {
+            const kw = keyword.toLowerCase();
+            arr = arr.filter(p => String(p.author||'').toLowerCase().includes(kw) || String(p.content||'').toLowerCase().includes(kw));
+        }
+        if (activeTags && activeTags.length) {
+            arr = arr.filter(p => activeTags.some(t => (p.tags||[]).includes(t)));
+        } else if (activeTag) {
+            arr = arr.filter(p => (p.tags||[]).includes(activeTag));
+        }
+        if (pinnedOnly) arr = arr.filter(p => p.pinned);
+        if (onlyImages) arr = arr.filter(p => (p.images||[]).length > 0);
+        if (onlyLinks) arr = arr.filter(p => /https?:\/\/\S+/.test(p.content || ''));
+        if (onlyMine && myName) arr = arr.filter(p => (p.author || '') === myName);
+        arr.sort((a,b) => {
+            if ((b.pinned?1:0) !== (a.pinned?1:0)) return (b.pinned?1:0) - (a.pinned?1:0);
+            if (sortMode === 'hot') return getHotScore(b) - getHotScore(a);
+            return b.ts - a.ts;
+        });
+        return arr;
+    }
+    let commentImagesTemp = {};
+    function renderPosts2(list) {
+        const box = document.getElementById('post-list');
+        if (!box) return;
+        if (!list.length) { box.innerHTML = '<div class="muted">目前还没有帖子，快来发布第一条吧！</div>'; return; }
+        const html = applyView(list).map(p => {
+            const time = new Date(p.ts).toLocaleString();
+            const tagsHtml = (p.tags||[]).map(t => `<span class="tag small">${escapeHtml(t)}</span>`).join('');
+            const badgesHtml = getBadges(p.author, list).map(b => `<span class="badge">${escapeHtml(b)}</span>`).join('');
+            const cardClass = p.pinned ? 'post-card pinned' : 'post-card';
+            const commentsHtml = (p.comments || []).map(c => {
+                const ct = new Date(c.ts).toLocaleString();
+                const cImagesHtml = (c.images || []).map(src => `<img src="${src}" class="post-img" alt="评论图片">`).join('');
+                return `<div class="post-card" style="margin-top:6px;">
+                    <div style="font-size:12px; color:#666;">${ct} · ${escapeHtml(c.author || '匿名')}</div>
+                    <div class="markdown-body">${renderMarkdown(c.content || '')}</div>
+                    ${cImagesHtml}
+                </div>`;
+            }).join('');
+            const react = p.reactions || {};
+            const reactionBar = `
+                <div class="reaction-bar">
+                    ${['👍','❤️','🎯','🤔'].map(em => {
+                        const count = react[em]||0;
+                        return `<button class="reaction-btn" data-em="${em}">${em} <span class="cnt">${count}</span></button>`;
+                    }).join('')}
+                </div>`;
+            const imagesHtml = (p.images || []).map(src => `<img src="${src}" class="post-img" alt="附件图片">`).join('');
+            return `<div class="${cardClass}" data-id="${p.id}">
+                <div class="post-header">
+                    <div class="meta">${time} · ${escapeHtml(p.author || '匿名')} ${badgesHtml} ${p.pinned ? '<span class="badge badge-pin">置顶</span>' : ''}</div>
+                    <div class="tags">${tagsHtml}</div>
+                </div>
+                <div style="margin-top:4px;" class="markdown-body">${renderMarkdown(p.content || '')}</div>
+                ${imagesHtml}
+                <div class="post-actions" style="margin-top:6px;">
+                    <button class="btn btn-secondary like-btn">👍 点赞</button>
+                    <span class="like-count">${p.likes || 0} 赞</span>
+                    ${isAdmin ? `<button class="btn btn-secondary pin-btn" title="置顶">${p.pinned ? '📌 取消置顶' : '📌 置顶'}</button>` : ''}
+                    ${isAdmin ? `<button class="btn btn-secondary del-btn" title="删除">🗑️ 删除</button>` : ''}
+                </div>
+                ${reactionBar}
+                <details style="margin-top:8px;">
+                    <summary>发表评论</summary>
+                    <div style="margin-top:6px;">
+                        <input class="c-author" type="text" placeholder="昵称" style="width: 40%"> 
+                        <input class="c-content" type="text" placeholder="评论内容" style="width: 58%"> 
+                        <button class="btn btn-secondary c-submit">发布评论</button>
+                        <div class="c-image-preview" style="margin-top:6px; display:flex; gap:6px; flex-wrap:wrap;"></div>
+                        <div class="muted" style="font-size:12px; margin-top:4px;">支持粘贴图片（≤300KB）</div>
+                    </div>
+                    <div class="comments">${commentsHtml}</div>
+                </details>
+            </div>`;
+        }).join('');
+        box.innerHTML = html;
+        box.querySelectorAll('.like-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const card = btn.closest('.post-card');
+                const id = card?.dataset?.id;
+                const posts = loadPosts();
+                const p = posts.find(x => String(x.id) === String(id));
+                if (p) {
+                    await apiPost(`${API_BASE}/like`, { id });
+                    p.likes = (p.likes || 0) + 1; savePosts(posts); renderPosts2(posts); renderSidebar(posts);
+                }
+            });
+        });
+        box.querySelectorAll('.c-submit').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const card = btn.closest('.post-card');
+                const id = card?.dataset?.id;
+                const author = card.querySelector('.c-author').value.trim();
+                const content = card.querySelector('.c-content').value.trim();
+                if (!content) return;
+                const posts = loadPosts();
+                const p = posts.find(x => String(x.id) === String(id));
+                if (!p) return;
+                p.comments = p.comments || [];
+                const imgs = (commentImagesTemp[id] || []).slice();
+                await apiPost(`${API_BASE}/comment`, { id, author, content, images: imgs });
+                p.comments.push({ author, content, ts: Date.now(), images: imgs });
+                commentImagesTemp[id] = [];
+                savePosts(posts);
+                renderPosts2(posts); renderSidebar(posts);
+            });
+        });
+        box.querySelectorAll('.c-content').forEach(inp => {
+            inp.addEventListener('paste', (e) => {
+                const card = inp.closest('.post-card');
+                const id = card?.dataset?.id;
+                const prev = card.querySelector('.c-image-preview');
+                const items = e.clipboardData?.items || [];
+                for (const it of items) {
+                    if (it.type && it.type.startsWith('image/')) {
+                        const file = it.getAsFile();
+                        if (!file) continue;
+                        const max = 300 * 1024;
+                        if (file.size > max) { alert('图片过大，需≤300KB'); continue; }
+                        const reader = new FileReader();
+                        reader.onload = () => {
+                            const src = reader.result;
+                            if (!commentImagesTemp[id]) commentImagesTemp[id] = [];
+                            commentImagesTemp[id].push(src);
+                            if (prev) {
+                                const img = document.createElement('img');
+                                img.src = src; img.className = 'post-img';
+                                prev.appendChild(img);
+                            }
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                }
+            });
+        });
+        box.querySelectorAll('.pin-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                if (!isAdmin) { alert('只有管理员可以置顶帖子'); return; }
+                const card = btn.closest('.post-card');
+                const id = card?.dataset?.id;
+                const posts = loadPosts();
+                const p = posts.find(x => String(x.id) === String(id));
+                if (p) {
+                    const next = !p.pinned;
+                    const resp = await apiPost(`${API_BASE}/pin`, { id, pinned: next }, adminHeaders());
+                    if (resp && resp.ok) {
+                        p.pinned = next; savePosts(posts); renderPosts2(posts); renderSidebar(posts);
+                    } else {
+                        alert('置顶失败：请确认已登录管理员');
+                    }
+                }
+            });
+        });
+        box.querySelectorAll('.del-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                if (!isAdmin) { alert('只有管理员可以删除帖子'); return; }
+                const card = btn.closest('.post-card');
+                const id = card?.dataset?.id;
+                let posts = loadPosts();
+                if (confirm('确定删除该帖子？此操作会同步后端，对所有人生效')) {
+                    const resp = await apiPost(`${API_BASE}/delete`, { id }, adminHeaders());
+                    if (resp && resp.ok) {
+                        posts = posts.filter(x => String(x.id) !== String(id));
+                        savePosts(posts);
+                        renderPosts2(posts);
+                        renderSidebar(posts);
+                    } else {
+                        alert('删除失败：请确认已登录管理员');
+                    }
+                }
+            });
+        });
+        box.querySelectorAll('.reaction-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const card = btn.closest('.post-card');
+                const id = card?.dataset?.id;
+                const em = btn.dataset.em;
+                const posts = loadPosts();
+                const p = posts.find(x => String(x.id) === String(id));
+                if (!p) return;
+                p.reactions = p.reactions || {};
+                p.reactions[em] = (p.reactions[em]||0) + 1;
+                // 简化：reaction 不入库，仅本地统计；如需共享可增加后端接口
+                savePosts(posts);
+                renderPosts2(posts); renderSidebar(posts);
+            });
+        });
+    }
+    function escapeHtml(str = '') {
+        return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[s]));
+    }
+    function renderMarkdown(md = '') {
+        try {
+            if (window.marked) {
+                const html = window.marked.parse(String(md));
+                if (window.DOMPurify) return window.DOMPurify.sanitize(html);
+                return html;
+            }
+            return escapeHtml(md).replace(/\n/g,'<br>');
+        } catch { return escapeHtml(String(md)); }
+    }
+    function filterByRange(list, range) {
+        const now = new Date();
+        if (range === 'today') {
+            const base = new Date(now); base.setHours(0,0,0,0);
+            return list.filter(p => { const d = new Date(p.ts||Date.now()); d.setHours(0,0,0,0); return d.getTime() === base.getTime(); });
+        }
+        if (range === 'week') {
+            const cutoff = Date.now() - 7*24*60*60*1000;
+            return list.filter(p => (p.ts||0) >= cutoff);
+        }
+        return list;
+    }
+    function dataURLToBlob(dataUrl) {
+        try {
+            const parts = dataUrl.split(',');
+            const meta = parts[0].match(/:(.*?);/)[1];
+            const bstr = atob(parts[1]);
+            let n = bstr.length; const u8arr = new Uint8Array(n);
+            while (n--) { u8arr[n] = bstr.charCodeAt(n); }
+            return new Blob([u8arr], { type: meta });
+        } catch { return new Blob([]); }
+    }
+    function extractImagesFromMarkdown(text = '') {
+        const urls = [];
+        try {
+            const mdImg = /!\[[^\]]*\]\(([^\s)]+)(?:\s+"[^"]*")?\)/g;
+            let m;
+            while ((m = mdImg.exec(text)) !== null) { urls.push(m[1]); }
+            const htmlImg = /<img[^>]+src=["']([^"'>]+)["'][^>]*>/gi;
+            while ((m = htmlImg.exec(text)) !== null) { urls.push(m[1]); }
+        } catch {}
+        return urls;
+    }
+    function filenameFromUrl(url, idx, mime) {
+        try {
+            const u = new URL(url);
+            const name = u.pathname.split('/').pop() || `comment_img_${idx}`;
+            if (name.includes('.')) return name;
+        } catch {}
+        const ext = (mime||'').includes('jpeg') ? 'jpg' : (mime||'').split('/')[1] || 'png';
+        return `comment_img_${idx}.${ext}`;
+    }
+    function updateImageStatus(state) {
+        const countEl = document.getElementById('img-count');
+        const sizeEl = document.getElementById('img-size');
+        const barEl = document.getElementById('image-progress-bar');
+        const hintEl = document.getElementById('img-hint');
+        const inputEl = document.getElementById('image');
+        const count = state.sizes.length;
+        const total = state.sizes.reduce((a,b)=>a+b,0);
+        const pct = Math.min(100, Math.round(total / MAX_TOTAL_SIZE * 100));
+        if (countEl) countEl.textContent = String(count);
+        if (sizeEl) sizeEl.textContent = `${Math.round(total/1024)}KB`;
+        if (barEl) barEl.style.width = `${pct}%`;
+        let warn = '';
+        if (count > MAX_IMAGE_COUNT) warn += `超过数量限制（最多${MAX_IMAGE_COUNT}张）；`;
+        if (total > MAX_TOTAL_SIZE) warn += `超过总大小限制（≤2MB）；`;
+        if (hintEl) hintEl.textContent = warn ? `警告：${warn}` : '提示：单张≤300KB，最多6张，总计≤2MB';
+        if (inputEl) inputEl.disabled = count >= MAX_IMAGE_COUNT || total >= MAX_TOTAL_SIZE;
+    }
+    function computeTagStats(list) {
+        const map = {};
+        list.forEach(p => (p.tags||[]).forEach(t => { map[t] = (map[t]||0) + 1; }));
+        const arr = Object.entries(map).map(([tag,count]) => ({tag,count}));
+        arr.sort((a,b) => b.count - a.count);
+        return arr;
+    }
+    function getBadges(author, list) {
+        const mine = list.filter(p => (p.author||'') === (author||''));
+        const postsCount = mine.length;
+        const likes = mine.reduce((a,b)=>a+(b.likes||0),0);
+        const comments = mine.reduce((a,b)=>a+((b.comments||[]).length),0);
+        const imagesCount = mine.reduce((a,b)=>a+((b.images||[]).length),0);
+        const pinnedCount = mine.filter(p=>p.pinned).length;
+        const maxHot = mine.reduce((m,p)=> Math.max(m, getHotScore(p)), 0);
+        const badges = [];
+        if (postsCount >= 3) badges.push('新锐作者');
+        if (postsCount >= 10) badges.push('资深作者');
+        if (likes >= 10) badges.push('人气高涨');
+        if (comments >= 10) badges.push('互动达人');
+        if (imagesCount >= 3) badges.push('图像贡献者');
+        if (pinnedCount >= 2) badges.push('置顶之主');
+        if (maxHot >= 8) badges.push('热度之星');
+        return badges;
+    }
+    function generateSummary(list) {
+        const total = list.length;
+        const topTags = computeTagStats(list).slice(0,3).map(s=>s.tag).join('、');
+        const topLikePost = list.slice().sort((a,b)=> (b.likes||0)-(a.likes||0))[0];
+        const pinnedCount = list.filter(p=>p.pinned).length;
+        const snippet = topLikePost ? String(topLikePost.content||'').slice(0,80) : '';
+        return `本页共${total}条帖子，热门标签：${topTags||'无'}；置顶${pinnedCount}条。最高赞内容摘录：${snippet}`;
+    }
+    function renderSidebar(list) {
+        const hotBox = document.getElementById('hot-tags');
+        const todayBox = document.getElementById('today-topic');
+        const sumBox = document.getElementById('summary-text');
+        if (hotBox) {
+            const stats = computeTagStats(filterByRange(list, hotRange));
+            hotBox.innerHTML = stats.length ? stats.slice(0,6).map(s => `<button class="tag small hot-tag" data-tag="${escapeHtml(s.tag)}">${escapeHtml(s.tag)} <span class="cnt">${s.count}</span></button>`).join(' ') : '<div class="muted">暂无标签数据</div>';
+            hotBox.querySelectorAll('.hot-tag').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const t = btn.dataset.tag;
+                    if (!activeTags.includes(t)) activeTags.push(t);
+                    localStorage.setItem(PREF_TAGS_MULTI_KEY, JSON.stringify(activeTags));
+                    document.querySelectorAll('.tag-filter .tag').forEach(el => { if (el.dataset.tag === t) el.classList.add('active'); });
+                    renderPosts2(loadPosts());
+                });
+            });
+        }
+        if (todayBox) {
+            const today = new Date(); today.setHours(0,0,0,0);
+            const listToday = list.filter(p => { const d=new Date(p.ts||Date.now()); d.setHours(0,0,0,0); return d.getTime()===today.getTime(); });
+            const stats = computeTagStats(listToday);
+            todayBox.innerHTML = stats.length ? `<div>今日最热：<span class="tag small">${escapeHtml(stats[0].tag)}</span>（${stats[0].count}条）</div>` : '<div class="muted">今日尚无主题</div>';
+        }
+        if (sumBox) {
+            sumBox.textContent = generateSummary(list);
+        }
+    }
+    function speakText(text) {
+        if (!('speechSynthesis' in window) || !text) return;
+        try { window.speechSynthesis.cancel(); } catch {}
+        const u = new SpeechSynthesisUtterance(String(text).replace(/\s+/g,' '));
+        const rate = parseFloat(localStorage.getItem('ai_voice_rate') || '1.0');
+        const pitch = parseFloat(localStorage.getItem('ai_voice_pitch') || '1.0');
+        const saved = localStorage.getItem('ai_voice_pref') || '';
+        u.rate = !Number.isNaN(rate)?rate:1.0;
+        u.pitch = !Number.isNaN(pitch)?pitch:1.0;
+        try {
+            const voices = window.speechSynthesis.getVoices() || [];
+            const voice = voices.find(v=> v.name === saved) || voices.find(v=>/zh|cmn/i.test(v.lang||'')) || null;
+            if (voice) { u.voice = voice; u.lang = voice.lang || 'zh-CN'; }
+        } catch {}
+        window.speechSynthesis.speak(u);
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+        const author = document.getElementById('author');
+        const content = document.getElementById('content');
+        const publish = document.getElementById('publish');
+        const clearAll = document.getElementById('clearAll');
+        const imageInput = document.getElementById('image');
+        const imagePreview = document.getElementById('image-preview');
+        const tagChips = document.querySelectorAll('.tag-select .tag');
+        const toolbarSearch = document.getElementById('forum-search');
+        const toolbarSort = document.getElementById('forum-sort');
+        const toolbarTags = document.querySelectorAll('.tag-filter .tag');
+        const pinnedOnlyCheck = document.getElementById('only-pinned');
+        const onlyImagesCheck = document.getElementById('only-images');
+        const onlyLinksCheck = document.getElementById('only-links');
+        const myNameInput = document.getElementById('my-name');
+        const onlyMineCheck = document.getElementById('only-mine');
+        const exportBtn = document.getElementById('export-json');
+        const genSummaryBtn = document.getElementById('gen-summary');
+        const speakSummaryBtn = document.getElementById('speak-summary');
+        const summaryBox = document.getElementById('summary-text');
+        const hotRangeSel = document.getElementById('hot-range');
+        const summaryOnlyCheck = document.getElementById('summary-only-filter');
+        const insertGuideBtn = document.getElementById('insert-guide');
+        const clearGuideBtn = document.getElementById('clear-guide');
+        const exportZipBtn = document.getElementById('export-zip');
+        const profileBtn = document.getElementById('profile-btn');
+        const mdPreview = document.getElementById('md-preview');
+        const mdToggle = document.getElementById('md-toggle');
+        if (author && currentUser) author.value = currentUser;
+        if (toolbarSearch) toolbarSearch.value = keyword;
+        if (toolbarSort) toolbarSort.value = sortMode;
+        toolbarTags.forEach(t => { if (activeTags.includes(t.dataset.tag)) t.classList.add('active'); else t.classList.remove('active'); });
+        // 首次加载：从后端同步集中存储
+        syncFromServer().then(list => { renderPosts2(list); renderSidebar(list); }).catch(() => { const posts = loadPosts(); renderPosts2(posts); renderSidebar(posts); });
+        let selectedTags = [];
+        let selectedImages = [];
+        let selectedImageSizes = [];
+        function addImage(file) {
+            const max = 300 * 1024; // 300KB
+            if (!file) return;
+            if (file.size > max) { alert('图片过大，需≤300KB'); return; }
+            const reader = new FileReader();
+            reader.onload = () => {
+                const src = reader.result;
+                selectedImages.push(src);
+                selectedImageSizes.push(file.size || 0);
+                if (imagePreview) {
+                    const img = document.createElement('img');
+                    img.src = src; img.className = 'post-img';
+                    imagePreview.appendChild(img);
+                }
+                updateImageStatus({ sizes: selectedImageSizes });
+            };
+            reader.readAsDataURL(file);
+        }
+        if (imageInput) imageInput.addEventListener('change', () => { const f = imageInput.files?.[0]; if (f) addImage(f); });
+        if (content) {
+            content.addEventListener('paste', (e) => {
+                const items = e.clipboardData?.items || [];
+                for (const it of items) {
+                    if (it.type && it.type.startsWith('image/')) {
+                        const file = it.getAsFile(); if (file) addImage(file);
+                    }
+                }
+            });
+        }
+        tagChips.forEach(ch => {
+            ch.addEventListener('click', () => {
+                const tag = ch.dataset.tag;
+                if (selectedTags.includes(tag)) {
+                    selectedTags = selectedTags.filter(x => x !== tag);
+                    ch.classList.remove('active');
+                } else {
+                    selectedTags.push(tag);
+                    ch.classList.add('active');
+                }
+            });
+        });
+        publish.addEventListener('click', async () => {
+            const a = author.value.trim();
+            const c = content.value.trim();
+            if (!c) return;
+            const posts = loadPosts();
+            const draft = { id: Date.now(), author: a || currentUser || '匿名', content: c, ts: Date.now(), likes: 0, comments: [], tags: selectedTags.slice(), reactions: {}, pinned: false, images: selectedImages.slice() };
+            posts.push(draft);
+            // 后端持久化（失败不阻塞本地渲染）
+            apiPost(`${API_BASE}/post`, draft);
+            savePosts(posts);
+            author.value = '';
+            content.value = '';
+            selectedTags = [];
+            tagChips.forEach(ch => ch.classList.remove('active'));
+            selectedImages = [];
+            selectedImageSizes = [];
+            if (imagePreview) imagePreview.innerHTML = '';
+            updateImageStatus({ sizes: selectedImageSizes });
+            renderPosts2(posts);
+            renderSidebar(posts);
+        });
+        clearAll.addEventListener('click', () => { savePosts([]); renderPosts2([]); });
+        if (toolbarSearch) toolbarSearch.addEventListener('input', () => {
+            keyword = toolbarSearch.value.trim();
+            localStorage.setItem(PREF_SEARCH_KEY, keyword);
+            const posts = loadPosts(); renderPosts2(posts); renderSidebar(posts);
+        });
+        if (toolbarSort) toolbarSort.addEventListener('change', () => {
+            sortMode = toolbarSort.value;
+            localStorage.setItem(PREF_SORT_KEY, sortMode);
+            const posts = loadPosts(); renderPosts2(posts); renderSidebar(posts);
+        });
+        toolbarTags.forEach(t => {
+            t.addEventListener('click', () => {
+                const tg = t.dataset.tag;
+                if (!tg) {
+                    activeTags = [];
+                    activeTag = '';
+                    localStorage.setItem(PREF_TAGS_MULTI_KEY, JSON.stringify(activeTags));
+                    localStorage.setItem(PREF_TAG_KEY, activeTag);
+                    toolbarTags.forEach(x => x.classList.remove('active'));
+                } else {
+                    const i = activeTags.indexOf(tg);
+                    if (i >= 0) { activeTags.splice(i,1); t.classList.remove('active'); }
+                    else { activeTags.push(tg); t.classList.add('active'); }
+                    localStorage.setItem(PREF_TAGS_MULTI_KEY, JSON.stringify(activeTags));
+                }
+                const posts = loadPosts(); renderPosts2(posts); renderSidebar(posts);
+            });
+        });
+        if (pinnedOnlyCheck) { pinnedOnlyCheck.checked = pinnedOnly; pinnedOnlyCheck.addEventListener('change', () => { pinnedOnly = pinnedOnlyCheck.checked; localStorage.setItem(PINNED_ONLY_KEY, pinnedOnly?'true':'false'); const posts = loadPosts(); renderPosts2(posts); renderSidebar(posts); }); }
+        if (onlyImagesCheck) { onlyImagesCheck.checked = onlyImages; onlyImagesCheck.addEventListener('change', () => { onlyImages = onlyImagesCheck.checked; localStorage.setItem(ONLY_IMAGES_KEY, onlyImages?'true':'false'); const posts = loadPosts(); renderPosts2(posts); renderSidebar(posts); }); }
+        if (onlyLinksCheck) { onlyLinksCheck.checked = onlyLinks; onlyLinksCheck.addEventListener('change', () => { onlyLinks = onlyLinksCheck.checked; localStorage.setItem(ONLY_LINKS_KEY, onlyLinks?'true':'false'); const posts = loadPosts(); renderPosts2(posts); renderSidebar(posts); }); }
+        if (myNameInput) { myNameInput.value = myName; myNameInput.addEventListener('input', () => { myName = myNameInput.value.trim(); localStorage.setItem(MY_NAME_KEY, myName); const posts = loadPosts(); renderPosts2(posts); renderSidebar(posts); }); }
+        if (onlyMineCheck) { onlyMineCheck.checked = onlyMine; onlyMineCheck.addEventListener('change', () => { onlyMine = onlyMineCheck.checked; localStorage.setItem(ONLY_MINE_KEY, onlyMine?'true':'false'); const posts = loadPosts(); renderPosts2(posts); renderSidebar(posts); }); }
+        if (exportBtn) exportBtn.addEventListener('click', () => {
+            const data = JSON.stringify(loadPosts(), null, 2);
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = 'forum_posts.json'; a.click();
+            URL.revokeObjectURL(url);
+        });
+        if (genSummaryBtn) genSummaryBtn.addEventListener('click', () => {
+            const posts = loadPosts();
+            const source = summaryOnlyCheck?.checked ? applyView(posts) : posts;
+            summaryBox.textContent = generateSummary(source);
+        });
+        if (speakSummaryBtn) speakSummaryBtn.addEventListener('click', () => { const t = summaryBox?.textContent || ''; speakText(t); });
+        if (insertGuideBtn) insertGuideBtn.addEventListener('click', () => {
+            const posts = loadPosts();
+            const source = summaryOnlyCheck?.checked ? applyView(posts) : posts;
+            const text = generateSummary(source);
+            const guide = document.getElementById('page-guide');
+            if (guide) guide.innerHTML = `<div class="post-card guide-card"><div class="meta">本页导读</div><div class="markdown-body">${renderMarkdown(text)}</div></div>`;
+        });
+        if (clearGuideBtn) clearGuideBtn.addEventListener('click', () => { const guide = document.getElementById('page-guide'); if (guide) guide.innerHTML = ''; });
+        if (hotRangeSel) {
+            hotRangeSel.value = hotRange;
+            hotRangeSel.addEventListener('change', () => { hotRange = hotRangeSel.value; localStorage.setItem(HOT_TAG_RANGE_KEY, hotRange); renderSidebar(loadPosts()); });
+        }
+        if (exportZipBtn) exportZipBtn.addEventListener('click', async () => {
+            const posts = loadPosts();
+            const list = applyView(posts);
+            const zip = new JSZip();
+            let idx = 1;
+            const externalFailed = [];
+            const seen = new Set();
+            for (const p of list) {
+                for (const c of (p.comments||[])) {
+                    const urls = extractImagesFromMarkdown(c.content||'');
+                    const attachments = (c.images || []);
+                    for (const src of urls.concat(attachments)) {
+                        if (seen.has(src)) continue; seen.add(src);
+                        try {
+                            if (src.startsWith('data:image/')) {
+                                const blob = dataURLToBlob(src);
+                                zip.file(filenameFromUrl(src, idx, blob.type||'image/png'), blob);
+                                idx++;
+                            } else {
+                                const resp = await fetch(src);
+                                if (!resp.ok) throw new Error(`fetch failed: ${resp.status}`);
+                                const blob = await resp.blob();
+                                const name = filenameFromUrl(src, idx, blob.type);
+                                zip.file(name, blob);
+                                idx++;
+                            }
+                        } catch (e) {
+                            externalFailed.push(src);
+                        }
+                    }
+                }
+            }
+            if (externalFailed.length) {
+                const info = `以下图片因跨域或网络原因未打包，请手动下载：\n` + externalFailed.join('\n');
+                zip.file('external_images.txt', info);
+            }
+            const contentZip = await zip.generateAsync({ type: 'blob' });
+            const url = URL.createObjectURL(contentZip);
+            const a = document.createElement('a');
+            a.href = url; a.download = 'forum_comment_images.zip'; a.click();
+            URL.revokeObjectURL(url);
+        });
+        // Markdown 工具栏行为
+        function wrapSelection(before, after) {
+            if (!content) return;
+            const start = content.selectionStart || 0;
+            const end = content.selectionEnd || 0;
+            const val = content.value;
+            const sel = val.slice(start, end);
+            const out = val.slice(0, start) + before + sel + after + val.slice(end);
+            content.value = out;
+            content.focus();
+            content.selectionStart = start + before.length;
+            content.selectionEnd = end + before.length;
+            if (mdPreview && mdPreview.style.display !== 'none') mdPreview.innerHTML = renderMarkdown(content.value);
+        }
+        document.querySelectorAll('.md-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const act = btn.dataset.act;
+                if (act === 'bold') wrapSelection('**', '**');
+                else if (act === 'italic') wrapSelection('*', '*');
+                else if (act === 'code') wrapSelection('`', '`');
+                else if (act === 'quote') wrapSelection('\n> ', '');
+                else if (act === 'link') wrapSelection('[', '](https://)');
+                else if (act === 'h1') wrapSelection('# ', '');
+                else if (act === 'h2') wrapSelection('## ', '');
+                else if (act === 'ul') wrapSelection('\n- ', '');
+            });
+        });
+        if (mdToggle) {
+            mdToggle.addEventListener('click', () => {
+                if (!mdPreview) return;
+                const visible = mdPreview.style.display !== 'none';
+                mdPreview.style.display = visible ? 'none' : '';
+                if (!visible) mdPreview.innerHTML = renderMarkdown(content.value || '');
+            });
+        }
+        if (content && mdPreview) content.addEventListener('input', () => { if (mdPreview.style.display !== 'none') mdPreview.innerHTML = renderMarkdown(content.value || ''); });
+
+        // 个人主页弹窗
+        function openProfile(name) {
+            const posts = loadPosts();
+            const mine = posts.filter(p => (p.author||'') === (name||''));
+            const body = document.getElementById('profile-body');
+            const modal = document.getElementById('profile-modal');
+            const badges = getBadges(name, posts);
+            const postsCount = mine.length;
+            const likes = mine.reduce((a,b)=>a+(b.likes||0),0);
+            const comments = mine.reduce((a,b)=>a+((b.comments||[]).length),0);
+            const imagesCount = mine.reduce((a,b)=>a+((b.images||[]).length),0);
+            const pinnedCount = mine.filter(p=>p.pinned).length;
+            const topPost = mine.slice().sort((a,b)=> (b.likes||0)-(a.likes||0))[0];
+            const snippet = topPost ? String(topPost.content||'').slice(0,120) : '';
+            if (body) {
+                body.innerHTML = `
+                    <div class="meta">昵称：${escapeHtml(name||'未填写')}</div>
+                    <div style="margin-top:6px;">徽章：${badges.map(b=>`<span class='badge'>${escapeHtml(b)}</span>`).join(' ') || '<span class="muted">暂无</span>'}</div>
+                    <ul style="margin-top:10px;">
+                        <li>发帖：${postsCount} 条</li>
+                        <li>总赞：${likes} 次</li>
+                        <li>总评：${comments} 条</li>
+                        <li>图片：${imagesCount} 张</li>
+                        <li>置顶：${pinnedCount} 条</li>
+                    </ul>
+                    <div style="margin-top:8px;" class="markdown-body">${renderMarkdown(snippet ? `最高赞内容摘录：\n\n> ${snippet}` : '暂无代表作')}</div>
+                `;
+            }
+            if (modal) modal.style.display = 'block';
+        }
+        function closeProfile() { const modal = document.getElementById('profile-modal'); if (modal) modal.style.display = 'none'; }
+        const profileClose = document.getElementById('profile-close');
+        if (profileClose) profileClose.addEventListener('click', () => closeProfile());
+        if (profileBtn) profileBtn.addEventListener('click', () => { const name = myName || (document.getElementById('my-name')?.value || ''); openProfile(name); });
+        if (speakSummaryBtn) speakSummaryBtn.addEventListener('click', () => { const txt = summaryBox?.textContent || generateSummary(loadPosts()); speakText(txt); });
+    });
+    </script>
+</body>
+</html>

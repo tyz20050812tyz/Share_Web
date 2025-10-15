@@ -1,0 +1,27 @@
+[
+  {
+    "account": "admin",
+    "password": "admin",
+    "role": "user"
+  },
+  {
+    "account": "佟雨泽",
+    "password": "20050812",
+    "role": "admin"
+  },
+  {
+    "account": "徐安然",
+    "password": "123456",
+    "role": "user"
+  },
+  {
+    "account": "tyz",
+    "password": "123456",
+    "role": "user"
+  },
+  {
+    "account": "yan",
+    "password": "050920",
+    "role": "user"
+  }
+]

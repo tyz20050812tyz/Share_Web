@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 智能知识问答 — 以史为鉴，凝聚力量</title>
+    <link rel="stylesheet" href="style.css">
+   
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="wrap">
+           
+            <h1>智能知识问答</h1>
+            <div>
+                <h1>你好！我是“小史鉴”</h1>
+                <p>我专注解答“以史为鉴，凝聚力量——反法西斯战争胜利精神与中华民族伟大复兴的内在逻辑”相关问题，涵盖胜利精神的核心要素（抗争精神、团结统一、牺牲奉献、国际主义）及其在新中国建设、改革开放、科技经济发展、文化自信等方面的历史传承与现实转化。</p>
+               
+            </div>
+            <nav class="main-nav">
+                <a href="index.html">主页</a>
+                <a href="ai.html">智能问答</a>
+                <a href="knowledge.html">知识分享</a>
+                <a href="culture.html">文化传播</a>
+                <a href="discuss.html">讨论区</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="wrap ai-page">
+        <div class="card ai-card" style="padding-top:16px">
+            <div class="ai-box" style="gap:10px">
+                <input id="ai-input" type="text" placeholder="输入你的问题，例如：反法西斯胜利精神如何转化为复兴动力？胜利精神的核心要素有哪些？与现代化建设之间的逻辑关系是什么？">
+                <button id="ai-submit">提问</button>
+            </div>
+
+
+
+            <div class="ai-actions">
+                <a href="index.html" class="back-home">← 返回主页</a>
+            </div>
+        </div>
+
+        <div class="card answer-card" style="margin-top:12px">
+            <div class="digital-human theme-soldier" id="digital-human" aria-label="数字人 小史鉴 军人主题">
+                <div class="dh-avatar">
+                    <!-- 军帽（含帽檐与红星） -->
+                    <div class="dh-hat"><span class="brim"></span><span class="star"></span></div>
+                    <!-- 英雄主题装饰：头带与之字金星（军人主题下隐藏） -->
+                    <div class="dh-headband"><span class="star"></span></div>
+                    <!-- 眉毛与腮红，让表情更可爱 -->
+                    <div class="dh-brow left"></div>
+                    <div class="dh-brow right"></div>
+                    <div class="dh-cheek left"></div>
+                    <div class="dh-cheek right"></div>
+                    <div class="dh-eye left"><span class="pupil"></span></div>
+                    <div class="dh-eye right"><span class="pupil"></span></div>
+                    <div class="dh-mouth"></div>
+                    <!-- 肩章与军装领口 -->
+                    <div class="dh-epaulet left"></div>
+                    <div class="dh-epaulet right"></div>
+                    <div class="dh-collar left"></div>
+                    <div class="dh-collar right"></div>
+                    <!-- 英雄徽章与披风（军人主题下隐藏） -->
+                    <div class="dh-badge"></div>
+                    <div class="dh-cape"></div>
+                </div>
+                <div class="dh-controls" aria-label="数字人控制区">
+                    <div class="dh-voice">
+                        <label for="voice-select" class="control-label">语音</label>
+                        <select id="voice-select" class="control-select">
+                            <option value="">系统默认</option>
+                        </select>
+                    </div>
+                    <div class="dh-params">
+                        <label for="voice-rate" class="control-label">速率</label>
+                        <input id="voice-rate" class="control-range" type="range" min="0.8" max="1.4" step="0.1" value="1.0">
+                        <label for="voice-pitch" class="control-label">音高</label>
+                        <input id="voice-pitch" class="control-range" type="range" min="0.8" max="1.3" step="0.1" value="1.0">
+                    </div>
+                    <button id="dh-speak" class="btn btn-secondary" title="朗读最新回答">朗读回答 🔊</button>
+                    <button id="dh-stop" class="btn btn-secondary" title="停止朗读">停止 ⏹️</button>
+                </div>
+            </div>
+            <div id="ai-response" class="ai-response"></div>
+        </div>
+
+        <div class="card history-card">
+            <details id="history-details" open>
+                <summary class="history-summary">
+                    <span id="history-title">历史聊天记录</span>
+                    <button id="clear-history" class="btn-secondary">清除</button>
+                </summary>
+
+                <div id="ai-history" class="ai-history-list">
+                </div>
+            </details>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="wrap">© 2025 以史为鉴，凝聚力量</div>
+    </footer>
+    <script src="main.js"></script>
+    <!-- Markdown 解析与安全过滤 -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.5/dist/purify.min.js"></script>
+    <!-- 代码高亮样式与脚本 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11.9.0/styles/github.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+    <script src="ai.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文化传播 — 以史为鉴，凝聚力量</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="wrap">
+            <h1>文化传播（主题歌曲与历史记忆）</h1>
+            <nav class="main-nav">
+                <a href="index.html">主页</a>
+                <a href="ai.html">智能问答</a>
+                <a href="knowledge.html">知识分享</a>
+                <a href="culture.html">文化传播</a>
+                <a href="discuss.html">讨论区</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="wrap">
+        <section class="card">
+            <div class="section-title">主题曲精选（本地播放）</div>
+            <div class="subsection-desc">以下为“歌曲”目录中的六首曲目，按序号排列，可在线播放或下载。</div>
+            <div class="grid-3" style="grid-template-columns: 1fr;">
+                <div class="post-card">
+                    <h3>1 家园不再</h3>
+            <audio controls src="/songs/1家园不再.mp3"></audio>
+            <a class="download-link" href="/songs/1家园不再.mp3" download>下载《1家园不再.mp3》</a>
+                </div>
+                <div class="post-card">
+                    <h3>2 黄河在呐喊</h3>
+            <audio controls src="/songs/2黄河在呐喊.mp3"></audio>
+            <a class="download-link" href="/songs/2黄河在呐喊.mp3" download>下载《2黄河在呐喊.mp3》</a>
+                </div>
+                <div class="post-card">
+                    <h3>3 星星之火</h3>
+            <audio controls src="/songs/3星星之火.mp3"></audio>
+            <a class="download-link" href="/songs/3星星之火.mp3" download>下载《3星星之火.mp3》</a>
+                </div>
+                <div class="post-card">
+                    <h3>4 长城下的誓言</h3>
+            <audio controls src="/songs/4长城下的誓言.mp3"></audio>
+            <a class="download-link" href="/songs/4长城下的誓言.mp3" download>下载《4长城下的誓言.mp3》</a>
+                </div>
+                <div class="post-card">
+                    <h3>5 向着光辉的彼岸</h3>
+            <audio controls src="/songs/5向着光辉的彼岸.mp3"></audio>
+            <a class="download-link" href="/songs/5向着光辉的彼岸.mp3" download>下载《5向着光辉的彼岸.mp3》</a>
+                </div>
+                <div class="post-card">
+                    <h3>6 百年回响</h3>
+            <audio controls src="/songs/6百年回响.mp3"></audio>
+            <a class="download-link" href="/songs/6百年回响.mp3" download>下载《6百年回响.mp3》</a>
+                </div>
+            </div>
+        </section>
+
+        <div class="scenarios-actions">
+            <p class="tip">提示：生成过程在本地完成，无需联网。你也可以将合成旋律或本地曲目用于主题宣传素材。</p>
+            <a href="index.html" class="btn btn-secondary">← 返回主页</a>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="wrap">© 2025 以史为鉴，凝聚力量</div>
+    </footer>
+
+    <script>
+    function encodeWAV(audioBuffer) {
+        const numChannels = audioBuffer.numberOfChannels;
+        const sampleRate = audioBuffer.sampleRate;
+        const samples = audioBuffer.length;
+        const bytesPerSample = 2; // 16-bit PCM
+        const blockAlign = numChannels * bytesPerSample;
+        const dataSize = samples * blockAlign;
+        const buffer = new ArrayBuffer(44 + dataSize);
+        const view = new DataView(buffer);
+        let offset = 0;
+
+        function writeString(s) { for (let i = 0; i < s.length; i++) view.setUint8(offset++, s.charCodeAt(i)); }
+        function writeUint32(v) { view.setUint32(offset, v, true); offset += 4; }
+        function writeUint16(v) { view.setUint16(offset, v, true); offset += 2; }
+
+        // RIFF header
+        writeString('RIFF');
+        writeUint32(36 + dataSize);
+        writeString('WAVE');
+        // fmt chunk
+        writeString('fmt ');
+        writeUint32(16); // PCM
+        writeUint16(1); // format
+        writeUint16(numChannels);
+        writeUint32(sampleRate);
+        writeUint32(sampleRate * blockAlign);
+        writeUint16(blockAlign);
+        writeUint16(8 * bytesPerSample);
+        // data chunk
+        writeString('data');
+        writeUint32(dataSize);
+
+        const interleaved = new Float32Array(samples * numChannels);
+        for (let ch = 0; ch < numChannels; ch++) {
+            const channelData = audioBuffer.getChannelData(ch);
+            for (let i = 0; i < samples; i++) {
+                interleaved[i * numChannels + ch] = channelData[i];
+            }
+        }
+
+        // float32 -> int16
+        let idx = 0;
+        for (let i = 0; i < interleaved.length; i++) {
+            let s = Math.max(-1, Math.min(1, interleaved[i]));
+            view.setInt16(44 + idx, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+            idx += 2;
+        }
+        return new Blob([view], { type: 'audio/wav' });
+    }
+
+    async function generateSong({ mood = 'maj', bpm = 96, sec = 20 } = {}) {
+        const sampleRate = 44100;
+        const length = Math.floor(sec * sampleRate);
+        const ctx = new OfflineAudioContext(2, length, sampleRate);
+
+        const notesMaj = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 523.25]; // C大调
+        const notesMin = [261.63, 293.66, 311.13, 349.23, 392.00, 440.00, 493.88]; // C小调
+        const scale = mood === 'min' ? notesMin : notesMaj;
+
+        const oscLead = ctx.createOscillator();
+        oscLead.type = 'sawtooth';
+        const gainLead = ctx.createGain();
+        gainLead.gain.setValueAtTime(0.0, 0);
+        oscLead.connect(gainLead).connect(ctx.destination);
+
+        const oscBass = ctx.createOscillator();
+        oscBass.type = 'square';
+        const gainBass = ctx.createGain();
+        gainBass.gain.setValueAtTime(0.0, 0);
+        oscBass.connect(gainBass).connect(ctx.destination);
+
+        const beatLen = 60 / bpm; // 每拍秒数
+        const start = 0;
+        let t = start;
+        oscLead.start(start);
+        oscBass.start(start);
+
+        // 简单乐句：主旋律与低音分拍推进，加入包络
+        while (t < sec) {
+            const nIdx = Math.floor(Math.random() * scale.length);
+            const freq = scale[nIdx];
+            const bassFreq = scale[0] / 2; // 低音固定根音
+
+            // 主旋律：两拍一个音，做轻微滑音
+            oscLead.frequency.linearRampToValueAtTime(freq, t + 0.01);
+            gainLead.gain.cancelScheduledValues(t);
+            gainLead.gain.setValueAtTime(0.0, t);
+            gainLead.gain.linearRampToValueAtTime(0.6, t + 0.04);
+            gainLead.gain.exponentialRampToValueAtTime(0.15, t + beatLen * 1.8);
+
+            // 低音：每拍触发，稳固节奏
+            oscBass.frequency.setValueAtTime(bassFreq, t);
+            gainBass.gain.cancelScheduledValues(t);
+            gainBass.gain.setValueAtTime(0.0, t);
+            gainBass.gain.linearRampToValueAtTime(0.4, t + 0.02);
+            gainBass.gain.exponentialRampToValueAtTime(0.08, t + beatLen * 0.9);
+
+            t += beatLen * 2;
+        }
+
+        oscLead.stop(sec);
+        oscBass.stop(sec);
+        const rendered = await ctx.startRendering();
+        return rendered;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const moodEl = document.getElementById('mood');
+        const bpmEl = document.getElementById('bpm');
+        const secEl = document.getElementById('sec');
+        const genBtn = document.getElementById('gen');
+        const player = document.getElementById('player');
+        const download = document.getElementById('download');
+        const tip = document.getElementById('gen-tip');
+
+        genBtn.addEventListener('click', async () => {
+            const mood = moodEl.value;
+            const bpm = Math.max(60, Math.min(140, Number(bpmEl.value) || 96));
+            const sec = Math.max(5, Math.min(60, Number(secEl.value) || 20));
+            tip.textContent = '正在生成，请稍候…';
+            genBtn.disabled = true;
+            try {
+                const buf = await generateSong({ mood, bpm, sec });
+                const wav = encodeWAV(buf);
+                const url = URL.createObjectURL(wav);
+                player.src = url;
+                player.play().catch(() => {});
+                download.href = url;
+                download.style.display = 'inline';
+                tip.textContent = `已生成：${mood === 'min' ? '小调' : '大调'}，${bpm} BPM，${sec}s`;
+            } catch (e) {
+                tip.textContent = '生成失败：' + e.message;
+            } finally {
+                genBtn.disabled = false;
+            }
+        });
+    });
+    </script>
+</body>
+</html>
