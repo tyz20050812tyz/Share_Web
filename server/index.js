@@ -61,11 +61,7 @@ function pruneOnline() {
 }
 setInterval(pruneOnline, Math.min(ONLINE_TIMEOUT_MS, 60000));
 
-// ===== 简单登录：默认账号与密码（演示用） =====
-const defaultAccounts = [
-  { account: 'admin', password: 'admin', role: 'user' },
-  { account: '佟雨泽', password: '20050812', role: 'admin' },
-];
+// ===== 简单登录：移除默认账号，必须注册自己的账号 =====
 
 // ===== 用户存储（演示持久化到 server/users.json） =====
 const USERS_PATH = path.resolve(__dirname, 'users.json');
@@ -77,9 +73,31 @@ function loadUsers() {
       if (Array.isArray(arr)) return arr;
     }
   } catch {}
-  return defaultAccounts.slice();
+  // 默认无预置用户，需通过注册创建
+  return [];
 }
 let users = loadUsers();
+// 确保“佟雨泽”管理员账号始终存在
+function ensureAdminPresence() {
+  try {
+    const requiredAdmin = { account: '佟雨泽', password: '20050812', role: 'admin' };
+    const exists = users.some(u => String(u.account) === requiredAdmin.account);
+    if (!exists) {
+      users.push(requiredAdmin);
+      saveUsers();
+    } else {
+      // 如果已存在但角色不是 admin，则提升为 admin（保持密码不改）
+      users = users.map(u => {
+        if (String(u.account) === requiredAdmin.account) {
+          return { account: u.account, password: u.password || requiredAdmin.password, role: 'admin' };
+        }
+        return u;
+      });
+      saveUsers();
+    }
+  } catch {}
+}
+ensureAdminPresence();
 function saveUsers() {
   try {
     fs.writeFileSync(USERS_PATH, JSON.stringify(users, null, 2), 'utf8');
@@ -109,6 +127,10 @@ app.get('/api/config/status', (_req, res) => {
 app.post('/api/login', (req, res) => {
   const { account, password } = req.body || {};
   if (!account || !password) return res.status(400).json({ ok: false, error: '缺少账号或密码' });
+  // 禁止使用保留用户名登录（如 admin）
+  if (String(account).toLowerCase() === 'admin') {
+    return res.status(403).json({ ok: false, error: '不允许使用预设管理员账号登录，请注册自己的账号' });
+  }
   const found = users.find(u => String(u.account) === String(account) && String(u.password) === String(password));
   if (!found) return res.status(401).json({ ok: false, error: '账号或密码不正确' });
   return res.json({ ok: true, role: found.role, user: { name: found.account } });
