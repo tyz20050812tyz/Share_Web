@@ -16,12 +16,41 @@ class ShootingGame {
         this.bullets = [];
         this.particles = [];
         this.gameRunning = false;
+        this.gamePaused = false;
         this.animationId = null;
 
+        // 难度设置
+        this.difficulty = 'normal'; // 'easy', 'normal', 'hard'
+        this.difficultyMultiplier = 1.5;
+        this.difficultySettings = {
+            easy: {
+                enemySpeed: 0.15,
+                spawnRate: 3500,
+                scoreMultiplier: 1,
+                maxEnemies: 2
+            },
+            normal: {
+                enemySpeed: 0.3,
+                spawnRate: 2500,
+                scoreMultiplier: 1.5,
+                maxEnemies: 3
+            },
+            hard: {
+                enemySpeed: 0.5,
+                spawnRate: 1500,
+                scoreMultiplier: 2,
+                maxEnemies: 5
+            }
+        };
+
         // 敌人生成配置
-        this.enemySpawnRate = 3000; // 初始生成间隔2秒
+        this.enemySpawnRate = 2500; // 初始生成间隔
         this.lastSpawnTime = 0;
         this.maxEnemies = 3;
+
+        // 游戏统计数据
+        this.gamesPlayed = this.loadGameStats().gamesPlayed || 0;
+        this.totalScore = this.loadGameStats().totalScore || 0;
 
         // 连杀系统
         this.comboCount = 0;
@@ -100,7 +129,7 @@ class ShootingGame {
 
         // 音频系统
         this.sounds = {
-            bgm: null, // 背景音乐
+            bgm: null, // 当前播放的背景音乐
             shoot: null, // 射击音效
             hit: null, // 击中音效
             explosion: null, // 爆炸音效
@@ -110,6 +139,26 @@ class ShootingGame {
             gameOver: null, // 游戏结束音效
             buttonClick: null // 按钮点击音效
         };
+
+        // 背景音乐播放列表
+        this.bgmPlaylist = [
+            './歌曲/1家园不再.mp3',
+            './歌曲/2黄河在呐喊.mp3',
+            './歌曲/3星星之火.mp3',
+            './歌曲/4长城下的誓言.mp3',
+            './歌曲/5向着光辉的彼岸.mp3',
+            './歌曲/6百年回响.mp3'
+        ];
+        this.bgmTitles = [
+            '家园不再',
+            '黄河在呐喊',
+            '星星之火',
+            '长城下的誓言',
+            '向着光辉的彼岸',
+            '百年回响'
+        ];
+        this.currentBgmIndex = 0; // 当前播放的音乐索引
+
         this.soundEnabled = true; // 音效开关
         this.musicEnabled = true; // 音乐开关
         this.initAudio(); // 初始化音频
@@ -879,6 +928,137 @@ class ShootingGame {
         ];
 
         this.setupEventListeners();
+        this.loadRankings();
+    }
+
+    // 加载游戏统计数据
+    loadGameStats() {
+        const stats = localStorage.getItem('gameStats');
+        return stats ? JSON.parse(stats) : { gamesPlayed: 0, totalScore: 0 };
+    }
+
+    // 保存游戏统计数据
+    saveGameStats() {
+        const stats = {
+            gamesPlayed: this.gamesPlayed,
+            totalScore: this.totalScore
+        };
+        localStorage.setItem('gameStats', JSON.stringify(stats));
+    }
+
+    // 加载排行榜数据
+    loadRankings() {
+        const rankings = localStorage.getItem('gameRankings');
+        return rankings ? JSON.parse(rankings) : [];
+    }
+
+    // 保存排行榜数据
+    saveRankings(rankings) {
+        localStorage.setItem('gameRankings', JSON.stringify(rankings));
+    }
+
+    // 更新排行榜
+    updateRankings() {
+        const currentUser = localStorage.getItem('login_user') || '游客';
+        const rankings = this.loadRankings();
+
+        // 添加新记录
+        rankings.push({
+            name: currentUser,
+            score: this.score,
+            difficulty: this.difficulty,
+            timestamp: new Date().toISOString()
+        });
+
+        // 按分数降序排序
+        rankings.sort((a, b) => b.score - a.score);
+
+        // 只保留前10名
+        const top10 = rankings.slice(0, 10);
+        this.saveRankings(top10);
+
+        return top10;
+    }
+
+    // 显示排行榜
+    showRankings() {
+        const panel = document.getElementById('rankings-panel');
+        const list = document.getElementById('rankings-list');
+        const rankings = this.loadRankings();
+        const currentUser = localStorage.getItem('login_user') || '游客';
+
+        list.innerHTML = '';
+
+        if (rankings.length === 0) {
+            list.innerHTML = '<p style="color: #aaa; text-align: center; padding: 20px;">暂无排行榜数据</p>';
+        } else {
+            rankings.forEach((record, index) => {
+                const item = document.createElement('div');
+                const isCurrentPlayer = record.name === currentUser;
+                let rankClass = 'ranking-item';
+
+                if (index === 0) rankClass += ' rank-1';
+                else if (index === 1) rankClass += ' rank-2';
+                else if (index === 2) rankClass += ' rank-3';
+                if (isCurrentPlayer) rankClass += ' current-player';
+
+                item.className = rankClass;
+
+                const rankIcon = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `#${index + 1}`;
+                const difficultyBadge = record.difficulty === 'easy' ? '简单' : record.difficulty === 'normal' ? '普通' : '困难';
+
+                item.innerHTML = `
+                    <div class="rank">${rankIcon}</div>
+                    <div class="player-info">
+                        <div class="player-name">${record.name}${isCurrentPlayer ? ' (你)' : ''}</div>
+                        <div class="player-score">${record.score} 分<span class="difficulty-badge">${difficultyBadge}</span></div>
+                    </div>
+                `;
+
+                list.appendChild(item);
+            });
+        }
+
+        panel.style.display = 'block';
+    }
+
+    // 设置难度
+    setDifficulty(difficulty) {
+        this.difficulty = difficulty;
+        const settings = this.difficultySettings[difficulty];
+        this.enemySpawnRate = settings.spawnRate;
+        this.maxEnemies = settings.maxEnemies;
+        this.difficultyMultiplier = settings.scoreMultiplier;
+    }
+
+    // 暂停/恢复游戏
+    togglePause() {
+        this.gamePaused = !this.gamePaused;
+        const pauseMenu = document.getElementById('pause-menu');
+
+        if (this.gamePaused) {
+            pauseMenu.style.display = 'flex';
+        } else {
+            pauseMenu.style.display = 'none';
+        }
+    }
+
+    // 恢复游戏
+    resumeGame() {
+        this.gamePaused = false;
+        document.getElementById('pause-menu').style.display = 'none';
+    }
+
+    // 重新开始游戏
+    restartGame() {
+        this.gamePaused = false;
+        document.getElementById('pause-menu').style.display = 'none';
+        this.gameRunning = false;
+        cancelAnimationFrame(this.animationId);
+        this.stopBGM();
+
+        // 显示难度选择界面
+        document.getElementById('difficulty-screen').style.display = 'flex';
     }
 
     loadEnemyImage() {
@@ -900,10 +1080,8 @@ class ShootingGame {
 
     // 初始化音频系统
     initAudio() {
-        // 创建背景音乐（使用项目中的歌曲）
-        this.sounds.bgm = new Audio('./歌曲/2黄河在呐喊.mp3');
-        this.sounds.bgm.loop = true;
-        this.sounds.bgm.volume = 0.3; // 背景音乐音量30%
+        // 创建背景音乐（从播放列表中加载第一首）
+        this.loadBGM(0);
 
         // 加载真实音效文件
         this.sounds.shoot = new Audio('./audio/射击.mp3');
@@ -924,7 +1102,56 @@ class ShootingGame {
             this.audioContext = new AudioContext();
         }
 
-        console.log('音频系统初始化完成 - 已加载4个真实音效文件');
+        console.log('音频系统初始化完成 - 已加载4个真实音效文件 + ' + this.bgmPlaylist.length + '首背景音乐');
+    }
+
+    // 加载指定索引的背景音乐
+    loadBGM(index) {
+        // 停止当前音乐
+        if (this.sounds.bgm) {
+            this.sounds.bgm.pause();
+            this.sounds.bgm.removeEventListener('ended', this.handleBGMEnded);
+        }
+
+        // 加载新音乐
+        this.currentBgmIndex = index % this.bgmPlaylist.length;
+        this.sounds.bgm = new Audio(this.bgmPlaylist[this.currentBgmIndex]);
+        this.sounds.bgm.volume = 0.3; // 背景音乐音量30%
+
+        // 监听音乐播放结束事件，自动切换下一首
+        this.handleBGMEnded = () => {
+            this.playNextBGM();
+        };
+        this.sounds.bgm.addEventListener('ended', this.handleBGMEnded);
+    }
+
+    // 播放下一首背景音乐
+    playNextBGM() {
+        const nextIndex = (this.currentBgmIndex + 1) % this.bgmPlaylist.length;
+        this.loadBGM(nextIndex);
+        if (this.musicEnabled && this.gameRunning) {
+            this.playBGM();
+        }
+    }
+
+    // 更新音乐信息显示
+    updateMusicInfo() {
+        const musicInfo = document.getElementById('music-info');
+        const musicTitle = document.getElementById('current-music-title');
+        const musicCounter = document.getElementById('music-counter');
+
+        if (musicTitle && musicCounter) {
+            musicTitle.textContent = this.bgmTitles[this.currentBgmIndex];
+            musicCounter.textContent = `${this.currentBgmIndex + 1}/${this.bgmPlaylist.length}`;
+        }
+
+        // 显示音乐信息3秒后淡出
+        if (musicInfo) {
+            musicInfo.classList.add('show');
+            setTimeout(() => {
+                musicInfo.classList.remove('show');
+            }, 3000);
+        }
     }
 
     // 播放音效
@@ -1059,14 +1286,64 @@ class ShootingGame {
 
         // 鼠标点击 - 射击
         this.canvas.addEventListener('click', (e) => {
-            if (this.gameRunning) {
+            if (this.gameRunning && !this.gamePaused) {
                 this.shoot(e.clientX, e.clientY);
             }
         });
 
-        // 开始按钮
+        // ESC键暂停
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.gameRunning) {
+                this.togglePause();
+            }
+        });
+
+        // 难度选择
+        const difficultyOptions = document.querySelectorAll('.difficulty-option');
+        difficultyOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                const difficulty = option.getAttribute('data-difficulty');
+                this.setDifficulty(difficulty);
+                document.getElementById('difficulty-screen').style.display = 'none';
+                this.startGame();
+            });
+        });
+
+        // 暂停菜单按钮
+        document.getElementById('resume-button').addEventListener('click', () => {
+            this.resumeGame();
+        });
+
+        document.getElementById('restart-button').addEventListener('click', () => {
+            this.restartGame();
+        });
+
+        document.getElementById('exit-button').addEventListener('click', () => {
+            window.location.href = 'index.html';
+        });
+
+        // 暂停按钮
+        document.getElementById('pause-button').addEventListener('click', () => {
+            if (this.gameRunning) {
+                this.togglePause();
+            }
+        });
+
+        // 排行榜按钮
+        document.getElementById('rankings-button').addEventListener('click', () => {
+            this.playSound('button');
+            this.showRankings();
+        });
+
+        document.getElementById('close-rankings').addEventListener('click', () => {
+            this.playSound('button');
+            document.getElementById('rankings-panel').style.display = 'none';
+        });
+
+        // 开始按钮 - 显示难度选择
         document.getElementById('start-button').addEventListener('click', () => {
-            this.startGame();
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('difficulty-screen').style.display = 'flex';
         });
 
         // 成就按钮
@@ -1102,8 +1379,8 @@ class ShootingGame {
     }
 
     startGame() {
-        document.getElementById('start-screen').style.display = 'none';
         this.gameRunning = true;
+        this.gamePaused = false;
         this.score = 0;
         this.health = 100;
         this.enemies = [];
@@ -1118,6 +1395,8 @@ class ShootingGame {
         this.updateUI();
         this.updateComboDisplay();
         this.renderAchievementsList();
+        this.gamesPlayed++;
+        this.saveGameStats();
 
         // 播放背景音乐
         this.playBGM();
@@ -1141,7 +1420,9 @@ class ShootingGame {
 
             if (distance < enemy.size) {
                 // 击中敌人
-                this.score += 10;
+                const baseScore = 10;
+                this.score += Math.floor(baseScore * this.difficultyMultiplier);
+                this.totalScore += Math.floor(baseScore * this.difficultyMultiplier);
                 this.comboCount++;
                 this.comboTimer = 0;
                 this.perfectKills++;
@@ -1227,13 +1508,17 @@ class ShootingGame {
         const randomTargetX = this.canvas.width * (0.3 + Math.random() * 0.4);
         const randomTargetY = this.canvas.height * (0.3 + Math.random() * 0.4);
 
+        // 根据难度设置敌人速度
+        const settings = this.difficultySettings[this.difficulty];
+        const baseSpeed = settings.enemySpeed;
+
         this.enemies.push({
             x: x,
             y: y,
             targetX: randomTargetX,
             targetY: randomTargetY,
             size: 30,
-            speed: (0.2 + Math.random() * 0.2), // 降低速度到原来的60%左右
+            speed: baseSpeed * (0.8 + Math.random() * 0.4), // 添加一些随机性
             attackTimer: 0,
             attackInterval: 3000, // 每3秒攻击一次
             hasReachedTarget: false, // 是否已到达目标位置
@@ -1352,10 +1637,14 @@ class ShootingGame {
         // 停止背景音乐
         this.stopBGM();
 
+        // 更新排行榜
+        this.updateRankings();
+        this.saveGameStats();
+
         const gameOverScreen = document.getElementById('game-over-screen');
         const finalScore = document.getElementById('final-score');
 
-        finalScore.textContent = `最终得分: ${this.score}`;
+        finalScore.textContent = `最终得分: ${this.score} (难度: ${this.difficulty === 'easy' ? '简单' : this.difficulty === 'normal' ? '普通' : '困难'})`;
         gameOverScreen.style.display = 'flex';
     }
 
@@ -1565,7 +1854,7 @@ class ShootingGame {
     }
 
     update(deltaTime) {
-        if (!this.gameRunning) return;
+        if (!this.gameRunning || this.gamePaused) return;
 
         // 更新存活时间
         this.surviveTime += deltaTime;

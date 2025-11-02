@@ -475,6 +475,291 @@
             display: none;
             z-index: 10;
         }
+        /* 暂停菜单 */
+        
+        #pause-menu {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1005;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        
+        #pause-menu h2 {
+            color: #ffd700;
+            font-size: 48px;
+            margin-bottom: 40px;
+        }
+        
+        #pause-menu .pause-button {
+            padding: 15px 50px;
+            margin: 10px;
+            font-size: 20px;
+            background: rgba(198, 40, 40, 0.9);
+            color: white;
+            border: 2px solid #ffd700;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        #pause-menu .pause-button:hover {
+            background: #c62828;
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+        /* 难度选择界面 */
+        
+        #difficulty-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 1004;
+        }
+        
+        #difficulty-screen h2 {
+            color: #ffd700;
+            font-size: 42px;
+            margin-bottom: 30px;
+        }
+        
+        .difficulty-option {
+            padding: 20px 60px;
+            margin: 15px;
+            font-size: 24px;
+            background: rgba(198, 40, 40, 0.8);
+            color: white;
+            border: 3px solid #ffd700;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-width: 300px;
+            text-align: center;
+        }
+        
+        .difficulty-option:hover {
+            background: #c62828;
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+        }
+        
+        .difficulty-option .diff-name {
+            font-weight: bold;
+            font-size: 28px;
+        }
+        
+        .difficulty-option .diff-desc {
+            font-size: 16px;
+            color: #ffd700;
+            margin-top: 8px;
+        }
+        /* 排行榜面板 */
+        
+        #rankings-panel {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 600px;
+            max-height: 70vh;
+            overflow-y: auto;
+            background: rgba(22, 33, 62, 0.98);
+            border: 3px solid #ffd700;
+            border-radius: 20px;
+            padding: 30px;
+            z-index: 1003;
+        }
+        
+        #rankings-panel h2 {
+            color: #ffd700;
+            text-align: center;
+            margin-top: 0;
+            font-size: 32px;
+        }
+        
+        .ranking-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin: 10px 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            border-left: 5px solid #666;
+        }
+        
+        .ranking-item.rank-1 {
+            border-left-color: #ffd700;
+            background: rgba(255, 215, 0, 0.15);
+        }
+        
+        .ranking-item.rank-2 {
+            border-left-color: #c0c0c0;
+            background: rgba(192, 192, 192, 0.15);
+        }
+        
+        .ranking-item.rank-3 {
+            border-left-color: #cd7f32;
+            background: rgba(205, 127, 50, 0.15);
+        }
+        
+        .ranking-item.current-player {
+            background: rgba(198, 40, 40, 0.3);
+            border: 2px solid #c62828;
+        }
+        
+        .ranking-item .rank {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ffd700;
+            margin-right: 20px;
+            min-width: 50px;
+            text-align: center;
+        }
+        
+        .ranking-item .player-info {
+            flex: 1;
+        }
+        
+        .ranking-item .player-name {
+            color: #fff;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .ranking-item .player-score {
+            color: #ffd700;
+            font-size: 18px;
+        }
+        
+        .ranking-item .difficulty-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            margin-left: 8px;
+            font-size: 12px;
+            border-radius: 4px;
+            background: rgba(255, 215, 0, 0.2);
+            color: #ffd700;
+        }
+        
+        #close-rankings {
+            display: block;
+            margin: 20px auto 0;
+            padding: 10px 30px;
+            background: #c62828;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        #close-rankings:hover {
+            background: #e53935;
+        }
+        
+        #rankings-button {
+            position: absolute;
+            top: 140px;
+            right: 20px;
+            padding: 10px 20px;
+            background: rgba(198, 40, 40, 0.8);
+            color: white;
+            border: 2px solid #c62828;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            z-index: 1001;
+            transition: all 0.3s;
+        }
+        
+        #rankings-button:hover {
+            background: #c62828;
+            transform: scale(1.05);
+        }
+        
+        #pause-button {
+            position: absolute;
+            top: 140px;
+            left: 20px;
+            padding: 10px 20px;
+            background: rgba(255, 215, 0, 0.2);
+            color: #ffd700;
+            border: 2px solid #ffd700;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            z-index: 1001;
+            transition: all 0.3s;
+        }
+        
+        #pause-button:hover {
+            background: rgba(255, 215, 0, 0.4);
+            transform: scale(1.05);
+        }
+        /* 音乐信息显示 */
+        
+        #music-info {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: #ffd700;
+            border: 2px solid rgba(255, 215, 0, 0.5);
+            border-radius: 20px;
+            font-size: 14px;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        
+        #music-info.show {
+            opacity: 1;
+        }
+        
+        #music-info .music-icon {
+            font-size: 18px;
+            animation: musicPulse 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes musicPulse {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+        }
+        
+        #music-info .music-title {
+            font-weight: bold;
+        }
+        
+        #music-info .music-counter {
+            color: #fff;
+            font-size: 12px;
+            opacity: 0.8;
+        }
     </style>
 </head>
 
@@ -485,6 +770,8 @@
 
         <button id="back-button" onclick="window.location.href='index.html'">返回主页</button>
         <button id="achievements-button">🏆 成就徽章</button>
+        <button id="rankings-button">🏅 排行榜</button>
+        <button id="pause-button">⏸️ 暂停</button>
         <button id="sound-toggle" style="position: absolute; top: 20px; left: 50%; transform: translateX(-80px); padding: 10px 20px; background: rgba(198, 40, 40, 0.8); color: white; border: 2px solid #c62828; border-radius: 10px; cursor: pointer; font-size: 16px; z-index: 1001;">🔊 音效</button>
         <button id="music-toggle" style="position: absolute; top: 20px; left: 50%; transform: translateX(80px); padding: 10px 20px; background: rgba(198, 40, 40, 0.8); color: white; border: 2px solid #c62828; border-radius: 10px; cursor: pointer; font-size: 16px; z-index: 1001;">🎵 音乐</button>
 
@@ -495,6 +782,12 @@
 
         <div id="combo-counter" style="display: none;">
             连杀: <span id="combo-count">0</span>
+        </div>
+
+        <div id="music-info">
+            <span class="music-icon">🎵</span>
+            <span class="music-title" id="current-music-title">正在加载...</span>
+            <span class="music-counter" id="music-counter">1/6</span>
         </div>
 
         <div id="combo-display"></div>
@@ -519,6 +812,35 @@
             <button id="close-achievements">关闭</button>
         </div>
 
+        <div id="rankings-panel">
+            <h2>🏅 排行榜 TOP 10</h2>
+            <div id="rankings-list"></div>
+            <button id="close-rankings">关闭</button>
+        </div>
+
+        <div id="pause-menu">
+            <h2>⏸️ 游戏暂停</h2>
+            <button class="pause-button" id="resume-button">继续游戏</button>
+            <button class="pause-button" id="restart-button">重新开始</button>
+            <button class="pause-button" id="exit-button">退出游戏</button>
+        </div>
+
+        <div id="difficulty-screen">
+            <h2>🎯 选择难度</h2>
+            <div class="difficulty-option" data-difficulty="easy">
+                <div class="diff-name">🌟 简单</div>
+                <div class="diff-desc">敌人移动慢 | 生成频率低 | 得分×1</div>
+            </div>
+            <div class="difficulty-option" data-difficulty="normal">
+                <div class="diff-name">⚡ 普通</div>
+                <div class="diff-desc">敌人移动适中 | 生成频率中等 | 得分×1.5</div>
+            </div>
+            <div class="difficulty-option" data-difficulty="hard">
+                <div class="diff-name">🔥 困难</div>
+                <div class="diff-desc">敌人移动快 | 生成频率高 | 得分×2</div>
+            </div>
+        </div>
+
         <div id="start-screen">
             <h1>🎯 趣味射击游戏</h1>
             <p>📌 游戏说明：</p>
@@ -538,8 +860,10 @@
         <div id="game-over-screen">
             <h1>游戏结束</h1>
             <p id="final-score"></p>
-            <button class="game-button" onclick="window.location.href='index.html'">重新开始</button>
-            <button class="game-button" onclick="window.location.href='index.html'">返回主页</button>
+            <button class="game-button" onclick="location.reload()">重新开始</button>
+            <button class="game-button" onclick="game.showRankings()" style="background: #ffd700; color: #000;">🏅 查看排行榜</button>
+            <button class="game-button" onclick="window.location.href='profile.html'" style="background: #4caf50;">👤 个人中心</button>
+            <button class="game-button" onclick="window.location.href='index.html'" style="background: #666;">返回主页</button>
         </div>
     </div>
 
