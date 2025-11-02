@@ -13,12 +13,14 @@
         "抗战精神"
       ],
       "coverImage": "",
-      "votes": 0,
-      "views": 1,
+      "votes": 1,
+      "views": 5,
       "status": "published",
       "featured": false,
       "createdAt": "2025-11-02T05:48:43.405Z",
-      "voters": []
+      "voters": [
+        "user2"
+      ]
     }
   ]
 }

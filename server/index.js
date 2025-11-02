@@ -1038,6 +1038,11 @@ app.post('/api/contests/vote', (req, res) => {
         return res.status(404).json({ ok: false, error: '作品不存在' });
     }
 
+    // 初始化voters数组
+    if (!submission.voters) {
+        submission.voters = [];
+    }
+
     // 检查是否已投票
     if (submission.voters.includes(authUser)) {
         return res.status(400).json({ ok: false, error: '您已经投过票了' });
@@ -1046,6 +1051,38 @@ app.post('/api/contests/vote', (req, res) => {
     // 投票
     submission.votes = (submission.votes || 0) + 1;
     submission.voters.push(authUser);
+    saveSubmissions(submissions);
+
+    res.json({ ok: true, votes: submission.votes });
+});
+
+// 取消投票（需登录）
+app.post('/api/contests/unvote', (req, res) => {
+    const authUser = decodeHeaderVal(req.headers['x-auth-user']);
+    if (!authUser) {
+        return res.status(401).json({ ok: false, error: '请先登录' });
+    }
+
+    const { submissionId } = req.body || {};
+    if (!submissionId) {
+        return res.status(400).json({ ok: false, error: '缺少作品ID' });
+    }
+
+    const submissions = loadSubmissions();
+    const submission = submissions.find(s => s.id === submissionId);
+
+    if (!submission) {
+        return res.status(404).json({ ok: false, error: '作品不存在' });
+    }
+
+    // 检查是否已投票
+    if (!submission.voters || !submission.voters.includes(authUser)) {
+        return res.status(400).json({ ok: false, error: '您还没有投过票' });
+    }
+
+    // 取消投票
+    submission.votes = Math.max(0, (submission.votes || 0) - 1);
+    submission.voters = submission.voters.filter(v => v !== authUser);
     saveSubmissions(submissions);
 
     res.json({ ok: true, votes: submission.votes });
