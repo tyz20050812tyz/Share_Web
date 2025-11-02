@@ -20,7 +20,8 @@
       "createdAt": "2025-11-02T05:48:43.405Z",
       "voters": [
         "user2"
-      ]
+      ],
+      "updatedAt": "2025-11-02T11:15:19.378Z"
     },
     {
       "id": "id_1762065675172_ld4huzl8v",
@@ -36,7 +37,7 @@
       ],
       "coverImage": "",
       "votes": 1,
-      "views": 2,
+      "views": 3,
       "status": "published",
       "featured": false,
       "createdAt": "2025-11-02T06:41:15.172Z",

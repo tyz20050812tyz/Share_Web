@@ -1,0 +1,18 @@
+[
+  {
+    "id": "msg_1762082341336_s65equi",
+    "title": "测试1",
+    "content": "测试1",
+    "author": "佟雨泽",
+    "role": "admin",
+    "createdAt": "2025-11-02T11:19:01.336Z"
+  },
+  {
+    "id": "msg_1762082965910_9e0kzmd",
+    "title": "测试2",
+    "content": "测试2",
+    "author": "user2",
+    "role": "user",
+    "createdAt": "2025-11-02T11:29:25.910Z"
+  }
+]

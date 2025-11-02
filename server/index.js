@@ -1173,6 +1173,125 @@ app.post('/api/submissions/:id/feature', (req, res) => {
     res.json({ ok: true, submission });
 });
 
+// ===== 留言箱 API =====
+
+const GUESTBOOK_PATH = path.resolve(__dirname, 'guestbook.json');
+
+// 加载留言数据
+function loadGuestbook() {
+    try {
+        if (fs.existsSync(GUESTBOOK_PATH)) {
+            const raw = fs.readFileSync(GUESTBOOK_PATH, 'utf8');
+            const data = JSON.parse(raw);
+            if (Array.isArray(data)) return data;
+        }
+    } catch (e) {
+        console.error('加载留言箱数据失败:', e.message);
+    }
+    return [];
+}
+
+// 保存留言数据
+function saveGuestbook(messages) {
+    try {
+        fs.writeFileSync(GUESTBOOK_PATH, JSON.stringify(messages, null, 2), 'utf8');
+    } catch (e) {
+        console.error('保存留言箱数据失败:', e.message);
+    }
+}
+
+// 获取留言列表（按时间倒序）
+app.get('/api/guestbook/list', (req, res) => {
+    try {
+        const messages = loadGuestbook();
+        // 按创建时间倒序排列
+        const sorted = messages.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        res.json({ ok: true, messages: sorted });
+    } catch (error) {
+        res.status(500).json({ ok: false, error: error.message });
+    }
+});
+
+// 提交留言
+app.post('/api/guestbook/submit', (req, res) => {
+    try {
+        const { title, content, author, role } = req.body || {};
+
+        // 验证必填字段
+        if (!title || !content || !author) {
+            return res.status(400).json({ ok: false, error: '缺少必填字段' });
+        }
+
+        // 验证标题长度
+        if (title.length > 50) {
+            return res.status(400).json({ ok: false, error: '留言标题不能超过50字' });
+        }
+
+        // 验证内容长度
+        if (content.length > 500) {
+            return res.status(400).json({ ok: false, error: '留言内容不能超过500字' });
+        }
+
+        // 生成唯一ID
+        const id = 'msg_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9);
+
+        // 创建留言对象
+        const message = {
+            id,
+            title: String(title).trim(),
+            content: String(content).trim(),
+            author: String(author).trim(),
+            role: role || 'user',
+            createdAt: new Date().toISOString()
+        };
+
+        // 保存留言
+        const messages = loadGuestbook();
+        messages.push(message);
+        saveGuestbook(messages);
+
+        res.json({ ok: true, message });
+    } catch (error) {
+        console.error('提交留言失败:', error);
+        res.status(500).json({ ok: false, error: error.message });
+    }
+});
+
+// 删除留言（作者本人或管理员）
+app.delete('/api/guestbook/delete/:id', (req, res) => {
+    try {
+        const { id } = req.params;
+        const { user, role } = req.body || {};
+
+        if (!user) {
+            return res.status(401).json({ ok: false, error: '未登录' });
+        }
+
+        const messages = loadGuestbook();
+        const messageIndex = messages.findIndex(m => m.id === id);
+
+        if (messageIndex === -1) {
+            return res.status(404).json({ ok: false, error: '留言不存在' });
+        }
+
+        const message = messages[messageIndex];
+
+        // 检查权限：管理员或作者本人
+        if (role !== 'admin' && message.author !== user) {
+            return res.status(403).json({ ok: false, error: '无权删除此留言' });
+        }
+
+        // 删除留言
+        messages.splice(messageIndex, 1);
+        saveGuestbook(messages);
+
+        res.json({ ok: true, message: '删除成功' });
+    } catch (error) {
+        console.error('删除留言失败:', error);
+        res.status(500).json({ ok: false, error: error.message });
+    }
+});
+
 app.listen(PORT, async() => {
     console.log(`Server started on http://localhost:${PORT}`);
     console.log('服务器功能：');
@@ -1182,6 +1301,7 @@ app.listen(PORT, async() => {
     console.log('- 历史上的今天：事件管理');
     console.log('- 创作竞赛：竞赛/投稿/投票');
     console.log('- 答题排行榜：多用户排名系统');
+    console.log('- 用户留言箱：留言发表/管理');
     try {
         const { default: open } = await
         import ('open');

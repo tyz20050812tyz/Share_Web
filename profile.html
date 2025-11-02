@@ -81,6 +81,9 @@
                 <button class="tab-btn" data-tab="challenge" style="padding:12px 24px;background:transparent;border:none;border-bottom:3px solid transparent;cursor:pointer;font-size:16px;font-weight:600;color:#666;">
                     📝 答题排行
                 </button>
+                <button class="tab-btn" data-tab="guestbook" style="padding:12px 24px;background:transparent;border:none;border-bottom:3px solid transparent;cursor:pointer;font-size:16px;font-weight:600;color:#666;">
+                    📝 我的留言
+                </button>
             </div>
 
             <!-- 游戏战绩标签 -->
@@ -101,6 +104,50 @@
             <!-- 答题排行标签 -->
             <div class="tab-content" id="tab-challenge" style="display:none;">
                 <div id="challenge-stats"></div>
+            </div>
+
+            <!-- 我的留言标签 -->
+            <div class="tab-content" id="tab-guestbook" style="display:none;">
+                <!-- 留言表单 -->
+                <div style="background:#f9f9f9;padding:20px;border-radius:12px;margin-bottom:30px;">
+                    <h3 style="margin:0 0 20px 0;color:#c62828;font-size:20px;">✒️ 发表留言</h3>
+                    <form id="messageForm">
+                        <div style="margin-bottom:15px;">
+                            <label style="display:block;font-weight:600;margin-bottom:8px;color:#333;">留言标题 *</label>
+                            <input type="text" id="messageTitle" placeholder="请输入留言标题（最多50字）" maxlength="50" required style="width:100%;padding:12px;border:2px solid #e0e0e0;border-radius:8px;font-size:15px;box-sizing:border-box;">
+                        </div>
+                        <div style="margin-bottom:15px;">
+                            <label style="display:block;font-weight:600;margin-bottom:8px;color:#333;">留言内容 *</label>
+                            <textarea id="messageContent" placeholder="请输入留言内容（最多500字）" maxlength="500" required style="width:100%;min-height:120px;padding:12px;border:2px solid #e0e0e0;border-radius:8px;font-size:15px;resize:vertical;box-sizing:border-box;font-family:inherit;"></textarea>
+                            <div style="text-align:right;font-size:12px;color:#999;margin-top:5px;">
+                                <span id="charCount">0</span> / 500
+                            </div>
+                        </div>
+                        <button type="submit" id="submitBtn" style="background:linear-gradient(135deg,#c62828,#e53935);color:white;border:none;padding:12px 30px;border-radius:8px;font-size:16px;font-weight:bold;cursor:pointer;">
+                            📮 提交留言
+                        </button>
+                    </form>
+                </div>
+
+                <!-- 留言列表 -->
+                <div id="userMessageSection">
+                    <div style="padding:20px;background:rgba(198,40,40,0.05);border-radius:12px;text-align:center;">
+                        <p style="margin:0;color:#666;font-size:15px;line-height:1.8;">💡 感谢您的留言！您的宝贵意见将提交给管理员审阅。</p>
+                    </div>
+                </div>
+
+                <!-- 管理员留言管理（仅管理员可见） -->
+                <div id="adminGuestbookSection" style="display:none;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding:20px 0;border-top:2px solid #eee;">
+                        <h3 style="margin:0;color:#333;font-size:20px;">🛡️ 用户留言管理</h3>
+                        <div style="background:#ff9800;color:white;padding:6px 16px;border-radius:20px;font-size:14px;font-weight:600;">
+                            共 <span id="allMessageCount">0</span> 条留言
+                        </div>
+                    </div>
+                    <div id="allMessagesList">
+                        <div style="text-align:center;padding:40px;color:#999;">加载中...</div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -260,6 +307,216 @@
             }
         }
 
+        // ===== 留言箱功能 =====
+        let allMessages = [];
+        let isSubmitting = false;
+
+        // 字符计数
+        function updateCharCount() {
+            const content = document.getElementById('messageContent');
+            const counter = document.getElementById('charCount');
+            if (content && counter) {
+                counter.textContent = content.value.length;
+                counter.style.color = content.value.length > 450 ? '#f44336' : '#999';
+            }
+        }
+
+        // 初始化留言箱显示（根据角色）
+        async function initGuestbook() {
+            const userRole = localStorage.getItem('login_role');
+
+            if (userRole === 'admin') {
+                // 管理员：显示管理区域，隐藏普通用户提示
+                document.getElementById('userMessageSection').style.display = 'none';
+                document.getElementById('adminGuestbookSection').style.display = 'block';
+                await loadAllMessages();
+            } else {
+                // 普通用户：显示提示，隐藏管理区域
+                document.getElementById('userMessageSection').style.display = 'block';
+                document.getElementById('adminGuestbookSection').style.display = 'none';
+            }
+        }
+
+        // 加载所有留言（仅管理员）
+        async function loadAllMessages() {
+            try {
+                const response = await fetch('/api/guestbook/list');
+                const data = await response.json();
+
+                if (data.ok) {
+                    allMessages = data.messages || [];
+                    renderAllMessages();
+                }
+            } catch (error) {
+                console.error('加载留言失败:', error);
+                document.getElementById('allMessagesList').innerHTML = '<div style="text-align:center;padding:40px;color:#f44336;">加载失败，请刷新页面重试</div>';
+            }
+        }
+
+        // 渲染所有留言（仅管理员）
+        function renderAllMessages() {
+            const container = document.getElementById('allMessagesList');
+            const counter = document.getElementById('allMessageCount');
+
+            counter.textContent = allMessages.length;
+
+            if (allMessages.length === 0) {
+                container.innerHTML = '<div style="text-align:center;padding:40px;color:#999;">💭 暂无用户留言</div>';
+                return;
+            }
+
+            container.innerHTML = allMessages.map(msg => {
+                const isAdmin = msg.role === 'admin';
+                return `
+                    <div style="background:#fff;border:2px solid #f0f0f0;border-radius:12px;padding:20px;margin-bottom:15px;transition:all 0.3s;position:relative;"
+                         onmouseover="this.style.borderColor='#c62828';this.style.boxShadow='0 4px 12px rgba(198,40,40,0.1)'"
+                         onmouseout="this.style.borderColor='#f0f0f0';this.style.boxShadow='none'">
+                        <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:15px;">
+                            <div style="flex:1;">
+                                <div style="font-size:18px;font-weight:bold;color:#333;margin-bottom:8px;">${escapeHtml(msg.title)}</div>
+                                <div style="display:flex;gap:15px;font-size:13px;color:#666;flex-wrap:wrap;">
+                                    <span>👤 <span style="background:${isAdmin ? 'linear-gradient(135deg,#ff9800,#fb8c00)' : 'linear-gradient(135deg,#c62828,#e53935)'};color:white;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:bold;">${escapeHtml(msg.author)}</span></span>
+                                    <span>🕒 ${formatTime(msg.createdAt)}</span>
+                                </div>
+                            </div>
+                            <button onclick="deleteAdminMessage('${msg.id}')" 
+                                    style="background:#f44336;color:white;border:none;padding:6px 12px;border-radius:6px;font-size:13px;cursor:pointer;transition:all 0.3s;"
+                                    onmouseover="this.style.background='#d32f2f'"
+                                    onmouseout="this.style.background='#f44336'">
+                                🗑️ 删除
+                            </button>
+                        </div>
+                        <div style="color:#555;line-height:1.8;white-space:pre-wrap;word-wrap:break-word;background:rgba(0,0,0,0.02);padding:15px;border-radius:8px;">${escapeHtml(msg.content)}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 提交留言
+        async function submitMessage(e) {
+            e.preventDefault();
+
+            if (isSubmitting) return;
+
+            const title = document.getElementById('messageTitle').value.trim();
+            const content = document.getElementById('messageContent').value.trim();
+            const userName = localStorage.getItem('login_user');
+            const userRole = localStorage.getItem('login_role');
+
+            if (!title || !content) {
+                alert('请填写完整的留言信息！');
+                return;
+            }
+
+            isSubmitting = true;
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = '提交中...';
+
+            try {
+                const response = await fetch('/api/guestbook/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        title,
+                        content,
+                        author: userName,
+                        role: userRole
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.ok) {
+                    alert('✅ 留言发表成功！感谢您的宝贵意见！');
+                    document.getElementById('messageTitle').value = '';
+                    document.getElementById('messageContent').value = '';
+                    updateCharCount();
+
+                    // 如果是管理员，重新加载留言列表
+                    if (userRole === 'admin') {
+                        await loadAllMessages();
+                    }
+                } else {
+                    alert('❌ 提交失败：' + (data.error || '未知错误'));
+                }
+            } catch (error) {
+                console.error('提交留言失败:', error);
+                alert('❌ 提交失败：网络错误或服务器异常');
+            } finally {
+                isSubmitting = false;
+                submitBtn.disabled = false;
+                submitBtn.textContent = '📮 提交留言';
+            }
+        }
+
+        // 管理员删除留言
+        window.deleteAdminMessage = async function(messageId) {
+            if (!confirm('确定要删除这条留言吗？')) return;
+
+            const userName = localStorage.getItem('login_user');
+            const userRole = localStorage.getItem('login_role');
+
+            if (userRole !== 'admin') {
+                alert('您没有权限删除留言！');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/guestbook/delete/${messageId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        user: userName,
+                        role: userRole
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.ok) {
+                    alert('✅ 删除成功！');
+                    await loadAllMessages();
+                } else {
+                    alert('❌ 删除失败：' + (data.error || '未知错误'));
+                }
+            } catch (error) {
+                console.error('删除留言失败:', error);
+                alert('❌ 删除失败：网络错误或服务器异常');
+            }
+        };
+
+        // HTML转义
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // 时间格式化
+        function formatTime(timestamp) {
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diff = now - date;
+
+            if (diff < 60000) return '刚刚';
+            if (diff < 3600000) return `${Math.floor(diff / 60000)}分钟前`;
+            if (diff < 86400000) return `${Math.floor(diff / 3600000)}小时前`;
+            if (diff < 604800000) return `${Math.floor(diff / 86400000)}天前`;
+
+            return date.toLocaleString('zh-CN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
         // 页面加载
         window.addEventListener('load', () => {
             loadUserProfile();
@@ -267,6 +524,21 @@
             loadContestData();
             loadGameData();
             loadChallengeData();
+
+            // 绑定留言表单事件
+            const messageForm = document.getElementById('messageForm');
+            const messageContent = document.getElementById('messageContent');
+
+            if (messageForm) {
+                messageForm.addEventListener('submit', submitMessage);
+            }
+
+            if (messageContent) {
+                messageContent.addEventListener('input', updateCharCount);
+            }
+
+            // 初始化留言箱（根据用户角色）
+            initGuestbook();
         });
     </script>
 </body>
