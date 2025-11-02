@@ -220,16 +220,38 @@ document.addEventListener('DOMContentLoaded', () => {
         backToStep2.addEventListener('click', () => goToStep(2));
     }
 
-    // 回车键支持
-    accountInput ? .addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') step1Btn ? .click();
-    });
+    // 回车键支持 (旧版实现：移除可选链，使用显式判断)
 
-    oldPasswordInput ? .addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') step2Btn ? .click();
-    });
+    // 1. 账号输入框的回车支持
+    if (typeof accountInput !== 'undefined' && accountInput !== null) {
+        accountInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                if (typeof step1Btn !== 'undefined' && step1Btn !== null) {
+                    step1Btn.click();
+                }
+            }
+        });
+    }
 
-    confirmPasswordInput ? .addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') resetBtn ? .click();
-    });
+    // 2. 旧密码输入框的回车支持
+    if (typeof oldPasswordInput !== 'undefined' && oldPasswordInput !== null) {
+        oldPasswordInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                if (typeof step2Btn !== 'undefined' && step2Btn !== null) {
+                    step2Btn.click();
+                }
+            }
+        });
+    }
+
+    // 3. 确认密码输入框的回车支持
+    if (typeof confirmPasswordInput !== 'undefined' && confirmPasswordInput !== null) {
+        confirmPasswordInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                if (typeof resetBtn !== 'undefined' && resetBtn !== null) {
+                    resetBtn.click();
+                }
+            }
+        });
+    }
 });
