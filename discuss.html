@@ -13,16 +13,23 @@
         <div class="wrap">
             <h1>主题讨论区</h1>
             <nav class="main-nav">
-                <a href="../index.html">主页</a>
+                <a href="index.html">主页</a>
                 <a href="ai.html">智能问答</a>
                 <a href="knowledge.html">知识分享</a>
                 <a href="culture.html">文化传播</a>
-                <a href="discuss.html">讨论区</a>
+                <a href="discuss.html" class="active">讨论区</a>
                 <a href="game.html">趣味射击</a>
                 <a href="models.html">3D展馆</a>
+                <a href="challenge.html" class="nav-challenge">🎯 互动学习</a>
+                <a href="history_today.html" class="nav-history">📅 历史上的今天</a>
+                <a href="contest.html" class="nav-contest">🏆 创作竞赛</a>
+                <a href="contest_works.html">📚 作品展示</a>
+                <a href="profile.html" class="nav-profile">👤 个人中心</a>
             </nav>
         </div>
     </header>
+
+    <div class="user-bar" id="userBar"></div>
 
     <main class="wrap">
         <section class="card">
@@ -144,12 +151,12 @@
 
         <div class="scenarios-actions">
             <p class="tip">提示：数据保存在浏览器本地（localStorage），仅本机可见。建议勿上传敏感信息，如需权威咨询请参考官方渠道。</p>
-            <a href="../index.html" class="btn btn-secondary">← 返回主页</a>
+            <a href="index.html" class="btn btn-secondary">← 返回主页</a>
         </div>
     </main>
 
     <footer class="site-footer">
-        <div class="wrap">© 2025 海南自由贸易港封关运作</div>
+        <div class="wrap">© 2025 以史为鉴，凝聚力量</div>
     </footer>
 
     <!-- 个人主页弹窗 -->
@@ -167,7 +174,7 @@
     <!-- 压缩工具（导出图片为ZIP） -->
     <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
     <!-- 通用脚本（用户栏与退出） -->
-    <script src="../assets/js/main.js"></script>
+    <script src="main.js"></script>
     <script>
         const STORE_KEY = 'forum_posts_v1';
         const PREF_SORT_KEY = 'forum_pref_sort';

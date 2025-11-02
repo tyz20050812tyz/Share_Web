@@ -2,13 +2,19 @@
 const AppState = {
     currentMode: null, // 'quiz' or 'dialogue'
     currentCharacter: null,
-    quizScore: 0,
-    quizCorrect: 0,
-    quizTotal: 0,
+    quizScore: 0, // 本轮得分
+    quizCorrect: 0, // 本轮答对数
+    quizTotal: 0, // 本轮总题数
+    bestScore: 0, // 历史最高分
+    totalGames: 0, // 总局数
+    totalCorrect: 0, // 历史累计答对数
+    totalQuestions: 0, // 历史累计答题数
     currentQuestion: null,
     currentQuestionIndex: 0,
-    timer: 30,
+    timer: 120, // 2分钟总时长
     timerInterval: null,
+    sessionStartTime: null, // 本次答题开始时间
+    sessionActive: false, // 答题会话是否激活
     mistakes: [],
     achievements: {
         bronze: { unlocked: false, icon: '🥉', title: '初出茅庐', desc: '答对10题', target: 10 },
@@ -25,9 +31,9 @@ const HistoricalCharacters = [{
         id: 'yangjingyu',
         name: '杨靖宇',
         title: '东北抗日联军第一路军总司令',
-        avatar: '🎖️',
+        avatar: 'images/杨靖宇.jpg',
         background: `杨靖宇（1905-1940），原名马尚德，河南确山人。中国共产党优秀党员，著名抗日民族英雄，东北抗日联军的主要创建者和领导人之一。1940年2月23日，在吉林蒙江县（今靖宇县）保安村三道崴子与日伪军战斗中壮烈牺牲，年仅35岁。牺牲后，日军残忍解剖其遗体，发现胃里只有枯草、树皮和棉絮，没有一粒粮食，日军将领都为之震惊。`,
-        personality: '坚定不屈、视死如归、艰苦奋斗、忠诚于党',
+        personality: '定不屈、视死如归、艰苦奋斗、忠诚于党',
         systemPrompt: `你现在扮演抗日英雄杨靖宇将军。你是东北抗日联军第一路军总司令，在极端艰苦的环境下坚持抗战，最终壮烈牺牲。
 
 性格特点：
@@ -48,7 +54,7 @@ const HistoricalCharacters = [{
         id: 'zhaoyiman',
         name: '赵一曼',
         title: '东北抗日联军第三军二团政治委员',
-        avatar: '🌸',
+        avatar: 'images/赵一曼.jpg',
         background: `赵一曼（1905-1936），原名李坤泰，四川宜宾人。中国共产党党员，著名的抗日民族女英雄。1935年担任东北抗日联军第三军二团政治委员。1935年11月在与日军作战中负伤被俘。1936年8月2日，在珠河县（今尚志市）英勇就义，年仅31岁。临刑前给儿子写下遗书："母亲对于你没有能尽到教育的责任，实在是遗憾的事情。母亲因为坚决地做了反满抗日的斗争，今天已经到了牺牲的前夕了。"`,
         personality: '英勇顽强、宁死不屈、慈母情怀、民族气节',
         systemPrompt: `你现在扮演抗日女英雄赵一曼同志。你是东北抗日联军的女战士，既是英勇的战士，也是慈爱的母亲。
@@ -71,7 +77,7 @@ const HistoricalCharacters = [{
         id: 'langya',
         name: '狼牙山五壮士',
         title: '八路军晋察冀军区第一军分区第一团七连六班',
-        avatar: '⛰️',
+        avatar: 'images/狼牙山五壮士.jpg',
         background: `狼牙山五壮士是指在抗日战争时期，在河北省保定市易县狼牙山战斗中英勇抗击日军和伪满洲国军的八路军5位英雄。他们是马宝玉、葛振林、宋学义、胡德林、胡福才。1941年9月25日，为掩护群众和连队转移，他们诱敌上山，顽强抗击，子弹打光后，用石块还击，面对步步逼近的敌人，毅然跳崖，马宝玉、胡德林、胡福才壮烈殉国，葛振林、宋学义被山腰树枝挂住，幸免于难。`,
         personality: '英勇无畏、视死如归、顾全大局、保家卫国',
         systemPrompt: `你现在扮演狼牙山五壮士之一的班长马宝玉。你和战友们在狼牙山上为掩护群众和部队转移，与日军浴血奋战，最终跳崖殉国。
@@ -94,7 +100,7 @@ const HistoricalCharacters = [{
         id: 'zuoquan',
         name: '左权',
         title: '八路军副参谋长',
-        avatar: '🎯',
+        avatar: 'images/左权.jpg',
         background: `左权（1905-1942），湖南醴陵人，黄埔军校一期生，后赴苏联莫斯科中山大学、伏龙芝军事学院学习。中国工农红军和八路军高级将领，军事家。抗日战争爆发后，历任八路军副参谋长、八路军前方总部参谋长等职，协助朱德、彭德怀指挥八路军开赴华北抗日前线，粉碎日军多次残酷"扫荡"。1942年5月25日，在山西辽县（今左权县）十字岭突围战斗中壮烈牺牲，是抗战期间八路军牺牲的最高将领。`,
         personality: '智勇双全、运筹帷幄、深谋远虑、以身作则',
         systemPrompt: `你现在扮演八路军副参谋长左权将军。你是黄埔军校和苏联伏龙芝军事学院培养出的优秀军事指挥员，既有丰富的军事理论知识，又有实战经验。
@@ -117,7 +123,7 @@ const HistoricalCharacters = [{
         id: 'zhang',
         name: '张自忠',
         title: '第三十三集团军总司令',
-        avatar: '🛡️',
+        avatar: 'images/张自忠.jpg',
         background: `张自忠（1891-1940），山东临清人，国民革命军上将衔陆军中将，追授二级上将衔。中国抗日战争中牺牲的最高将领。曾参加临沂保卫战、徐州会战、武汉会战、随枣会战与枣宜会战等。1940年5月16日，在湖北宜城南瓜店十里长山战斗中，为国捐躯，壮烈殉国。毛泽东称其为"抗战军人之魂"。`,
         personality: '忠勇报国、临危不惧、以身作则、视死如归',
         systemPrompt: `你现在扮演抗日名将张自忠将军。你是国民革命军第三十三集团军总司令，在抗日战争中身先士卒，最终壮烈殉国，是抗战中牺牲的最高将领。
@@ -138,108 +144,135 @@ const HistoricalCharacters = [{
     }
 ];
 
-// ===== 题库（从游戏中提取） =====
-const QuestionBank = [{
-        question: "中国人民抗日战争胜利的根本原因是？",
-        options: ["国际援助", "全民族团结抗战", "武器装备先进", "地理优势"],
-        correct: 1
-    },
-    {
-        question: "抗日战争中体现的民族精神核心是？",
-        options: ["个人英雄主义", "集体主义", "爱国主义", "国际主义"],
-        correct: 2
-    },
-    {
-        question: "反法西斯战争胜利精神的最重要体现是？",
-        options: ["军事胜利", "民族觉醒与团结", "领土收复", "经济发展"],
-        correct: 1
-    },
-    {
-        question: "抗日战争精神与中华民族伟大复兴的关系是？",
-        options: ["相互独立", "内在统一", "相互矛盾", "互不相关"],
-        correct: 1
-    },
-    {
-        question: "抗战精神为实现民族复兴提供的最重要资源是？",
-        options: ["物质财富", "精神财富", "国际地位", "军事力量"],
-        correct: 1
-    },
-    {
-        question: "中华民族在反法西斯战争中展现的最宝贵品质是？",
-        options: ["技术先进", "资源丰富", "不屈不挠", "地理优势"],
-        correct: 2
-    },
-    {
-        question: "抗日战争胜利对民族复兴的直接推动作用是？",
-        options: ["经济快速发展", "国际地位提升", "军事力量增强", "文化繁荣"],
-        correct: 1
-    },
-    {
-        question: "反法西斯战争胜利精神的时代价值在于？",
-        options: ["历史纪念", "现实指导", "未来规划", "国际交流"],
-        correct: 1
-    },
-    {
-        question: "民族复兴需要继承和发扬的抗战精神品质是？",
-        options: ["封闭保守", "开放包容", "团结奋斗", "个人主义"],
-        correct: 2
-    },
-    {
-        question: "抗日战争中形成的民族凝聚力对当代的启示是？",
-        options: ["各自为政", "团结协作", "竞争对抗", "孤立发展"],
-        correct: 1
-    },
-    {
-        question: "杨靖宇将军牺牲时，日军在其胃中发现了什么？",
-        options: ["粮食", "枯草和树皮", "药品", "肉食"],
-        correct: 1
-    },
-    {
-        question: "赵一曼烈士在临刑前给谁写了遗书？",
-        options: ["丈夫", "儿子", "母亲", "战友"],
-        correct: 1
-    },
-    {
-        question: "狼牙山五壮士的战斗发生在哪个省？",
-        options: ["山西", "河南", "河北", "山东"],
-        correct: 2
-    },
-    {
-        question: "左权将军牺牲时担任什么职务？",
-        options: ["师长", "军长", "副参谋长", "政委"],
-        correct: 2
-    },
-    {
-        question: "张自忠将军是抗战中牺牲的？",
-        options: ["最年轻将领", "最高将领", "第一位将领", "最后一位将领"],
-        correct: 1
-    },
-    {
-        question: "平型关大捷是哪支部队取得的？",
-        options: ["新四军", "八路军", "中央军", "桂军"],
-        correct: 1
-    },
-    {
-        question: "百团大战的指挥者是？",
-        options: ["朱德", "彭德怀", "林彪", "刘伯承"],
-        correct: 1
-    },
-    {
-        question: "南京大屠杀发生在哪一年？",
-        options: ["1936年", "1937年", "1938年", "1939年"],
-        correct: 1
-    },
-    {
-        question: "中国抗日战争全面爆发的标志是？",
-        options: ["九一八事变", "七七事变", "八一三事变", "一二八事变"],
-        correct: 1
-    },
-    {
-        question: "抗日战争持续了多少年？",
-        options: ["8年", "10年", "14年", "15年"],
-        correct: 2
+// ===== 题库（从游戏中提取，共150题） =====
+// 注：为了避免重复，每次答题会记录已出现的题目索引
+let QuestionBank = []; // 将在加载时从 game.js 复制
+
+// 从 game.js 加载题库
+function loadQuestionBankFromGame() {
+    // 尝试加载 game.js 的题库
+    // 如果加载失败，使用默认题库
+    try {
+        // 检查是否有 window.gameQuestions （从 game.js 导出）
+        if (typeof window.gameQuestions !== 'undefined') {
+            QuestionBank = window.gameQuestions;
+            console.log(`从 game.js加载了 ${QuestionBank.length} 道题目`);
+            return;
+        }
+    } catch (e) {
+        console.warn('无法从 game.js加载题库，使用内置题库', e);
     }
-];
+
+    // 使用内置题库（与game.js保持一致）
+    QuestionBank = [
+        // 反法西斯战争胜利精神相关题目 (1-50题)
+        {
+            question: "中国人民抗日战争胜利的根本原因是？",
+            options: ["国际援助", "全民族团结抗战", "武器装备先进", "地理优势"],
+            correct: 1
+        },
+        {
+            question: "抗日战争中体现的民族精神核心是？",
+            options: ["个人英雄主义", "集体主义", "爱国主义", "国际主义"],
+            correct: 2
+        },
+        {
+            question: "反法西斯战争胜利精神的最重要体现是？",
+            options: ["军事胜利", "民族觉醒与团结", "领土收复", "经济发展"],
+            correct: 1
+        },
+        {
+            question: "抗日战争精神与中华民族伟大复兴的关系是？",
+            options: ["相互独立", "内在统一", "相互矛盾", "互不相关"],
+            correct: 1
+        },
+        {
+            question: "抗战精神为实现民族复兴提供的最重要资源是？",
+            options: ["物质财富", "精神财富", "国际地位", "军事力量"],
+            correct: 1
+        },
+        {
+            question: "中华民族在反法西斯战争中展现的最宝贵品质是？",
+            options: ["技术先进", "资源丰富", "不屈不挠", "地理优势"],
+            correct: 2
+        },
+        {
+            question: "抗日战争胜利对民族复兴的直接推动作用是？",
+            options: ["经济快速发展", "国际地位提升", "军事力量增强", "文化繁荣"],
+            correct: 1
+        },
+        {
+            question: "反法西斯战争胜利精神的时代价值在于？",
+            options: ["历史纪念", "现实指导", "未来规划", "国际交流"],
+            correct: 1
+        },
+        {
+            question: "民族复兴需要继承和发扬的抗战精神品质是？",
+            options: ["封闭保守", "开放包容", "团结奋斗", "个人主义"],
+            correct: 2
+        },
+        {
+            question: "抗日战争中形成的民族凝聚力对当代的启示是？",
+            options: ["各自为政", "团结协作", "竞争对抗", "孤立发展"],
+            correct: 1
+        },
+        {
+            question: "杨靖宇将军牺牲时，日军在其胃中发现了什么？",
+            options: ["粮食", "枯草和树皮", "药品", "肉食"],
+            correct: 1
+        },
+        {
+            question: "赵一曼烈士在临刑前给谁写了遗书？",
+            options: ["丈夫", "儿子", "母亲", "战友"],
+            correct: 1
+        },
+        {
+            question: "狼牙山五壮士的战斗发生在哪个省？",
+            options: ["山西", "河南", "河北", "山东"],
+            correct: 2
+        },
+        {
+            question: "左权将军牺牲时担任什么职务？",
+            options: ["师长", "军长", "副参谋长", "政委"],
+            correct: 2
+        },
+        {
+            question: "张自忠将军是抗战中牺牲的？",
+            options: ["最年轻将领", "最高将领", "第一位将领", "最后一位将领"],
+            correct: 1
+        },
+        {
+            question: "平型关大捷是哪支部队取得的？",
+            options: ["新四军", "八路军", "中央军", "桂军"],
+            correct: 1
+        },
+        {
+            question: "百团大战的指挥者是？",
+            options: ["朱德", "彭德怀", "林彪", "刘伯承"],
+            correct: 1
+        },
+        {
+            question: "南京大屠杀发生在哪一年？",
+            options: ["1936年", "1937年", "1938年", "1939年"],
+            correct: 1
+        },
+        {
+            question: "中国抗日战争全面爆发的标志是？",
+            options: ["九一八事变", "七七事变", "八一三事变", "一二八事变"],
+            correct: 1
+        },
+        {
+            question: "抗日战争持续了多少年？",
+            options: ["8年", "10年", "14年", "15年"],
+            correct: 2
+        }
+    ];
+
+    console.log(`使用内置题库，共 ${QuestionBank.length} 道题目`);
+}
+
+// 在页面加载时加载题库
+loadQuestionBankFromGame();
 
 // ===== 答题挑战功能 =====
 function startQuizChallenge() {
@@ -249,18 +282,132 @@ function startQuizChallenge() {
 
     loadQuizData();
     renderAchievements();
-    renderLeaderboard();
+    loadLeaderboard(); // 从服务器加载排行榜
     renderMistakes();
+
+    // 开始新的答题会话
+    startQuizSession();
+}
+
+function startQuizSession() {
+    // 重置本轮会话数据（得分从0开始）
+    AppState.quizScore = 0;
+    AppState.quizCorrect = 0;
+    AppState.quizTotal = 0;
+    AppState.consecutiveCorrect = 0;
+    AppState.usedQuestions = []; // 重置已使用题目列表，确保每局不重复
+
+    // 设置会话状态
+    AppState.sessionActive = true;
+    AppState.sessionStartTime = Date.now();
+    AppState.timer = 120; // 2分钟
+
+    // 更新显示
+    updateQuizStats();
+
+    // 开始第一题
     nextQuestion();
+
+    // 启动总计时器
+    startSessionTimer();
+}
+
+function startSessionTimer() {
+    if (AppState.timerInterval) {
+        clearInterval(AppState.timerInterval);
+    }
+
+    AppState.timerInterval = setInterval(() => {
+        if (!AppState.sessionActive) {
+            clearInterval(AppState.timerInterval);
+            return;
+        }
+
+        AppState.timer--;
+        updateTimerDisplay();
+
+        if (AppState.timer <= 0) {
+            endQuizSession();
+        }
+    }, 1000);
+}
+
+function updateTimerDisplay() {
+    const minutes = Math.floor(AppState.timer / 60);
+    const seconds = AppState.timer % 60;
+    const timerElement = document.getElementById('timer');
+    timerElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+    // 时间不足30秒时变红提醒
+    if (AppState.timer <= 30) {
+        timerElement.style.color = '#f44336';
+    } else {
+        timerElement.style.color = '#c62828';
+    }
+}
+
+function endQuizSession() {
+    AppState.sessionActive = false;
+    clearInterval(AppState.timerInterval);
+
+    // 禁用所有选项按钮
+    const buttons = document.querySelectorAll('.option-btn');
+    buttons.forEach(btn => btn.disabled = true);
+
+    // 更新历史统计
+    AppState.totalGames++;
+    AppState.totalCorrect += AppState.quizCorrect;
+    AppState.totalQuestions += AppState.quizTotal;
+
+    // 更新最高分
+    if (AppState.quizScore > AppState.bestScore) {
+        AppState.bestScore = AppState.quizScore;
+    }
+
+    // 检查成就（基于历史累计）
+    if (AppState.totalCorrect >= 10) unlockAchievement('bronze');
+    if (AppState.totalCorrect >= 50) unlockAchievement('silver');
+    if (AppState.totalCorrect >= 100) unlockAchievement('gold');
+
+    // 保存本地数据
+    saveQuizData();
+
+    // 提交成绩到服务器
+    submitScoreToServer();
+
+    // 显示结束提示
+    const message = `⏰ 时间到！
+
+本轮成绩：
+答题数：${AppState.quizTotal}题
+答对：${AppState.quizCorrect}题
+本轮得分：${AppState.quizScore}分
+
+历史统计：
+总局数：${AppState.totalGames}局
+历史最高分：${AppState.bestScore}分
+累计答对：${AppState.totalCorrect}题`;
+
+    alert(message);
+
+    // 询问是否再来一轮
+    setTimeout(() => {
+        if (confirm('是否开始新的一轮答题？')) {
+            startQuizSession();
+        } else {
+            backToSelection();
+        }
+    }, 500);
 }
 
 function loadQuizData() {
     const saved = localStorage.getItem('quizData');
     if (saved) {
         const data = JSON.parse(saved);
-        AppState.quizScore = data.score || 0;
-        AppState.quizCorrect = data.correct || 0;
-        AppState.quizTotal = data.total || 0;
+        AppState.bestScore = data.bestScore || 0;
+        AppState.totalGames = data.totalGames || 0;
+        AppState.totalCorrect = data.totalCorrect || 0;
+        AppState.totalQuestions = data.totalQuestions || 0;
         AppState.mistakes = data.mistakes || [];
         AppState.achievements = {...AppState.achievements, ...data.achievements };
     }
@@ -269,9 +416,10 @@ function loadQuizData() {
 
 function saveQuizData() {
     localStorage.setItem('quizData', JSON.stringify({
-        score: AppState.quizScore,
-        correct: AppState.quizCorrect,
-        total: AppState.quizTotal,
+        bestScore: AppState.bestScore,
+        totalGames: AppState.totalGames,
+        totalCorrect: AppState.totalCorrect,
+        totalQuestions: AppState.totalQuestions,
         mistakes: AppState.mistakes,
         achievements: AppState.achievements
     }));
@@ -284,8 +432,39 @@ function updateQuizStats() {
 }
 
 function nextQuestion() {
-    // 随机选择题目
-    AppState.currentQuestion = QuestionBank[Math.floor(Math.random() * QuestionBank.length)];
+    // 检查会话是否还在进行
+    if (!AppState.sessionActive) {
+        return;
+    }
+
+    // 不重复选题逻辑：从未使用的题目中随机选择
+    if (!AppState.usedQuestions) {
+        AppState.usedQuestions = [];
+    }
+
+    // 如果所有题目都用过了，重置已用题目列表
+    if (AppState.usedQuestions.length >= QuestionBank.length) {
+        console.log(`已答完所有 ${QuestionBank.length} 道题，重置题库`);
+        AppState.usedQuestions = [];
+    }
+
+    // 获取未使用的题目索引
+    const availableIndexes = [];
+    for (let i = 0; i < QuestionBank.length; i++) {
+        if (!AppState.usedQuestions.includes(i)) {
+            availableIndexes.push(i);
+        }
+    }
+
+    // 从未使用的题目中随机选择
+    const randomIndex = Math.floor(Math.random() * availableIndexes.length);
+    const questionIndex = availableIndexes[randomIndex];
+
+    // 记录已使用的题目
+    AppState.usedQuestions.push(questionIndex);
+    AppState.currentQuestion = QuestionBank[questionIndex];
+
+    console.log(`第 ${AppState.quizTotal + 1} 题，题库索引 ${questionIndex}，已用 ${AppState.usedQuestions.length}/${QuestionBank.length} 道题`);
 
     // 显示题目
     document.getElementById('question-text').textContent = AppState.currentQuestion.question;
@@ -300,36 +479,13 @@ function nextQuestion() {
         btn.onclick = () => checkAnswer(index);
         optionsGrid.appendChild(btn);
     });
-
-    // 重置并启动计时器
-    resetTimer();
-}
-
-function resetTimer() {
-    AppState.timer = 30;
-    document.getElementById('timer').textContent = AppState.timer;
-
-    if (AppState.timerInterval) {
-        clearInterval(AppState.timerInterval);
-    }
-
-    const startTime = Date.now();
-    AppState.timerInterval = setInterval(() => {
-        AppState.timer--;
-        document.getElementById('timer').textContent = AppState.timer;
-
-        if (AppState.timer <= 0) {
-            clearInterval(AppState.timerInterval);
-            // 超时算错
-            recordMistake();
-            setTimeout(nextQuestion, 1500);
-        }
-    }, 1000);
 }
 
 function checkAnswer(selectedIndex) {
-    const elapsed = 30 - AppState.timer;
-    clearInterval(AppState.timerInterval);
+    // 检查会话是否还在进行
+    if (!AppState.sessionActive) {
+        return;
+    }
 
     const buttons = document.querySelectorAll('.option-btn');
     const isCorrect = selectedIndex === AppState.currentQuestion.correct;
@@ -351,11 +507,6 @@ function checkAnswer(selectedIndex) {
         AppState.quizCorrect++;
         AppState.consecutiveCorrect++;
 
-        // 快速答题成就
-        if (elapsed <= 5) {
-            unlockAchievement('speed');
-        }
-
         // 连续答对成就
         if (AppState.consecutiveCorrect >= 10) {
             unlockAchievement('perfect');
@@ -365,16 +516,15 @@ function checkAnswer(selectedIndex) {
         recordMistake();
     }
 
-    // 检查答题数量成就
-    if (AppState.quizCorrect >= 10) unlockAchievement('bronze');
-    if (AppState.quizCorrect >= 50) unlockAchievement('silver');
-    if (AppState.quizCorrect >= 100) unlockAchievement('gold');
-
     updateQuizStats();
-    saveQuizData();
-    updateLeaderboard();
+    // 不在每题后保存，而是在会话结束时统一保存
 
-    setTimeout(nextQuestion, 2000);
+    // 继续下一题（如果时间还够）
+    setTimeout(() => {
+        if (AppState.sessionActive && AppState.timer > 0) {
+            nextQuestion();
+        }
+    }, 1500);
 }
 
 function recordMistake() {
@@ -433,30 +583,67 @@ function renderAchievements() {
     `).join('');
 }
 
-function updateLeaderboard() {
-    const currentUser = localStorage.getItem('login_user') || '游客';
-    let rankings = JSON.parse(localStorage.getItem('quizRankings') || '[]');
+// 提交成绩到服务器
+async function submitScoreToServer() {
+    const currentUser = localStorage.getItem('login_user');
+    const currentRole = localStorage.getItem('user_role');
 
-    // 更新当前用户成绩
-    const userIndex = rankings.findIndex(r => r.name === currentUser);
-    if (userIndex >= 0) {
-        rankings[userIndex].score = Math.max(rankings[userIndex].score, AppState.quizScore);
-    } else {
-        rankings.push({ name: currentUser, score: AppState.quizScore });
+    if (!currentUser) {
+        console.log('用户未登录，跳过服务器提交');
+        return;
     }
 
-    // 排序并保留前10名
-    rankings.sort((a, b) => b.score - a.score);
-    rankings = rankings.slice(0, 10);
+    try {
+        const response = await fetch('/api/quiz/submit', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Auth-User': encodeURIComponent(currentUser),
+                'X-Auth-Role': currentRole || 'user'
+            },
+            body: JSON.stringify({
+                score: AppState.bestScore, // 提交历史最高分
+                correct: AppState.quizCorrect,
+                total: AppState.quizTotal,
+                timestamp: Date.now()
+            })
+        });
 
-    localStorage.setItem('quizRankings', JSON.stringify(rankings));
-    renderLeaderboard();
+        if (response.ok) {
+            const data = await response.json();
+            console.log(`成绩已提交！排名：${data.rank}/${data.totalUsers}`);
+            // 刷新排行榜
+            await loadLeaderboard();
+        }
+    } catch (error) {
+        console.error('提交成绩失败：', error);
+    }
 }
 
-function renderLeaderboard() {
-    const rankings = JSON.parse(localStorage.getItem('quizRankings') || '[]');
+// 从服务器加载排行榜
+async function loadLeaderboard() {
+    try {
+        const response = await fetch('/api/quiz/rankings');
+        if (response.ok) {
+            const data = await response.json();
+            renderLeaderboard(data.rankings);
+        }
+    } catch (error) {
+        console.error('加载排行榜失败：', error);
+        // 如果服务器加载失败，使用本地数据
+        renderLeaderboard();
+    }
+}
+
+function renderLeaderboard(serverRankings) {
     const currentUser = localStorage.getItem('login_user') || '游客';
     const container = document.getElementById('quiz-leaderboard');
+
+    // 优先使用服务器数据，否则使用本地数据
+    let rankings = serverRankings;
+    if (!rankings || rankings.length === 0) {
+        rankings = JSON.parse(localStorage.getItem('quizRankings') || '[]');
+    }
 
     if (rankings.length === 0) {
         container.innerHTML = '<p style="text-align: center; color: #666;">暂无排名数据</p>';
@@ -466,18 +653,25 @@ function renderLeaderboard() {
     container.innerHTML = rankings.map((r, index) => {
         const rankClass = index === 0 ? 'top1' : index === 1 ? 'top2' : index === 2 ? 'top3' : '';
         const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `#${index + 1}`;
-        const highlight = r.name === currentUser ? 'style="font-weight: bold; color: #c62828;"' : '';
+        const userName = r.user || r.name || '匿名';
+        const highlight = userName === currentUser ? 'style="font-weight: bold; color: #c62828;"' : '';
 
         return `
             <div class="leaderboard-item ${rankClass}">
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <span class="rank-badge">${medal}</span>
-                    <span ${highlight}>${r.name}</span>
+                    <span ${highlight}>${userName}</span>
                 </div>
                 <div style="font-size: 20px; font-weight: bold;">${r.score} 分</div>
             </div>
         `;
     }).join('');
+}
+
+// 更新排行榜（保留用于兼容）
+function updateLeaderboard() {
+    // 不再使用本地localStorage，改为调用loadLeaderboard
+    loadLeaderboard();
 }
 
 // ===== AI对话功能 =====
@@ -493,7 +687,7 @@ function renderCharacters() {
     const container = document.getElementById('character-selector');
     container.innerHTML = HistoricalCharacters.map(char => `
         <div class="character-card" onclick="selectCharacter('${char.id}')">
-            <div class="character-avatar">${char.avatar}</div>
+            <img src="${char.avatar}" alt="${char.name}" class="character-avatar">
             <div class="character-name">${char.name}</div>
             <div class="character-title">${char.title}</div>
         </div>
@@ -513,7 +707,7 @@ function selectCharacter(characterId) {
     const chatArea = document.getElementById('chat-area');
     chatArea.innerHTML = `
         <div class="message character">
-            <div class="message-avatar">${AppState.currentCharacter.avatar}</div>
+            <img src="${AppState.currentCharacter.avatar}" alt="${AppState.currentCharacter.name}" class="message-avatar">
             <div class="message-content">
                 我是${AppState.currentCharacter.name}，${AppState.currentCharacter.title}。${AppState.currentCharacter.background.substring(0, 100)}...<br><br>
                 有什么问题，尽管问我吧！
@@ -583,10 +777,17 @@ function addMessage(type, content, isTemporary = false) {
     const msgDiv = document.createElement('div');
     msgDiv.className = `message ${type}`;
 
-    const avatar = type === 'user' ? '👤' : AppState.currentCharacter.avatar;
+    let avatarHtml;
+    if (type === 'user') {
+        // 用户消息使用emoji
+        avatarHtml = '<div class="message-avatar emoji">👤</div>';
+    } else {
+        // AI人物消息使用图片
+        avatarHtml = `<img src="${AppState.currentCharacter.avatar}" alt="${AppState.currentCharacter.name}" class="message-avatar">`;
+    }
 
     msgDiv.innerHTML = `
-        <div class="message-avatar">${avatar}</div>
+        ${avatarHtml}
         <div class="message-content">${content}</div>
     `;
 
@@ -602,7 +803,8 @@ function backToSelection() {
     document.getElementById('quiz-challenge').style.display = 'none';
     document.getElementById('ai-dialogue').style.display = 'none';
 
-    // 清理计时器
+    // 清理计时器和会话状态
+    AppState.sessionActive = false;
     if (AppState.timerInterval) {
         clearInterval(AppState.timerInterval);
     }

@@ -2033,4 +2033,10 @@ class ShootingGame {
 let game;
 window.addEventListener('load', () => {
     game = new ShootingGame();
+
+    // 导出题库给challenge.js使用
+    if (game && game.quizQuestions) {
+        window.gameQuestions = game.quizQuestions;
+        console.log(`已导出 ${game.quizQuestions.length} 道题目给互动学习中心`);
+    }
 });

@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>作品展示与评选 - 以史为鉴,凝聚力量</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .works-container {
+            max-width: 1400px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        
+        .page-header {
+            text-align: center;
+            padding: 50px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            color: white;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .page-header h1 {
+            font-size: 2.8em;
+            margin: 0 0 15px 0;
+        }
+        
+        .contest-selector {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .contest-selector label {
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        
+        .contest-selector select {
+            padding: 10px 20px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 1em;
+            min-width: 300px;
+        }
+        
+        .filters {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .filter-group label {
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .filter-group select {
+            padding: 8px 15px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 1em;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .tab {
+            padding: 15px 30px;
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #666;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+        
+        .tab:hover {
+            color: #667eea;
+        }
+        
+        .works-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .work-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .work-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .work-card.featured {
+            border: 3px solid #ffd700;
+        }
+        
+        .work-card.featured::before {
+            content: '⭐ 精选作品';
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(135deg, #ffd700, #ffa500);
+            color: #333;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            z-index: 1;
+        }
+        
+        .work-rank {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+        
+        .work-rank.top1 {
+            background: linear-gradient(135deg, #ffd700, #ffa500);
+            color: #333;
+        }
+        
+        .work-rank.top2 {
+            background: linear-gradient(135deg, #c0c0c0, #a8a8a8);
+            color: white;
+        }
+        
+        .work-rank.top3 {
+            background: linear-gradient(135deg, #cd7f32, #b87333);
+            color: white;
+        }
+        
+        .work-content {
+            padding: 25px;
+        }
+        
+        .work-title {
+            font-size: 1.6em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 0 0 15px 0;
+        }
+        
+        .work-meta {
+            display: flex;
+            gap: 20px;
+            color: #999;
+            font-size: 0.95em;
+            margin-bottom: 15px;
+        }
+        
+        .work-excerpt {
+            color: #666;
+            line-height: 1.8;
+            margin: 15px 0;
+            max-height: 100px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .work-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+            margin: 15px 0;
+        }
+        
+        .stat-group {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #666;
+            font-size: 0.95em;
+        }
+        
+        .vote-button {
+            padding: 10px 25px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .vote-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .vote-button.voted {
+            background: linear-gradient(135deg, #4caf50, #8bc34a);
+        }
+        
+        .vote-button.disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .work-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            flex: 1;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .winners-section {
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .winners-section h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin: 0 0 30px 0;
+        }
+        
+        .winners-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .winner-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .winner-medal {
+            font-size: 4em;
+            margin-bottom: 15px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: #999;
+        }
+        
+        .empty-icon {
+            font-size: 5em;
+            margin-bottom: 20px;
+        }
+        /* 作品详情弹窗 */
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            max-width: 900px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .modal-header {
+            border-bottom: 2px solid #eee;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .modal-title {
+            font-size: 2.2em;
+            color: #2c3e50;
+            margin: 0 0 15px 0;
+        }
+        
+        .modal-meta {
+            display: flex;
+            gap: 30px;
+            color: #999;
+            font-size: 1em;
+        }
+        
+        .modal-content-body {
+            line-height: 2;
+            color: #333;
+            font-size: 1.1em;
+            margin: 30px 0;
+            white-space: pre-wrap;
+        }
+        
+        .modal-footer {
+            border-top: 2px solid #eee;
+            padding-top: 20px;
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        @media (max-width: 768px) {
+            .works-grid {
+                grid-template-columns: 1fr;
+            }
+            .filters {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .filter-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="wrap">
+            <h1>📚 作品展示与评选</h1>
+            <nav class="main-nav">
+                <a href="index.html">主页</a>
+                <a href="ai.html">智能问答</a>
+                <a href="knowledge.html">知识分享</a>
+                <a href="culture.html">文化传播</a>
+                <a href="discuss.html">讨论区</a>
+                <a href="game.html">趣味射击</a>
+                <a href="models.html">3D展馆</a>
+                <a href="challenge.html" class="nav-challenge">🎯 互动学习</a>
+                <a href="history_today.html" class="nav-history">📅 历史上的今天</a>
+                <a href="contest.html" class="nav-contest">🏆 创作竞赛</a>
+                <a href="contest_works.html" class="active">📚 作品展示</a>
+                <a href="profile.html" class="nav-profile">👤 个人中心</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="user-bar" id="userBar"></div>
+
+    <div class="works-container">
+        <div class="page-header">
+            <h1>📚 作品展示与评选</h1>
+            <p>浏览优秀作品，为心仪之作投上宝贵一票</p>
+            <p style="font-size: 0.9em; margin-top: 10px; opacity: 0.9;">⚠️ 竞赛进行中：大家投票 | 竞赛结束后：公布获奖作品</p>
+        </div>
+
+        <!-- 竞赛选择器 -->
+        <div class="contest-selector">
+            <label>选择竞赛：</label>
+            <select id="contestSelect" onchange="worksApp.loadWorks()">
+                <option value="">加载中...</option>
+            </select>
+            <span id="contestStatus" style="margin-left: 20px; font-weight: bold;"></span>
+        </div>
+
+        <!-- 筛选器 -->
+        <div class="filters">
+            <div class="filter-group">
+                <label>排序方式：</label>
+                <select id="sortBy" onchange="worksApp.renderWorks()">
+                    <option value="votes">投票数 (高→低)</option>
+                    <option value="time">提交时间 (新→旧)</option>
+                    <option value="views">浏览量 (高→低)</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>作品分类：</label>
+                <select id="categoryFilter" onchange="worksApp.renderWorks()">
+                    <option value="all">全部</option>
+                    <option value="散文">散文</option>
+                    <option value="诗歌">诗歌</option>
+                    <option value="论文">论文</option>
+                    <option value="手绘">手绘</option>
+                    <option value="摄影">摄影</option>
+                    <option value="其他">其他</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>仅显示精选：</label>
+                <input type="checkbox" id="featuredOnly" onchange="worksApp.renderWorks()" style="width: auto;">
+            </div>
+        </div>
+
+        <!-- 获奖作品区 -->
+        <div class="winners-section" id="winnersSection" style="display: none;">
+            <h2>🏆 获奖作品</h2>
+            <div class="winners-grid" id="winnersGrid"></div>
+        </div>
+
+        <!-- 标签页 -->
+        <div class="tabs">
+            <button class="tab active" onclick="worksApp.switchView('all')">
+                全部作品 (<span id="allCount">0</span>)
+            </button>
+            <button class="tab" onclick="worksApp.switchView('top')">
+                人气TOP10 (<span id="topCount">0</span>)
+            </button>
+        </div>
+
+        <!-- 作品列表 -->
+        <div class="works-grid" id="worksGrid">
+            <!-- 动态加载 -->
+        </div>
+    </div>
+
+    <!-- 作品详情弹窗 -->
+    <div class="modal" id="workModal">
+        <div class="modal-content">
+            <div id="workDetail">
+                <!-- 动态加载 -->
+            </div>
+        </div>
+    </div>
+
+    <script src="main.js?v=3.0"></script>
+    <script src="contest_works.js?v=1.0"></script>
+</body>
+
+</html>

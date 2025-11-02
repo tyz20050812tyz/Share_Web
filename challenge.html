@@ -238,8 +238,13 @@
         }
         
         .character-avatar {
-            font-size: 48px;
-            margin-bottom: 10px;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 10px;
+            display: block;
+            border: 3px solid rgba(198, 40, 40, 0.3);
         }
         
         .character-name {
@@ -290,15 +295,20 @@
         }
         
         .message-avatar {
-            font-size: 32px;
             width: 48px;
             height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+            border: 2px solid rgba(198, 40, 40, 0.3);
+        }
+        
+        .message-avatar.emoji {
+            font-size: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 50%;
             background: linear-gradient(135deg, #f5f5f5, #ffffff);
-            flex-shrink: 0;
         }
         
         .message.character .message-avatar {
@@ -488,7 +498,7 @@
 <body>
     <header class="site-header">
         <div class="wrap">
-            <h1>🎓 互动学习中心</h1>
+            <h1>🎯 互动学习中心</h1>
             <nav class="main-nav">
                 <a href="index.html">主页</a>
                 <a href="ai.html">智能问答</a>
@@ -497,10 +507,16 @@
                 <a href="discuss.html">讨论区</a>
                 <a href="game.html">趣味射击</a>
                 <a href="models.html">3D展馆</a>
-                <a href="profile.html">👤 个人中心</a>
+                <a href="challenge.html" class="nav-challenge active">🎯 互动学习</a>
+                <a href="history_today.html" class="nav-history">📅 历史上的今天</a>
+                <a href="contest.html" class="nav-contest">🏆 创作竞赛</a>
+                <a href="contest_works.html">📚 作品展示</a>
+                <a href="profile.html" class="nav-profile">👤 个人中心</a>
             </nav>
         </div>
     </header>
+
+    <div class="user-bar" id="userBar"></div>
 
     <div class="challenge-container">
         <!-- 模式选择 -->
@@ -510,7 +526,7 @@
                     <div class="mode-icon">🎯</div>
                     <div class="mode-title">知识答题挑战</div>
                     <div class="mode-desc">
-                        限时答题，挑战自我<br> 🎲 快速答题模式（30秒）<br> 🏆 积分排行榜<br> 📈 错题本功能<br> 🎁 解锁成就徽章
+                        限时答题，挑战自我<br> ⏰ 每轮2分钟答题时间<br> 🏆 积分排行榜<br> 📈 错题本功能<br> 🎁 解锁成就徽章
                     </div>
                 </div>
 
@@ -545,7 +561,7 @@
                         <div class="stat-label">总题数</div>
                     </div>
                 </div>
-                <div class="timer" id="timer">30</div>
+                <div class="timer" id="timer">2:00</div>
             </div>
 
             <div class="question-card" id="question-container">
@@ -594,8 +610,27 @@
         </div>
     </div>
 
-    <script src="main.js?v=3.0"></script>
-    <script src="challenge.js?v=3.0"></script>
+    <script src="main.js?v=5.0"></script>
+    <!-- 从 game.js 加载题库（只加载题库部分，不启动游戏） -->
+    <script>
+        // 提取 game.js 中的题库
+        window.addEventListener('DOMContentLoaded', async() => {
+            try {
+                const response = await fetch('game.js');
+                const code = await response.text();
+                // 提取题库数据
+                const match = code.match(/this\.quizQuestions = (\[[\s\S]*?\]);/);
+                if (match && match[1]) {
+                    const questions = eval('(' + match[1] + ')');
+                    window.gameQuestions = questions;
+                    console.log(`从 game.js 加载了 ${questions.length} 道题目`);
+                }
+            } catch (e) {
+                console.warn('无法加载 game.js 题库，将使用内置题库', e);
+            }
+        });
+    </script>
+    <script src="challenge.js?v=5.0"></script>
 </body>
 
 </html>

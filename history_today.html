@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>历史上的今天 - 以史为鉴,凝聚力量</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .history-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        
+        .page-header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            color: white;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .page-header h1 {
+            font-size: 2.5em;
+            margin: 0 0 10px 0;
+        }
+        
+        .today-date {
+            font-size: 1.2em;
+            opacity: 0.95;
+        }
+        
+        .date-selector {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .date-selector label {
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .date-selector select {
+            padding: 8px 15px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 1em;
+            outline: none;
+            transition: all 0.3s;
+        }
+        
+        .date-selector select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .date-selector button {
+            padding: 8px 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        
+        .date-selector button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .important-notice {
+            background: linear-gradient(135deg, #ffd700, #ffa500);
+            color: #333;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+            font-size: 1.1em;
+            font-weight: bold;
+            text-align: center;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.02);
+            }
+        }
+        
+        .timeline {
+            position: relative;
+            padding-left: 40px;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+        
+        .event-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            transition: all 0.3s;
+        }
+        
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .event-card::before {
+            content: '';
+            position: absolute;
+            left: -52px;
+            top: 30px;
+            width: 20px;
+            height: 20px;
+            background: #667eea;
+            border: 4px solid white;
+            border-radius: 50%;
+            box-shadow: 0 0 0 3px #667eea;
+        }
+        
+        .event-card.critical::before {
+            background: #ff4757;
+            box-shadow: 0 0 0 3px #ff4757;
+        }
+        
+        .event-year {
+            position: absolute;
+            left: -50px;
+            top: 55px;
+            font-size: 0.9em;
+            font-weight: bold;
+            color: #667eea;
+            background: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+        
+        .event-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 0 0 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .event-category {
+            display: inline-block;
+            padding: 4px 12px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.5em;
+            font-weight: normal;
+        }
+        
+        .event-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        
+        .event-tag {
+            padding: 4px 12px;
+            background: #f0f0f0;
+            border-radius: 15px;
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        .event-summary {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 15px;
+        }
+        
+        .event-detail {
+            font-size: 1em;
+            line-height: 1.8;
+            color: #666;
+            margin: 15px 0;
+            padding: 15px;
+            background: #f9f9f9;
+            border-left: 4px solid #667eea;
+            border-radius: 4px;
+            display: none;
+        }
+        
+        .event-detail.show {
+            display: block;
+        }
+        
+        .event-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+        
+        .event-actions button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+        
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+        
+        .btn-admin {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+            color: white;
+        }
+        
+        .btn-admin:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+        }
+        
+        .admin-toolbar {
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .admin-toolbar button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-right: 10px;
+            transition: all 0.3s;
+        }
+        
+        .admin-toolbar button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+        
+        .empty-state-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+        /* 弹窗样式 */
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .modal-content h2 {
+            margin: 0 0 20px 0;
+            color: #2c3e50;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 30px;
+        }
+        
+        .form-actions button {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .admin-only {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .timeline {
+                padding-left: 20px;
+            }
+            .event-year {
+                left: -30px;
+                font-size: 0.8em;
+            }
+            .event-title {
+                font-size: 1.4em;
+            }
+            .date-selector {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="wrap">
+            <h1>📅 历史上的今天</h1>
+            <nav class="main-nav">
+                <a href="index.html">主页</a>
+                <a href="ai.html">智能问答</a>
+                <a href="knowledge.html">知识分享</a>
+                <a href="culture.html">文化传播</a>
+                <a href="discuss.html">讨论区</a>
+                <a href="game.html">趣味射击</a>
+                <a href="models.html">3D展馆</a>
+                <a href="challenge.html" class="nav-challenge">🎯 互动学习</a>
+                <a href="history_today.html" class="nav-history active">📅 历史上的今天</a>
+                <a href="contest.html" class="nav-contest">🏆 创作竞赛</a>
+                <a href="contest_works.html">📚 作品展示</a>
+                <a href="profile.html" class="nav-profile">👤 个人中心</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="user-bar" id="userBar"></div>
+
+    <div class="history-container">
+        <div class="page-header">
+            <h1>📅 历史上的今天</h1>
+            <div class="today-date" id="todayDate">加载中...</div>
+        </div>
+
+        <!-- 管理员工具栏 -->
+        <div class="admin-toolbar admin-only">
+            <button onclick="showAddEventModal()">➕ 添加历史事件</button>
+        </div>
+
+        <!-- 重要纪念日提醒 -->
+        <div class="important-notice" id="importantNotice" style="display:none;"></div>
+
+        <!-- 日期选择器 -->
+        <div class="date-selector">
+            <label>选择日期:</label>
+            <select id="monthSelect">
+                <option value="01">1月</option>
+                <option value="02">2月</option>
+                <option value="03">3月</option>
+                <option value="04">4月</option>
+                <option value="05">5月</option>
+                <option value="06">6月</option>
+                <option value="07">7月</option>
+                <option value="08">8月</option>
+                <option value="09">9月</option>
+                <option value="10">10月</option>
+                <option value="11">11月</option>
+                <option value="12">12月</option>
+            </select>
+            <select id="daySelect">
+                <!-- 动态生成 -->
+            </select>
+            <button onclick="jumpToDate()">查看</button>
+            <button onclick="backToToday()" class="btn-secondary">返回今天</button>
+        </div>
+
+        <!-- 事件时间线 -->
+        <div class="timeline" id="timeline">
+            <!-- 动态加载 -->
+        </div>
+    </div>
+
+    <!-- 添加/编辑事件弹窗 -->
+    <div class="modal" id="eventModal">
+        <div class="modal-content">
+            <h2 id="modalTitle">添加历史事件</h2>
+            <form id="eventForm" onsubmit="return false;">
+                <input type="hidden" id="eventId">
+
+                <div class="form-group">
+                    <label>日期* (格式: MM-DD)</label>
+                    <input type="text" id="eventDate" placeholder="如: 09-18" required pattern="\d{2}-\d{2}">
+                </div>
+
+                <div class="form-group">
+                    <label>年份*</label>
+                    <input type="number" id="eventYear" placeholder="如: 1931" required min="1900" max="2100">
+                </div>
+
+                <div class="form-group">
+                    <label>事件标题*</label>
+                    <input type="text" id="eventTitle" placeholder="如: 九一八事变" required>
+                </div>
+
+                <div class="form-group">
+                    <label>分类*</label>
+                    <select id="eventCategory" required>
+                        <option value="战役">战役</option>
+                        <option value="人物">人物</option>
+                        <option value="政治">政治</option>
+                        <option value="文化">文化</option>
+                        <option value="纪念">纪念</option>
+                        <option value="其他">其他</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>标签 (用逗号分隔,最多3个)</label>
+                    <input type="text" id="eventTags" placeholder="如: 抗日战争,东北,侵略">
+                </div>
+
+                <div class="form-group">
+                    <label>简介* (50-100字)</label>
+                    <textarea id="eventSummary" rows="3" required minlength="50" maxlength="200"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>详细介绍 (300-500字)</label>
+                    <textarea id="eventDetail" rows="8" minlength="100" maxlength="1000"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>重要程度</label>
+                    <select id="eventImportance">
+                        <option value="critical">极重要(纪念日)</option>
+                        <option value="high">重要</option>
+                        <option value="medium" selected>一般</option>
+                    </select>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary" onclick="saveEvent()">✅ 提交</button>
+                    <button type="button" class="btn-secondary" onclick="closeModal()">❌ 取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="main.js?v=3.0"></script>
+    <script src="history_today.js?v=1.0"></script>
+</body>
+
+</html>

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3D历史文物展馆 - 以史为鉴，凝聚力量</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="style.css">
     <style>
         .models-page {
             background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
@@ -267,15 +267,32 @@
 </head>
 
 <body class="models-page">
-    <a href="index.html" class="back-button">🏠 返回主页</a>
+    <header class="site-header">
+        <div class="wrap">
+            <h1>🏛️ 3D历史文物展馆</h1>
+            <nav class="main-nav">
+                <a href="index.html">主页</a>
+                <a href="ai.html">智能问答</a>
+                <a href="knowledge.html">知识分享</a>
+                <a href="culture.html">文化传播</a>
+                <a href="discuss.html">讨论区</a>
+                <a href="game.html">趣味射击</a>
+                <a href="models.html" class="active">3D展馆</a>
+                <a href="challenge.html" class="nav-challenge">🎯 互动学习</a>
+                <a href="history_today.html" class="nav-history">📅 历史上的今天</a>
+                <a href="contest.html" class="nav-contest">🏆 创作竞赛</a>
+                <a href="contest_works.html">📚 作品展示</a>
+                <a href="profile.html" class="nav-profile">👤 个人中心</a>
+            </nav>
+        </div>
+    </header>
 
-    <div class="models-header">
-        <h1>🏛️ 3D历史文物展馆</h1>
-        <p>铭记历史 · 缅怀先烈 · 珍爱和平</p>
-    </div>
+    <div class="user-bar" id="userBar"></div>
+
+    <a href="index.html" class="back-button" style="top:80px;">🏠 返回主页</a>
 
     <div class="models-container">
-        <div class="models-intro">
+        <div class="models-intro" style="margin-top:20px;">
             <h2>📜 展馆简介</h2>
             <p>
                 欢迎来到3D历史文物展馆。这里收藏了抗日战争时期的珍贵文物3D模型， 通过现代科技手段，让您可以全方位、多角度地观赏这些承载着历史记忆的文物。
@@ -500,14 +517,11 @@
         </div>
     </div>
 
-    <footer class="site-footer" style="background: rgba(0, 0, 0, 0.5); margin-top: 40px;">
-        <div class="wrap" style="text-align: center; color: #fff;">
-            <p>© 2025 以史为鉴，凝聚力量 — 3D历史文物展馆</p>
-            <p style="font-size: 12px; opacity: 0.7; margin-top: 10px;">
-                模型来源：Sketchfab | 感谢原作者的精心制作
-            </p>
-        </div>
+    <footer class="site-footer">
+        <div class="wrap">© 2025 以史为鉴，凝聚力量</div>
     </footer>
+
+    <script src="main.js"></script>
 
     <script>
         // 平滑滚动

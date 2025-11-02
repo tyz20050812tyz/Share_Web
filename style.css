@@ -196,6 +196,63 @@ a {
 }
 
 
+/* 导航栏活跃状态 */
+
+.main-nav a.active {
+    background: linear-gradient(135deg, rgba(198, 40, 40, 0.15), rgba(198, 40, 40, 0.25));
+    border-bottom: 3px solid #c62828;
+    font-weight: 700;
+}
+
+.main-nav a.active::before {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+
+/* 导航栏特殊功能按钮样式 */
+
+.main-nav a.nav-challenge {
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.2), rgba(139, 195, 74, 0.2));
+    border: 2px solid #4caf50;
+}
+
+.main-nav a.nav-challenge:hover {
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.3), rgba(139, 195, 74, 0.3));
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+.main-nav a.nav-history {
+    background: linear-gradient(135deg, rgba(103, 58, 183, 0.2), rgba(156, 39, 176, 0.2));
+    border: 2px solid #673ab7;
+}
+
+.main-nav a.nav-history:hover {
+    background: linear-gradient(135deg, rgba(103, 58, 183, 0.3), rgba(156, 39, 176, 0.3));
+    box-shadow: 0 4px 12px rgba(103, 58, 183, 0.3);
+}
+
+.main-nav a.nav-contest {
+    background: linear-gradient(135deg, rgba(255, 152, 0, 0.2), rgba(255, 193, 7, 0.2));
+    border: 2px solid #ff9800;
+}
+
+.main-nav a.nav-contest:hover {
+    background: linear-gradient(135deg, rgba(255, 152, 0, 0.3), rgba(255, 193, 7, 0.3));
+    box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
+}
+
+.main-nav a.nav-profile {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(198, 40, 40, 0.2));
+    border: 2px solid #ffd700;
+}
+
+.main-nav a.nav-profile:hover {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.3), rgba(198, 40, 40, 0.3));
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+}
+
+
 /* ===== 英雄区 ===== */
 
 .hero {

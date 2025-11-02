@@ -6,202 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>个人中心 - 以史为鉴，凝聚力量</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        .profile-container {
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 20px;
-        }
-        
-        .profile-header {
-            background: linear-gradient(135deg, #fff5f5, #fde7e7);
-            border-radius: var(--radius);
-            padding: 30px;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-        
-        .profile-avatar {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #c62828, #e53935);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            font-size: 60px;
-            color: white;
-            box-shadow: var(--shadow-lg);
-        }
-        
-        .profile-name {
-            font-size: 32px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: var(--text);
-        }
-        
-        .profile-role {
-            font-size: 18px;
-            color: var(--muted);
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        
-        .stat-card {
-            background: var(--surface);
-            border-radius: var(--radius);
-            padding: 25px;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            border-left: 4px solid #c62828;
-        }
-        
-        .stat-card:hover {
-            box-shadow: var(--shadow-lg);
-            transform: translateY(-4px);
-        }
-        
-        .stat-icon {
-            font-size: 40px;
-            margin-bottom: 10px;
-        }
-        
-        .stat-label {
-            font-size: 14px;
-            color: var(--muted);
-            margin-bottom: 8px;
-        }
-        
-        .stat-value {
-            font-size: 32px;
-            font-weight: bold;
-            color: #c62828;
-        }
-        
-        .achievements-section {
-            background: var(--surface);
-            border-radius: var(--radius);
-            padding: 30px;
-            box-shadow: var(--shadow);
-            margin-bottom: 30px;
-        }
-        
-        .section-title {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            color: var(--text);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .achievement-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
-        }
-        
-        .achievement-badge {
-            background: rgba(198, 40, 40, 0.1);
-            border: 2px solid #ddd;
-            border-radius: var(--radius);
-            padding: 15px;
-            text-align: center;
-            transition: var(--transition);
-        }
-        
-        .achievement-badge.unlocked {
-            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(198, 40, 40, 0.2));
-            border-color: #ffd700;
-        }
-        
-        .achievement-badge:hover {
-            transform: scale(1.05);
-        }
-        
-        .achievement-badge .icon {
-            font-size: 40px;
-            filter: grayscale(100%);
-        }
-        
-        .achievement-badge.unlocked .icon {
-            filter: grayscale(0%);
-        }
-        
-        .achievement-badge .name {
-            font-weight: bold;
-            margin-top: 8px;
-            font-size: 14px;
-        }
-        
-        .achievement-badge .desc {
-            font-size: 12px;
-            color: var(--muted);
-            margin-top: 4px;
-        }
-        
-        .difficulty-stats {
-            background: var(--surface);
-            border-radius: var(--radius);
-            padding: 30px;
-            box-shadow: var(--shadow);
-            margin-bottom: 30px;
-        }
-        
-        .difficulty-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            margin: 10px 0;
-            background: rgba(198, 40, 40, 0.05);
-            border-radius: 8px;
-            border-left: 4px solid #c62828;
-        }
-        
-        .difficulty-name {
-            font-size: 18px;
-            font-weight: bold;
-        }
-        
-        .difficulty-score {
-            font-size: 20px;
-            color: #c62828;
-            font-weight: bold;
-        }
-        
-        .back-link {
-            display: inline-block;
-            padding: 12px 24px;
-            background: #c62828;
-            color: white;
-            border-radius: var(--radius);
-            text-decoration: none;
-            transition: var(--transition);
-            margin-top: 20px;
-        }
-        
-        .back-link:hover {
-            background: #e53935;
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
-        }
-        
-        .no-data {
-            text-align: center;
-            padding: 40px;
-            color: var(--muted);
-            font-size: 16px;
-        }
-    </style>
 </head>
 
 <body>
@@ -209,230 +13,260 @@
         <div class="wrap">
             <h1>🏛️ 个人中心</h1>
             <nav class="main-nav">
-                <a href="index.html">首页</a>
-                <a href="game.html">返回游戏</a>
+                <a href="index.html">主页</a>
+                <a href="ai.html">智能问答</a>
+                <a href="knowledge.html">知识分享</a>
+                <a href="culture.html">文化传播</a>
+                <a href="discuss.html">讨论区</a>
+                <a href="game.html">趣味射击</a>
+                <a href="models.html">3D展馆</a>
+                <a href="challenge.html" class="nav-challenge">🎯 互动学习</a>
+                <a href="history_today.html" class="nav-history">📅 历史上的今天</a>
+                <a href="contest.html" class="nav-contest">🏆 创作竞赛</a>
+                <a href="contest_works.html">📚 作品展示</a>
+                <a href="profile.html" class="nav-profile active">👤 个人中心</a>
             </nav>
         </div>
     </header>
 
-    <div class="wrap profile-container">
-        <div class="profile-header">
-            <div class="profile-avatar">
+    <div class="user-bar" id="userBar"></div>
+
+    <div class="wrap" style="max-width:1200px;">
+        <!-- 个人信息卡片 -->
+        <div class="card" style="margin-top:20px;text-align:center;padding:40px;background:linear-gradient(135deg,#fff5f5,#fde7e7);position:relative;overflow:hidden;">
+            <div style="position:absolute;top:-20px;right:-20px;font-size:150px;opacity:0.1;">🎯</div>
+            <div style="width:140px;height:140px;border-radius:50%;background:linear-gradient(135deg,#c62828,#e53935);margin:0 auto 20px;font-size:70px;color:white;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 32px rgba(198,40,40,0.3);border:5px solid white;">
                 <span id="user-avatar">👤</span>
             </div>
-            <div class="profile-name" id="user-name">游客</div>
-            <div class="profile-role" id="user-role">普通用户</div>
+            <div style="font-size:36px;font-weight:bold;margin-bottom:10px;" id="user-name">游客</div>
+            <div style="font-size:18px;color:#666;background:rgba(198,40,40,0.1);padding:5px 20px;border-radius:20px;display:inline-block;" id="user-role">普通用户</div>
         </div>
 
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon">🎮</div>
-                <div class="stat-label">游戏总局数</div>
-                <div class="stat-value" id="games-played">0</div>
+        <!-- 数据总览 -->
+        <div class="stats-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin:30px 0;">
+            <div class="stat-card card" style="border-left:4px solid #4caf50;">
+                <div style="font-size:48px;margin-bottom:10px;">💬</div>
+                <div style="font-size:14px;color:#666;margin-bottom:8px;">讨论发帖</div>
+                <div style="font-size:32px;font-weight:bold;color:#4caf50;" id="discuss-posts">0</div>
             </div>
-            <div class="stat-card">
-                <div class="stat-icon">⭐</div>
-                <div class="stat-label">累计总得分</div>
-                <div class="stat-value" id="total-score">0</div>
+            <div class="stat-card card" style="border-left:4px solid #673ab7;">
+                <div style="font-size:48px;margin-bottom:10px;">✍️</div>
+                <div style="font-size:14px;color:#666;margin-bottom:8px;">竞赛作品</div>
+                <div style="font-size:32px;font-weight:bold;color:#673ab7;" id="contest-works">0</div>
             </div>
-            <div class="stat-card">
-                <div class="stat-icon">🏆</div>
-                <div class="stat-label">最高得分</div>
-                <div class="stat-value" id="best-score">0</div>
+            <div class="stat-card card" style="border-left:4px solid #ff9800;">
+                <div style="font-size:48px;margin-bottom:10px;">🎮</div>
+                <div style="font-size:14px;color:#666;margin-bottom:8px;">游戏局数</div>
+                <div style="font-size:32px;font-weight:bold;color:#ff9800;" id="games-played">0</div>
             </div>
-            <div class="stat-card">
-                <div class="stat-icon">🎯</div>
-                <div class="stat-label">成就解锁</div>
-                <div class="stat-value" id="achievements-count">0/11</div>
-            </div>
-        </div>
-
-        <div class="difficulty-stats">
-            <div class="section-title">
-                <span>📊</span>
-                <span>各难度最佳成绩</span>
-            </div>
-            <div class="difficulty-row">
-                <div class="difficulty-name">🌟 简单模式</div>
-                <div class="difficulty-score" id="easy-best">0 分</div>
-            </div>
-            <div class="difficulty-row">
-                <div class="difficulty-name">⚡ 普通模式</div>
-                <div class="difficulty-score" id="normal-best">0 分</div>
-            </div>
-            <div class="difficulty-row">
-                <div class="difficulty-name">🔥 困难模式</div>
-                <div class="difficulty-score" id="hard-best">0 分</div>
+            <div class="stat-card card" style="border-left:4px solid #f44336;">
+                <div style="font-size:48px;margin-bottom:10px;">🎯</div>
+                <div style="font-size:14px;color:#666;margin-bottom:8px;">答题得分</div>
+                <div style="font-size:32px;font-weight:bold;color:#f44336;" id="quiz-score">0</div>
             </div>
         </div>
 
-        <div class="achievements-section">
-            <div class="section-title">
-                <span>🏅</span>
-                <span>成就徽章</span>
+        <!-- 标签页 -->
+        <div class="card" style="padding:20px;">
+            <div style="display:flex;gap:10px;border-bottom:2px solid #eee;margin-bottom:30px;flex-wrap:wrap;">
+                <button class="tab-btn active" data-tab="game" style="padding:12px 24px;background:transparent;border:none;border-bottom:3px solid #c62828;cursor:pointer;font-size:16px;font-weight:600;color:#c62828;">
+                    🎮 游戏战绩
+                </button>
+                <button class="tab-btn" data-tab="discuss" style="padding:12px 24px;background:transparent;border:none;border-bottom:3px solid transparent;cursor:pointer;font-size:16px;font-weight:600;color:#666;">
+                    💬 讨论动态
+                </button>
+                <button class="tab-btn" data-tab="contest" style="padding:12px 24px;background:transparent;border:none;border-bottom:3px solid transparent;cursor:pointer;font-size:16px;font-weight:600;color:#666;">
+                    ✍️ 创作记录
+                </button>
+                <button class="tab-btn" data-tab="challenge" style="padding:12px 24px;background:transparent;border:none;border-bottom:3px solid transparent;cursor:pointer;font-size:16px;font-weight:600;color:#666;">
+                    📝 答题排行
+                </button>
             </div>
-            <div class="achievement-grid" id="achievements-display">
-                <!-- 成就将通过 JavaScript 动态生成 -->
-            </div>
-        </div>
 
-        <div style="text-align: center;">
-            <a href="game.html" class="back-link">🎯 开始游戏</a>
-            <a href="index.html" class="back-link" style="background: #666; margin-left: 10px;">🏠 返回首页</a>
+            <!-- 游戏战绩标签 -->
+            <div class="tab-content active" id="tab-game">
+                <div id="game-stats"></div>
+            </div>
+
+            <!-- 讨论动态标签 -->
+            <div class="tab-content" id="tab-discuss" style="display:none;">
+                <div id="discuss-activity"></div>
+            </div>
+
+            <!-- 创作记录标签 -->
+            <div class="tab-content" id="tab-contest" style="display:none;">
+                <div id="contest-activity"></div>
+            </div>
+
+            <!-- 答题排行标签 -->
+            <div class="tab-content" id="tab-challenge" style="display:none;">
+                <div id="challenge-stats"></div>
+            </div>
         </div>
     </div>
 
+    <footer class="site-footer">
+        <div class="wrap">© 2025 以史为鉴，凝聚力量</div>
+    </footer>
+
     <script src="main.js"></script>
     <script>
+        // 标签页切换
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tab = btn.dataset.tab;
+                document.querySelectorAll('.tab-btn').forEach(b => {
+                    b.style.borderBottom = '3px solid transparent';
+                    b.style.color = '#666';
+                });
+                btn.style.borderBottom = '3px solid #c62828';
+                btn.style.color = '#c62828';
+
+                document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
+                document.getElementById('tab-' + tab).style.display = 'block';
+            });
+        });
+
         // 加载用户信息
         function loadUserProfile() {
             const userName = localStorage.getItem('login_user') || '游客';
             const userRole = localStorage.getItem('login_role') || 'user';
-
             document.getElementById('user-name').textContent = userName;
             document.getElementById('user-role').textContent = userRole === 'admin' ? '管理员' : '普通用户';
-
-            // 设置头像
-            const avatar = userName.charAt(0).toUpperCase();
-            document.getElementById('user-avatar').textContent = avatar;
+            document.getElementById('user-avatar').textContent = userName.charAt(0).toUpperCase();
         }
 
-        // 加载游戏统计数据
-        function loadGameStats() {
-            const stats = localStorage.getItem('gameStats');
-            const gameStats = stats ? JSON.parse(stats) : {
-                gamesPlayed: 0,
-                totalScore: 0
-            };
+        // 加载讨论区数据
+        function loadDiscussData() {
+            const posts = JSON.parse(localStorage.getItem('forum_posts_v1') || '[]');
+            const userName = localStorage.getItem('login_user') || '游客';
+            const myPosts = posts.filter(p => p.author === userName);
+            document.getElementById('discuss-posts').textContent = myPosts.length;
 
-            document.getElementById('games-played').textContent = gameStats.gamesPlayed || 0;
-            document.getElementById('total-score').textContent = gameStats.totalScore || 0;
-        }
-
-        // 加载最高分和难度统计
-        function loadBestScores() {
-            const rankings = localStorage.getItem('gameRankings');
-            const currentUser = localStorage.getItem('login_user') || '游客';
-
-            if (!rankings) {
-                return;
+            const container = document.getElementById('discuss-activity');
+            if (myPosts.length === 0) {
+                container.innerHTML = '<div style="text-align:center;padding:40px;color:#999;">暂无讨论记录</div>';
+            } else {
+                container.innerHTML = myPosts.slice(0, 5).map(p => `
+                    <div style="background:rgba(198,40,40,0.05);padding:15px;border-radius:8px;margin-bottom:10px;">
+                        <div style="font-weight:600;margin-bottom:5px;">${p.content.substring(0, 50)}...</div>
+                        <div style="font-size:12px;color:#999;">${new Date(p.timestamp).toLocaleString()}</div>
+                    </div>
+                `).join('');
             }
-
-            const allRankings = JSON.parse(rankings);
-            const userRankings = allRankings.filter(r => r.name === currentUser);
-
-            if (userRankings.length === 0) {
-                return;
-            }
-
-            // 计算最高分
-            const bestScore = Math.max(...userRankings.map(r => r.score));
-            document.getElementById('best-score').textContent = bestScore;
-
-            // 按难度统计最高分
-            const easyBest = Math.max(0, ...userRankings.filter(r => r.difficulty === 'easy').map(r => r.score));
-            const normalBest = Math.max(0, ...userRankings.filter(r => r.difficulty === 'normal').map(r => r.score));
-            const hardBest = Math.max(0, ...userRankings.filter(r => r.difficulty === 'hard').map(r => r.score));
-
-            document.getElementById('easy-best').textContent = easyBest + ' 分';
-            document.getElementById('normal-best').textContent = normalBest + ' 分';
-            document.getElementById('hard-best').textContent = hardBest + ' 分';
         }
 
-        // 加载成就数据
-        function loadAchievements() {
-            // 成就定义（与游戏中保持一致）
-            const achievementDefs = {
-                firstKill: {
-                    title: "首杀建功",
-                    desc: "击杀第一个敌人",
-                    icon: "🎯"
-                },
-                score50: {
-                    title: "抗战新兵",
-                    desc: "达到50分",
-                    icon: "🎖️"
-                },
-                score100: {
-                    title: "优秀战士",
-                    desc: "达到100分",
-                    icon: "🏅"
-                },
-                score200: {
-                    title: "抗战英雄",
-                    desc: "达到200分",
-                    icon: "⭐"
-                },
-                combo3: {
-                    title: "精准射击",
-                    desc: "连杀3次",
-                    icon: "🎯"
-                },
-                combo5: {
-                    title: "百步穿杨",
-                    desc: "连杀5次",
-                    icon: "🏹"
-                },
-                combo10: {
-                    title: "神枪手",
-                    desc: "连杀10次",
-                    icon: "🔫"
-                },
-                survive3min: {
-                    title: "坚守阵地",
-                    desc: "存活3分钟",
-                    icon: "🛡️"
-                },
-                survive5min: {
-                    title: "钢铁长城",
-                    desc: "存活5分钟",
-                    icon: "🏰"
-                },
-                perfectDefense: {
-                    title: "完美防守",
-                    desc: "零失误击杀20个敌人",
-                    icon: "💎"
-                },
-                eventSurvivor: {
-                    title: "历史见证者",
-                    desc: "完成一次历史事件",
-                    icon: "📜"
+        // 加载竞赛数据
+        async function loadContestData() {
+            const userName = localStorage.getItem('login_user') || '游客';
+
+            try {
+                // 从服务器加载用户的投稿作品
+                const response = await fetch(`/api/submissions?userId=${encodeURIComponent(userName)}`);
+                const data = await response.json();
+
+                if (data.ok && data.submissions) {
+                    const myWorks = data.submissions.filter(s => s.status === 'published');
+                    document.getElementById('contest-works').textContent = myWorks.length;
+
+                    const container = document.getElementById('contest-activity');
+                    if (myWorks.length === 0) {
+                        container.innerHTML = '<div style="text-align:center;padding:40px;color:#999;">暂无竞赛作品</div>';
+                    } else {
+                        container.innerHTML = myWorks.slice(0, 5).map(w => {
+                            const date = new Date(w.createdAt).toLocaleString('zh-CN', {
+                                year: 'numeric',
+                                month: '2-digit',
+                                day: '2-digit',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            });
+                            return `
+                                <div style="background:rgba(198,40,40,0.05);padding:15px;border-radius:8px;margin-bottom:10px;cursor:pointer;transition:all 0.3s;" 
+                                     onmouseover="this.style.background='rgba(198,40,40,0.1)'" 
+                                     onmouseout="this.style.background='rgba(198,40,40,0.05)'"
+                                     onclick="location.href='contest_works.html?id=${w.id}'">
+                                    <div style="display:flex;justify-content:space-between;align-items:start;">
+                                        <div style="flex:1;">
+                                            <div style="font-weight:600;margin-bottom:5px;font-size:16px;">${w.title}</div>
+                                            <div style="font-size:12px;color:#999;margin-bottom:8px;">${date}</div>
+                                            <div style="display:flex;gap:15px;font-size:13px;color:#666;">
+                                                <span>👍 ${w.votes || 0} 投票</span>
+                                                <span>👁️ ${w.views || 0} 浏览</span>
+                                                ${w.featured ? '<span style="color:#ffd700;">⭐ 精选</span>' : ''}
+                                            </div>
+                                        </div>
+                                        <div style="background:rgba(198,40,40,0.1);padding:4px 12px;border-radius:12px;font-size:12px;color:#c62828;">
+                                            ${w.category || '文章'}
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('');
+                    }
+                } else {
+                    document.getElementById('contest-works').textContent = '0';
+                    document.getElementById('contest-activity').innerHTML = '<div style="text-align:center;padding:40px;color:#999;">暂无竞赛作品</div>';
                 }
-            };
-
-            // 从 localStorage 读取成就状态（假设游戏会保存）
-            // 这里简化处理，默认所有成就未解锁
-            const achievementsDisplay = document.getElementById('achievements-display');
-            achievementsDisplay.innerHTML = '';
-
-            let unlockedCount = 0;
-
-            for (let key in achievementDefs) {
-                const ach = achievementDefs[key];
-                const isUnlocked = false; // 实际应该从 localStorage 读取
-
-                const badge = document.createElement('div');
-                badge.className = 'achievement-badge' + (isUnlocked ? ' unlocked' : '');
-                badge.innerHTML = `
-                    <div class="icon">${ach.icon}</div>
-                    <div class="name">${ach.title}</div>
-                    <div class="desc">${ach.desc}</div>
-                `;
-
-                achievementsDisplay.appendChild(badge);
-
-                if (isUnlocked) unlockedCount++;
+            } catch (error) {
+                console.error('加载竞赛数据失败:', error);
+                document.getElementById('contest-works').textContent = '0';
+                document.getElementById('contest-activity').innerHTML = '<div style="text-align:center;padding:40px;color:#f44336;">加载失败，请刷新页面重试</div>';
             }
-
-            document.getElementById('achievements-count').textContent = `${unlockedCount}/${Object.keys(achievementDefs).length}`;
         }
 
-        // 页面加载时初始化
+        // 加载游戏数据
+        function loadGameData() {
+            const stats = JSON.parse(localStorage.getItem('gameStats') || '{"gamesPlayed":0,"totalScore":0}');
+            document.getElementById('games-played').textContent = stats.gamesPlayed || 0;
+
+            const container = document.getElementById('game-stats');
+            container.innerHTML = `
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;">
+                    <div style="background:rgba(198,40,40,0.05);padding:20px;border-radius:8px;border-left:4px solid #c62828;">
+                        <div style="font-size:14px;color:#666;">总局数</div>
+                        <div style="font-size:28px;font-weight:bold;color:#c62828;">${stats.gamesPlayed || 0}</div>
+                    </div>
+                    <div style="background:rgba(198,40,40,0.05);padding:20px;border-radius:8px;border-left:4px solid #c62828;">
+                        <div style="font-size:14px;color:#666;">累计得分</div>
+                        <div style="font-size:28px;font-weight:bold;color:#c62828;">${stats.totalScore || 0}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 加载答题数据
+        function loadChallengeData() {
+            const userName = localStorage.getItem('login_user') || '游客';
+            const rankings = JSON.parse(localStorage.getItem('quiz_rankings') || '[]');
+            const userRankings = rankings.filter(r => r.name === userName).sort((a, b) => b.score - a.score);
+
+            const bestScore = userRankings.length > 0 ? userRankings[0].score : 0;
+            document.getElementById('quiz-score').textContent = bestScore;
+
+            const container = document.getElementById('challenge-stats');
+            if (userRankings.length === 0) {
+                container.innerHTML = '<div style="text-align:center;padding:40px;color:#999;">暂无答题记录</div>';
+            } else {
+                container.innerHTML = userRankings.slice(0, 5).map((r, i) => `
+                    <div style="background:rgba(198,40,40,0.05);padding:15px;border-radius:8px;margin-bottom:10px;display:flex;justify-content:space-between;">
+                        <div>
+                            <div style="font-weight:600;">第 ${i + 1} 次答题</div>
+                            <div style="font-size:12px;color:#999;">答对 ${r.correct}/${r.total} 题</div>
+                        </div>
+                        <div style="font-size:24px;font-weight:bold;color:#c62828;">${r.score}分</div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // 页面加载
         window.addEventListener('load', () => {
             loadUserProfile();
-            loadGameStats();
-            loadBestScores();
-            loadAchievements();
+            loadDiscussData();
+            loadContestData();
+            loadGameData();
+            loadChallengeData();
         });
     </script>
 </body>
