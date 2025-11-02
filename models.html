@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D历史文物展馆 - 以史为鉴，凝聚力量</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <style>
+        .models-page {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+            min-height: 100vh;
+        }
+        
+        .models-header {
+            background: linear-gradient(135deg, #c62828 0%, #8b0000 100%);
+            padding: 40px 20px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .models-header h1 {
+            color: #ffd700;
+            font-size: 42px;
+            margin: 0 0 15px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            font-weight: bold;
+        }
+        
+        .models-header p {
+            color: #fff;
+            font-size: 18px;
+            margin: 0;
+            opacity: 0.95;
+        }
+        
+        .models-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .models-intro {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(198, 40, 40, 0.3);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 40px;
+            color: #000;
+            text-align: center;
+        }
+        
+        .models-intro h2 {
+            color: #c62828;
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+        
+        .models-intro p {
+            font-size: 16px;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+        
+        .model-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 40px;
+            margin-top: 30px;
+        }
+        
+        .model-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(198, 40, 40, 0.3);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        
+        .model-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(198, 40, 40, 0.6);
+            box-shadow: 0 12px 48px rgba(198, 40, 40, 0.3);
+        }
+        
+        .model-header {
+            background: linear-gradient(135deg, rgba(198, 40, 40, 0.8), rgba(139, 0, 0, 0.8));
+            padding: 20px;
+            border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+        }
+        
+        .model-header h3 {
+            color: #ffd700;
+            font-size: 24px;
+            margin: 0 0 10px 0;
+            font-weight: bold;
+        }
+        
+        .model-header .model-badge {
+            display: inline-block;
+            background: rgba(255, 215, 0, 0.2);
+            color: #ffd700;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            border: 1px solid rgba(255, 215, 0, 0.4);
+        }
+        
+        .model-description {
+            padding: 20px;
+            color: #000;
+            font-size: 15px;
+            line-height: 1.6;
+            background: rgba(245, 245, 245, 0.5);
+        }
+        
+        .model-viewer {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+        
+        .model-viewer iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .model-info {
+            padding: 20px;
+            background: rgba(245, 245, 245, 0.8);
+        }
+        
+        .model-info h4 {
+            color: #c62828;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        
+        .model-info ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .model-info li {
+            color: #000;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            font-size: 14px;
+        }
+        
+        .model-info li:last-child {
+            border-bottom: none;
+        }
+        
+        .model-info li::before {
+            content: "▪ ";
+            color: #c62828;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        
+        .controls-hint {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(198, 40, 40, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .controls-hint h4 {
+            color: #c62828;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        
+        .controls-hint p {
+            color: #000;
+            font-size: 14px;
+            margin: 5px 0;
+        }
+        
+        .back-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 25px;
+            background: rgba(198, 40, 40, 0.9);
+            color: white;
+            border: 2px solid #ffd700;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            z-index: 1000;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .back-button:hover {
+            background: #c62828;
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+        
+        @media (max-width: 768px) {
+            .model-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            .model-viewer {
+                height: 350px;
+            }
+            .models-header h1 {
+                font-size: 28px;
+            }
+            .models-header p {
+                font-size: 14px;
+            }
+        }
+        /* 加载动画 */
+        
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            animation: fadeOut 2s ease-out forwards;
+            animation-delay: 1s;
+        }
+        
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                pointer-events: none;
+            }
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 215, 0, 0.3);
+            border-top-color: #ffd700;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body class="models-page">
+    <a href="index.html" class="back-button">🏠 返回主页</a>
+
+    <div class="models-header">
+        <h1>🏛️ 3D历史文物展馆</h1>
+        <p>铭记历史 · 缅怀先烈 · 珍爱和平</p>
+    </div>
+
+    <div class="models-container">
+        <div class="models-intro">
+            <h2>📜 展馆简介</h2>
+            <p>
+                欢迎来到3D历史文物展馆。这里收藏了抗日战争时期的珍贵文物3D模型， 通过现代科技手段，让您可以全方位、多角度地观赏这些承载着历史记忆的文物。
+            </p>
+            <p>
+                每一件文物都见证了中华民族不屈不挠的抗战精神， 让我们通过这些实物，铭记历史，缅怀先烈，珍爱和平。
+            </p>
+        </div>
+
+        <div class="model-grid">
+            <!-- 纪念碑模型 -->
+            <div class="model-card">
+                <div class="model-header">
+                    <h3>🏆 庆祝抗日战争胜利80周年纪念碑</h3>
+                    <span class="model-badge">纪念性文物</span>
+                </div>
+
+                <div class="model-viewer">
+                    <div class="loading-overlay">
+                        <div class="loading-spinner"></div>
+                    </div>
+                    <iframe title="庆祝抗日战争胜利80周年" frameborder="0" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share
+                        src="https://sketchfab.com/models/859f90b38a674d53b61a9654f55a9893/embed">
+                    </iframe>
+                </div>
+
+                <div class="model-description">
+                    <p>
+                        这座纪念碑是为纪念中国人民抗日战争暨世界反法西斯战争胜利80周年而建立。 纪念碑巍然矗立，象征着中华民族不屈的精神和对和平的永恒追求。
+                    </p>
+                </div>
+
+                <div class="model-info">
+                    <h4>📋 文物信息</h4>
+                    <ul>
+                        <li>类型：纪念性建筑模型</li>
+                        <li>时期：现代纪念性文物</li>
+                        <li>意义：纪念抗战胜利，传承红色精神</li>
+                        <li>特点：庄严肃穆，富有纪念意义</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 汉阳造步枪 -->
+            <div class="model-card">
+                <div class="model-header">
+                    <h3>🔫 汉阳造步枪</h3>
+                    <span class="model-badge">武器装备</span>
+                </div>
+
+                <div class="model-viewer">
+                    <div class="loading-overlay">
+                        <div class="loading-spinner"></div>
+                    </div>
+                    <iframe title="汉阳造步枪" frameborder="0" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share src="https://sketchfab.com/models/59732845e6344a84b0cbb6e6fde94ec4/embed">
+                    </iframe>
+                </div>
+
+                <div class="model-description">
+                    <p>
+                        汉阳造步枪是中国近代史上最著名的国产步枪之一，在抗日战争中被广泛使用。 它见证了中国军民浴血奋战、保家卫国的光辉历程，是中华民族不屈精神的象征。
+                    </p>
+                </div>
+
+                <div class="model-info">
+                    <h4>📋 文物信息</h4>
+                    <ul>
+                        <li>全称：汉阳兵工厂仿制毛瑟步枪</li>
+                        <li>生产时期：1896年-1944年</li>
+                        <li>口径：7.92毫米</li>
+                        <li>历史地位：中国近代最重要的国产步枪</li>
+                        <li>使用范围：北伐战争、抗日战争等重大战役</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 中正式步枪 -->
+            <div class="model-card">
+                <div class="model-header">
+                    <h3>🔫 中正式步枪</h3>
+                    <span class="model-badge">武器装备</span>
+                </div>
+
+                <div class="model-viewer">
+                    <div class="loading-overlay">
+                        <div class="loading-spinner"></div>
+                    </div>
+                    <iframe title="中正式步枪" frameborder="0" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share src="https://sketchfab.com/models/a6fd4e9fea13444da2efa8d9ce3d7287/embed">
+                    </iframe>
+                </div>
+
+                <div class="model-description">
+                    <p>
+                        中正式步枪是抗日战争时期中国军队的主力步枪之一，性能优良，威力强大。 它陪伴中国军人浴血奋战，在淞沪会战、台儿庄战役等重大战役中发挥了重要作用。
+                    </p>
+                </div>
+
+                <div class="model-info">
+                    <h4>📋 文物信息</h4>
+                    <ul>
+                        <li>全称：24式中正式步枪</li>
+                        <li>研制时期：1935年</li>
+                        <li>口径：7.92毫米</li>
+                        <li>特点：精度高、射程远、可靠性强</li>
+                        <li>装备部队：国民革命军主力部队</li>
+                        <li>历史意义：抗日战争主要武器之一</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 雾社原住民抗日群像 -->
+            <div class="model-card">
+                <div class="model-header">
+                    <h3>🗿 雾社原住民抗日群像</h3>
+                    <span class="model-badge">纪念雕塑</span>
+                </div>
+
+                <div class="model-viewer">
+                    <div class="loading-overlay">
+                        <div class="loading-spinner"></div>
+                    </div>
+                    <iframe title="雾社原住民抗日群像2" frameborder="0" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share
+                        src="https://sketchfab.com/models/78af6caf748144c7b4c5029456d95344/embed">
+                    </iframe>
+                </div>
+
+                <div class="model-description">
+                    <p>
+                        雾社事件是台湾原住民抗日历史中最悲壮的一页。1930年，赛德克族人在莫那·鲁道带领下， 为捍卫族人尊严和传统文化，发动了震撼台湾的武装起义。这座群像雕塑纪念了那些为自由和尊严而战的英雄们。
+                    </p>
+                </div>
+
+                <div class="model-info">
+                    <h4>📋 文物信息</h4>
+                    <ul>
+                        <li>事件时间：1930年10月27日</li>
+                        <li>地点：台湾南投县雾社地区</li>
+                        <li>领导者：莫那·鲁道（赛德克族马赫坡社头目）</li>
+                        <li>参与族群：赛德克族六个部落</li>
+                        <li>历史意义：台湾原住民抗日运动的重要象征</li>
+                        <li>纪念价值：展现多民族共同抗日的历史</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 抗日大刀 -->
+            <div class="model-card">
+                <div class="model-header">
+                    <h3>⚔️ 抗日大刀</h3>
+                    <span class="model-badge">冷兵器</span>
+                </div>
+
+                <div class="model-viewer">
+                    <div class="loading-overlay">
+                        <div class="loading-spinner"></div>
+                    </div>
+                    <iframe title="抗日大刀" frameborder="0" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share src="https://sketchfab.com/models/759be2fd5c034b2188b30a3b8ea753ea/embed">
+                    </iframe>
+                </div>
+
+                <div class="model-description">
+                    <p>
+                        抗日大刀是中国军民在抗日战争中使用的重要冷兵器，尤其是29军大刀队在喜峰口、卢沟桥等战役中的英勇表现， 成为抗日战争史上的光辉一页。"大刀向鬼子们的头上砍去"的歌声，至今仍激励着中华儿女。
+                    </p>
+                </div>
+
+                <div class="model-info">
+                    <h4>📋 文物信息</h4>
+                    <ul>
+                        <li>类型：单刃长刀</li>
+                        <li>刀身长度：约80-100厘米</li>
+                        <li>重量：约2-3公斤</li>
+                        <li>著名部队：29军大刀队</li>
+                        <li>著名战役：喜峰口战役、卢沟桥事变</li>
+                        <li>精神象征："大刀向鬼子们的头上砍去"</li>
+                        <li>历史地位：近战肉搏的英勇象征</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 毛主席雕塑 -->
+            <div class="model-card">
+                <div class="model-header">
+                    <h3>🌟 毛主席雕塑像</h3>
+                    <span class="model-badge">领袖雕像</span>
+                </div>
+
+                <div class="model-viewer">
+                    <div class="loading-overlay">
+                        <div class="loading-spinner"></div>
+                    </div>
+                    <iframe title="毛主席雕塑像" frameborder="0" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share
+                        src="https://sketchfab.com/models/ef18c25e1e094cf99e2b377ad7377d05/embed">
+                    </iframe>
+                </div>
+
+                <div class="model-description">
+                    <p>
+                        毛泽东主席是中国人民的伟大领袖，在抗日战争时期，他领导中国共产党和人民军队， 坚持持久战战略，建立敌后根据地，为抗日战争的最终胜利作出了卓越贡献。 他的《论持久战》等著作为抗战指明了正确方向。
+                    </p>
+                </div>
+
+                <div class="model-info">
+                    <h4>📋 人物信息</h4>
+                    <ul>
+                        <li>生卒年月：1893年12月26日 - 1976年9月9日</li>
+                        <li>主要职务：中共中央主席、中华人民共和国主席</li>
+                        <li>抗战贡献：领导敌后战场，提出持久战理论</li>
+                        <li>重要著作：《论持久战》《论联合政府》等</li>
+                        <li>战略思想：持久战、人民战争、游击战</li>
+                        <li>历史地位：中国革命和建设的伟大领袖</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls-hint">
+            <h4>🎮 操作提示</h4>
+            <p>🖱️ 鼠标左键拖动：旋转模型 | 🖱️ 鼠标滚轮：缩放模型 | 🖱️ 鼠标右键拖动：平移视角</p>
+            <p>📱 触摸设备：单指拖动旋转 | 双指缩放 | 双指拖动平移</p>
+            <p>💡 提示：点击模型可查看更多细节，部分模型支持VR模式体验</p>
+        </div>
+    </div>
+
+    <footer class="site-footer" style="background: rgba(0, 0, 0, 0.5); margin-top: 40px;">
+        <div class="wrap" style="text-align: center; color: #fff;">
+            <p>© 2025 以史为鉴，凝聚力量 — 3D历史文物展馆</p>
+            <p style="font-size: 12px; opacity: 0.7; margin-top: 10px;">
+                模型来源：Sketchfab | 感谢原作者的精心制作
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // 模型卡片进入视口动画
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '0';
+                    entry.target.style.transform = 'translateY(30px)';
+                    setTimeout(() => {
+                        entry.target.style.transition = 'all 0.6s ease-out';
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }, 100);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.model-card').forEach(card => {
+            observer.observe(card);
+        });
+
+        // 页面加载提示
+        window.addEventListener('load', () => {
+            console.log('3D历史文物展馆加载完成！');
+        });
+    </script>
+</body>
+
+</html>

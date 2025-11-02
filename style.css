@@ -1,0 +1,2118 @@
+/* ===== 设计令牌（自动暗黑） ===== */
+
+:root {
+    /* 主色（红色，契合爱国与历史主题）*/
+    --accent: #c62828;
+    --accent-light: #e53935;
+    --accent-dark: #8e0000;
+    /* 灰阶 */
+    --bg: #c62828;
+    /* 全站红色背景 */
+    --surface: #ffffff;
+    --border: #e5e9f2;
+    --muted: #6b7280;
+    --text: #111827;
+    /* 圆角 & 阴影 */
+    --radius: 12px;
+    --shadow-sm: 0 1px 2px 0 rgba(0 0 0 / .05);
+    --shadow: 0 4px 12px -2px rgba(0 0 0 / .08);
+    --shadow-lg: 0 10px 24px -4px rgba(0 0 0 / .12);
+    /* 动效 */
+    --transition: all .25s cubic-bezier(.4, 0, .2, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+     :root {
+        --bg: #c62828;
+        /* 暗色模式亦保持红色背景 */
+        --surface: #161b22;
+        --border: #30363d;
+        --muted: #8b949e;
+        --text: #f0f6fc;
+        --shadow: 0 4px 12px -2px rgba(0 0 0 / .25);
+        --shadow-lg: 0 10px 24px -4px rgba(0 0 0 / .35);
+    }
+}
+
+
+/* ===== 重置 & 基础 ===== */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Inter", "Segoe UI", Roboto, "Helvetica Neue", "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+
+/* ===== 全站红色层次背景（渐变与光斑） ===== */
+
+:root {
+    /* 页面背景渐变：柔和红色层次与高亮光斑 */
+    --bg-page: radial-gradient(1000px 500px at 10% 0%, #fff5f5 0%, #ffe8e8 35%, transparent 60%), radial-gradient(800px 400px at 95% 10%, #fff0f0 0%, #ffdede 40%, transparent 65%), linear-gradient(135deg, #fff7f7, #ffe5e5);
+}
+
+@media (prefers-color-scheme: dark) {
+     :root {
+        --bg-page: radial-gradient(1000px 500px at 12% 2%, rgba(255, 220, 220, .18) 0%, rgba(255, 200, 200, .10) 35%, transparent 60%), linear-gradient(135deg, #8e0000, #c62828);
+    }
+}
+
+
+/* 强制应用到页面背景（不影响卡片与组件的 surface 背景） */
+
+body {
+    background: var(--bg-page) !important;
+    position: relative;
+}
+
+
+/* 添加装饰性背景图案 */
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: radial-gradient(circle at 20% 50%, rgba(198, 40, 40, 0.03) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(198, 40, 40, 0.03) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+
+/* 页面级背景图设置 */
+
+body.index-page {
+    background: var(--bg-page) !important;
+}
+
+body.ai-page {
+    background: var(--bg-page) !important;
+}
+
+
+/* 系统字体栈备选 */
+
+@font-face {
+    font-family: "Inter";
+    font-style: normal;
+    font-weight: 400 700;
+    src: local("Inter"), url("https://rsms.me/inter/inter.css") format("css");
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+
+/* ===== 布局框架 ===== */
+
+.wrap {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 24px 16px;
+}
+
+
+/* ===== 头部 ===== */
+
+.site-header {
+    background: var(--surface);
+    color: var(--text);
+    padding: 20px 0;
+    box-shadow: none;
+    border-bottom: 1px solid var(--border);
+}
+
+.site-header h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: .5px;
+}
+
+
+/* AI 页面 LOGO 样式 */
+
+.ai-logo {
+    height: 40px;
+    width: 40px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 10px;
+    border-radius: 50%;
+    object-fit: cover;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .15));
+}
+
+.main-nav {
+    margin-top: 12px;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.main-nav a {
+    font-size: 15px;
+    opacity: .9;
+    transition: var(--transition);
+    position: relative;
+    padding: 8px 16px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, rgba(198, 40, 40, 0.05), rgba(198, 40, 40, 0.1));
+}
+
+.main-nav a::before {
+    content: "🎯";
+    margin-right: 6px;
+    font-size: 14px;
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: var(--transition);
+    display: inline-block;
+}
+
+.main-nav a:hover {
+    opacity: 1;
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, rgba(198, 40, 40, 0.1), rgba(198, 40, 40, 0.15));
+    box-shadow: 0 4px 12px rgba(198, 40, 40, 0.2);
+}
+
+.main-nav a:hover::before {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+
+/* ===== 英雄区 ===== */
+
+.hero {
+    margin-top: 8px;
+    padding: 24px;
+    /* 红色主题渐变背景 */
+    background: linear-gradient(135deg, #fff5f5, #fde7e7);
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: column;
+    /* 让图片在文字上方 */
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+}
+
+.hero h2 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 800;
+}
+
+.hero p {
+    margin: 8px 0 0;
+    color: var(--muted);
+}
+
+
+/* 英雄区内容居中 */
+
+.hero-content {
+    text-align: center;
+    width: 100%;
+    max-width: 680px;
+    /* 与图片保持一致的内容宽度 */
+    margin: 0 auto;
+    /* 居中内容区域 */
+    /* 设置背景为首页图片 */
+    background-image: url('images/index图片.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: var(--radius);
+    padding: 24px;
+    /* 提升可读性与内边距 */
+    position: relative;
+    overflow: hidden;
+}
+
+
+/* 背景遮罩提升文字可读性 */
+
+.hero-content::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, .25);
+    z-index: 0;
+}
+
+.hero-content>* {
+    position: relative;
+    z-index: 1;
+    color: #fff;
+}
+
+
+/* 移动端隐藏两侧装饰，保留主要信息 */
+
+@media (max-width: 640px) {
+    .hero {
+        padding: 16px;
+    }
+    .hero-side {
+        display: none;
+    }
+}
+
+
+/* 主页整页左右侧椰子树（门神风格，对称庄严） */
+
+body.index-page::before,
+body.index-page::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width: 22vw;
+    /* 随视口缩放，占据整页侧翼 */
+    min-width: 240px;
+    /* 下限，确保形体不失真 */
+    max-width: 360px;
+    /* 上限，避免压缩中间内容过度 */
+    background-image: url('images/椰子树.png');
+    background-repeat: no-repeat;
+    background-position: center 85%;
+    /* 略微上移，视觉更协调 */
+    background-size: contain;
+    pointer-events: none;
+    /* 不遮挡交互 */
+    opacity: 1;
+    /* 取消半透明，显得更自然 */
+    filter: none;
+    /* 去掉阴影与滤镜，贴合页面 */
+    z-index: 0;
+    /* 置于内容层之下 */
+}
+
+body.index-page::before {
+    left: 0;
+}
+
+body.index-page::after {
+    right: 0;
+    transform: scaleX(-1);
+}
+
+
+/* 统一主题：禁用旧装饰元素 */
+
+body.index-page::before,
+body.index-page::after {
+    display: none !important;
+}
+
+
+/* 提升内容层级，确保文本卡片在树之上 */
+
+.site-header,
+.wrap,
+.site-footer {
+    position: relative;
+    z-index: 1;
+}
+
+
+/* 移动端隐藏整页装饰，保留主体可读性 */
+
+@media (max-width: 640px) {
+    body.index-page::before,
+    body.index-page::after {
+        display: none;
+    }
+}
+
+
+/* 英雄卡片内的图片样式 */
+
+.hero-inline {
+    width: 100%;
+    max-width: 680px;
+    /* 图片与文字同宽 */
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    /* 居中图片 */
+    object-fit: contain;
+    filter: drop-shadow(0 6px 12px rgba(0, 0, 0, .12));
+}
+
+
+/* --- 情景页面的英雄区定制 --- */
+
+.scenarios-hero {
+    background: linear-gradient(135deg, #e0f2f1, #c8e6e5);
+    /* 稍微不同的渐变色 */
+}
+
+
+/* ===== 主页可点击卡片 ===== */
+
+.card-link {
+    display: block;
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+}
+
+.card-link::before {
+    content: "";
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(135deg, #c62828, #e53935, #ff5252);
+    border-radius: var(--radius);
+    opacity: 0;
+    transition: var(--transition);
+    z-index: -1;
+}
+
+.card-link:hover::before {
+    opacity: 0.15;
+}
+
+.card-link:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-4px) scale(1.02);
+    border-color: rgba(198, 40, 40, 0.3);
+}
+
+.card-link .title {
+    font-weight: 700;
+    font-size: 20px;
+    position: relative;
+    padding-left: 32px;
+}
+
+.card-link .title::before {
+    position: absolute;
+    left: 0;
+    font-size: 22px;
+}
+
+
+/* 为每个卡片添加不同的图标 */
+
+.card-link:nth-child(1) .title::before {
+    content: "🤖";
+}
+
+
+/* AI 智能问答 */
+
+.card-link:nth-child(2) .title::before {
+    content: "📚";
+}
+
+
+/* 知识分享 */
+
+.card-link:nth-child(3) .title::before {
+    content: "🎵";
+}
+
+
+/* 文化传播 */
+
+.card-link:nth-child(4) .title::before {
+    content: "💬";
+}
+
+
+/* 讨论区 */
+
+.card-link:nth-child(5) .title::before {
+    content: "🎯";
+}
+
+
+/* 游戏 */
+
+.card-link:nth-child(6) .title::before {
+    content: "🏛️";
+}
+
+
+/* 3D展馆 */
+
+.card-link .desc {
+    color: var(--muted);
+    margin-top: 8px;
+    line-height: 1.6;
+}
+
+
+/* ===== 情景卡片增强 (新样式) ===== */
+
+.scenarios-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    padding: 32px 0;
+}
+
+.scenario-card {
+    display: flex;
+    /* 让图片和文字并排 */
+    align-items: center;
+    /* 垂直居中 */
+    padding: 16px;
+    /* 调整内边距 */
+    gap: 16px;
+    /* 图片和文字之间的间距 */
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+    border: 1px solid var(--border);
+    text-align: left;
+    /* 确保文本左对齐 */
+}
+
+.scenario-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+.scenario-card img {
+    width: 100px;
+    /* 固定图片宽度 */
+    height: 70px;
+    /* 固定图片高度 */
+    object-fit: cover;
+    /* 确保图片覆盖区域 */
+    border-radius: 8px;
+    /* 图片圆角 */
+    flex-shrink: 0;
+    /* 防止图片在小屏幕下收缩 */
+}
+
+.scenario-card .card-content {
+    flex-grow: 1;
+    /* 内容区域占据剩余空间 */
+}
+
+.scenario-card .title {
+    font-weight: 700;
+    font-size: 18px;
+    /* 调整标题字号 */
+    margin-bottom: 4px;
+}
+
+.scenario-card .desc {
+    color: var(--muted);
+    font-size: 14px;
+    /* 调整描述字号 */
+    line-height: 1.4;
+}
+
+
+/* --- 情景动作区（提示和返回按钮） --- */
+
+.scenarios-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 24px;
+    padding: 16px 0;
+    border-top: 1px solid var(--border);
+}
+
+.scenarios-actions .tip {
+    font-size: 14px;
+    color: var(--muted);
+    margin: 0;
+}
+
+
+/* --- 通用按钮样式 --- */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 18px;
+    border-radius: var(--radius);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    text-decoration: none;
+    /* 确保按钮链接没有下划线 */
+}
+
+.btn-secondary {
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+    background: var(--bg);
+    box-shadow: var(--shadow-sm);
+    transform: translateY(-1px);
+}
+
+.btn-secondary:active {
+    transform: scale(.98);
+}
+
+
+/* --- 待开放卡片样式 --- */
+
+.scenario-card.coming-soon {
+    opacity: 0.6;
+    cursor: not-allowed;
+    position: relative;
+}
+
+.scenario-card.coming-soon::after {
+    content: "即将推出";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 16px;
+    pointer-events: none;
+    /* 确保不影响底层点击，尽管这里已禁用 */
+}
+
+.scenario-card.coming-soon:hover {
+    box-shadow: var(--shadow);
+    /* 移除hover的阴影放大效果 */
+    transform: none;
+    /* 移除hover的位移效果 */
+}
+
+
+/* ===== 主内容网格 ===== */
+
+.main-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    padding: 32px 0;
+}
+
+
+/* ===== 通用卡片 ===== */
+
+.card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+}
+
+.card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+
+/* ===== 登录表单 ===== */
+
+.login-card {
+    max-width: 420px;
+    margin: 0 auto;
+}
+
+.login-form .form-group {
+    margin-bottom: 12px;
+}
+
+.login-form label {
+    display: block;
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 6px;
+}
+
+.form-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 15px;
+    background: var(--bg);
+    color: var(--text);
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(198, 40, 40, .12);
+}
+
+.form-error {
+    color: var(--accent);
+    font-size: 13px;
+    margin-top: 6px;
+    min-height: 18px;
+}
+
+.form-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 6px;
+}
+
+.small-link {
+    font-size: 14px;
+    color: var(--accent);
+    text-decoration: underline;
+}
+
+
+/* ===== AI 交互区 ===== */
+
+.ai-box {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+#ai-input {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    font-size: 15px;
+    transition: var(--transition);
+}
+
+#ai-input:focus {
+    outline: none;
+    border-color: var(--accent-light);
+    box-shadow: 0 0 0 3px rgba(23 105 170 / .15);
+}
+
+#ai-submit {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 10px 18px;
+    border-radius: var(--radius);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+#ai-submit:hover {
+    background: var(--accent-light);
+}
+
+#ai-submit:active {
+    transform: scale(.96);
+}
+
+
+/* ===== 数字人（小史鉴） ===== */
+
+.digital-human {
+    width: 180px;
+    flex: 0 0 180px;
+    /* 在回答卡片左侧占位 */
+    display: flex;
+    flex-direction: column;
+    /* 控件区位于头像下方 */
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.dh-avatar {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background: radial-gradient(70% 70% at 40% 35%, #ffe8e8 0%, #ffcccc 45%, #ffb3b3 100%);
+    box-shadow: var(--shadow);
+    animation: dh-breathe 6s ease-in-out infinite;
+}
+
+.dh-eye {
+    position: absolute;
+    top: 42%;
+    width: 18px;
+    height: 18px;
+    background: #fff;
+    border: 2px solid rgba(0, 0, 0, .12);
+    box-shadow: inset 0 0 0 2px rgba(0, 0, 0, .06);
+    border-radius: 50%;
+    transform-origin: center;
+    animation: dh-blink 4s ease-in-out infinite;
+}
+
+.dh-eye.left {
+    left: 40px;
+}
+
+.dh-eye.right {
+    right: 40px;
+}
+
+
+/* 瞳孔跟随鼠标 */
+
+.dh-eye .pupil {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 8px;
+    height: 8px;
+    background: #1a1a1a;
+    border-radius: 50%;
+    transform: translate(-50%, -50%) translate(var(--look-x, 0), var(--look-y, 0));
+}
+
+@keyframes dh-blink {
+    0%,
+    92%,
+    100% {
+        transform: scaleY(1);
+    }
+    95% {
+        transform: scaleY(0.2);
+    }
+}
+
+.dh-mouth {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 16px;
+    border-radius: 30px/16px;
+    background: #d84343;
+    box-shadow: inset 0 -4px 0 rgba(0, 0, 0, .1);
+}
+
+.digital-human.speaking .dh-mouth {
+    animation: dh-talk 280ms ease-in-out infinite;
+}
+
+
+/* 说话嘴型加强瞬时弹动 */
+
+.digital-human.mouth-beat .dh-mouth {
+    transform: translateX(-50%) scaleY(1.15);
+}
+
+@keyframes dh-talk {
+    0%,
+    100% {
+        height: 16px;
+    }
+    50% {
+        height: 26px;
+    }
+}
+
+
+/* 呼吸与倾头 */
+
+@keyframes dh-breathe {
+    0%,
+    100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.02);
+    }
+}
+
+.digital-human:hover .dh-avatar {
+    transform: rotate(-2deg) scale(1.01);
+}
+
+
+/* 情绪表情：根据回答内容调整外观 */
+
+.digital-human.mood-smile .dh-mouth {
+    background: #e04848;
+    border-radius: 30px/20px;
+}
+
+.digital-human.mood-serious .dh-eye {
+    height: 14px;
+}
+
+.digital-human.mood-surprise .dh-mouth {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #d84343;
+}
+
+
+/* 数字人下方控件区（不遮挡头像） */
+
+.dh-controls {
+    display: flex;
+    flex-direction: column;
+    /* 纵向排列，避免横向溢出 */
+    width: 100%;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: nowrap;
+    /* 纵向排列不需要换行 */
+}
+
+.dh-controls .control-label {
+    font-size: 12px;
+    color: var(--muted);
+    margin-right: 6px;
+}
+
+.dh-controls .control-select {
+    appearance: none;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--text);
+    font-size: 13px;
+    width: 100%;
+    max-width: 160px;
+    /* 与头像容器匹配，防止冲出 */
+}
+
+.dh-controls .control-range {
+    width: 100%;
+    max-width: 160px;
+    /* 限制宽度，保证在数字人 div 内 */
+    accent-color: var(--accent);
+}
+
+.dh-voice,
+.dh-params {
+    display: flex;
+    flex-direction: column;
+    /* 每组控件纵向堆叠，紧凑不溢出 */
+    gap: 6px;
+    align-items: center;
+    width: 100%;
+}
+
+.dh-controls .btn,
+.dh-controls .btn-secondary {
+    padding: 8px 12px;
+    font-size: 13px;
+    border-radius: 999px;
+    /* 胶囊圆角按钮 */
+}
+
+
+/* 控件区按钮的柔和悬停，不使用整站红底 */
+
+.dh-controls .btn.btn-secondary {
+    background: #fff;
+    border: 1px solid var(--border);
+}
+
+.dh-controls .btn.btn-secondary:hover {
+    background: #f8f9fa;
+    box-shadow: var(--shadow-sm);
+    transform: translateY(-1px);
+}
+
+.dh-controls .btn.btn-secondary:active {
+    transform: scale(.98);
+}
+
+.ai-response {
+    margin-top: 16px;
+    padding: 16px;
+    border-left: 3px solid var(--accent);
+    background: var(--surface);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    white-space: pre-wrap;
+    font-size: 15px;
+    animation: fade-in .4s;
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+}
+
+
+/* 数字人可爱英雄风增强 */
+
+
+/* 头像金色内环与温和肤色已在 .dh-avatar 定义中体现，这里继续增强元素 */
+
+.dh-avatar::before {
+    content: "";
+    position: absolute;
+    inset: 6px;
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 2px rgba(198, 40, 40, .22), inset 0 0 18px rgba(198, 40, 40, .10);
+}
+
+
+/* 更大且有高光的眼睛 */
+
+.dh-eye {
+    width: 20px;
+    height: 20px;
+}
+
+.dh-eye .pupil::after {
+    content: "";
+    position: absolute;
+    right: -2px;
+    top: -2px;
+    width: 4px;
+    height: 4px;
+    background: rgba(255, 255, 255, .85);
+    border-radius: 50%;
+}
+
+
+/* 微笑嘴型更圆润，颜色渐变更有层次 */
+
+.dh-mouth {
+    height: 14px;
+    border-radius: 40px/18px;
+    background: linear-gradient(180deg, #e74c4c, #d84343);
+}
+
+@keyframes dh-talk {
+    0%,
+    100% {
+        height: 14px;
+    }
+    50% {
+        height: 26px;
+    }
+}
+
+
+/* 眉毛与腮红，让表情更可爱 */
+
+.dh-brow {
+    position: absolute;
+    top: 36%;
+    width: 34px;
+    height: 8px;
+    background: rgba(0, 0, 0, .12);
+    border-radius: 30px/10px;
+}
+
+.dh-brow.left {
+    left: 26px;
+    transform: rotate(-6deg);
+}
+
+.dh-brow.right {
+    right: 26px;
+    transform: rotate(6deg);
+}
+
+.digital-human.mood-smile .dh-brow {
+    opacity: .8;
+}
+
+.digital-human.mood-serious .dh-brow {
+    background: rgba(0, 0, 0, .22);
+    top: 35%;
+}
+
+.digital-human.mood-surprise .dh-brow {
+    opacity: .5;
+}
+
+.dh-cheek {
+    position: absolute;
+    bottom: 52px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: radial-gradient(10px 10px at 50% 50%, rgba(255, 120, 120, .45), rgba(255, 120, 120, 0));
+}
+
+.dh-cheek.left {
+    left: 32px;
+}
+
+.dh-cheek.right {
+    right: 32px;
+}
+
+.digital-human.speaking .dh-cheek {
+    filter: brightness(1.05);
+}
+
+
+/* 英雄头带与中心金星 */
+
+.dh-headband {
+    position: absolute;
+    top: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 130px;
+    height: 34px;
+    background: linear-gradient(180deg, #ff6b6b, var(--accent));
+    border-radius: 100px / 40px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, .08);
+}
+
+.dh-headband .star {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) rotate(18deg);
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 18px solid #f5d36e;
+}
+
+.dh-headband .star::after {
+    content: "";
+    position: absolute;
+    left: -10px;
+    top: 6px;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 18px solid #f5d36e;
+}
+
+
+/* 英雄徽章与披风 */
+
+.dh-badge {
+    position: absolute;
+    right: 22px;
+    bottom: 18px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: radial-gradient(14px 14px at 50% 45%, #ffeaa7, #f5d36e 60%, #e6b85c 100%);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .12), inset 0 0 0 2px rgba(255, 255, 255, .8);
+}
+
+.dh-badge::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+    width: 12px;
+    height: 12px;
+    background: linear-gradient(135deg, var(--accent), #e04848);
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+.dh-cape {
+    position: absolute;
+    bottom: -24px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 140px;
+    height: 64px;
+    background: linear-gradient(180deg, var(--accent), #b71c1c);
+    border-radius: 0 0 80px 80px;
+    filter: drop-shadow(0 6px 10px rgba(0, 0, 0, .15));
+    z-index: 0;
+}
+
+
+/* 军人主题（军帽、肩章、领口） */
+
+.digital-human.theme-soldier .dh-headband,
+.digital-human.theme-soldier .dh-cape,
+.digital-human.theme-soldier .dh-badge {
+    display: none;
+}
+
+.digital-human.theme-soldier .dh-hat {
+    position: absolute;
+    top: 0;
+    /* 置于头像内部，避免越界 */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 140px;
+    height: 58px;
+    background: linear-gradient(180deg, #7b8f6d, #617555);
+    border-radius: 90px 90px 28px 28px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, .12), inset 0 -6px 0 rgba(0, 0, 0, .08);
+    z-index: 3;
+}
+
+.digital-human.theme-soldier .dh-hat .brim {
+    position: absolute;
+    bottom: 0;
+    /* 帽檐与帽体贴合，避免溢出 */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 160px;
+    height: 18px;
+    background: #4e5f54;
+    border-radius: 50px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, .14);
+}
+
+.digital-human.theme-soldier .dh-hat .star {
+    position: absolute;
+    left: 50%;
+    top: 46%;
+    transform: translate(-50%, -50%) rotate(18deg);
+    width: 0;
+    height: 0;
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-bottom: 20px solid var(--accent);
+}
+
+.digital-human.theme-soldier .dh-hat .star::after {
+    content: "";
+    position: absolute;
+    left: -12px;
+    top: 6px;
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-top: 20px solid var(--accent);
+}
+
+.digital-human.theme-soldier .dh-epaulet {
+    position: absolute;
+    top: 74%;
+    width: 48px;
+    height: 18px;
+    background: linear-gradient(180deg, #7b8f6d, #617555);
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .12), inset 0 0 0 2px rgba(255, 255, 255, .35);
+    z-index: 1;
+}
+
+.digital-human.theme-soldier .dh-epaulet.left {
+    left: 18px;
+    transform: rotate(8deg);
+}
+
+.digital-human.theme-soldier .dh-epaulet.right {
+    right: 18px;
+    transform: rotate(-8deg);
+}
+
+.digital-human.theme-soldier .dh-epaulet::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 16px;
+    height: 4px;
+    background: #f5d36e;
+    border-radius: 3px;
+}
+
+.digital-human.theme-soldier .dh-collar {
+    position: absolute;
+    bottom: 6px;
+    width: 32px;
+    height: 26px;
+    background: linear-gradient(180deg, #7b8f6d, #617555);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    z-index: 1;
+}
+
+.digital-human.theme-soldier .dh-collar.left {
+    left: 58px;
+    transform: rotate(12deg);
+}
+
+.digital-human.theme-soldier .dh-collar.right {
+    right: 58px;
+    transform: rotate(-12deg);
+}
+
+
+/* ===== Markdown 美化 ===== */
+
+.markdown-body {
+    line-height: 1.8;
+    color: var(--text);
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3 {
+    font-weight: 700;
+    margin: 0.6em 0 0.3em;
+}
+
+.markdown-body h1 {
+    font-size: 22px;
+}
+
+.markdown-body h2 {
+    font-size: 18px;
+}
+
+.markdown-body h3 {
+    font-size: 16px;
+}
+
+.markdown-body p,
+.markdown-body ul,
+.markdown-body ol {
+    margin: 0.5em 0;
+}
+
+.markdown-body ul,
+.markdown-body ol {
+    padding-left: 1.4em;
+}
+
+.markdown-body blockquote {
+    margin: 0.8em 0;
+    padding: 8px 12px;
+    border-left: 3px solid var(--accent);
+    background: #fffaf7;
+    color: #6b6b6b;
+    border-radius: 0 8px 8px 0;
+}
+
+.markdown-body code {
+    background: #f1f3f5;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: .95em;
+}
+
+.markdown-body pre {
+    background: #f7fafc;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    overflow: auto;
+}
+
+.markdown-body table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 0.8em 0;
+}
+
+.markdown-body th,
+.markdown-body td {
+    border: 1px solid var(--border);
+    padding: 8px;
+}
+
+.markdown-body a {
+    color: var(--accent);
+    text-decoration: underline;
+}
+
+
+/* ===== 专题模块微样式 ===== */
+
+.section-title {
+    font-size: 22px;
+    font-weight: 800;
+    border-left: 4px solid var(--accent);
+    padding-left: 10px;
+    margin: 18px 0 10px;
+}
+
+.subsection-desc {
+    color: var(--muted);
+    margin-bottom: 14px;
+}
+
+.grid-3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+}
+
+.badge {
+    display: inline-block;
+    padding: 4px 8px;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 999px;
+    font-size: 12px;
+}
+
+
+/* 简易时间轴 */
+
+.timeline {
+    position: relative;
+    margin: 12px 0 18px;
+    padding-left: 22px;
+}
+
+.timeline::before {
+    content: "";
+    position: absolute;
+    left: 8px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--accent);
+    opacity: .8;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 12px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: var(--transition);
+}
+
+.timeline-item::before {
+    content: "";
+    position: absolute;
+    left: -16px;
+    top: 4px;
+    width: 10px;
+    height: 10px;
+    background: var(--accent);
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px #fff;
+}
+
+.timeline-item .time {
+    font-weight: 700;
+}
+
+.timeline-item .desc {
+    color: var(--muted);
+}
+
+
+/* 时间轴悬浮展示对应背景图片（使用自定义属性 --hover-bg） */
+
+
+/* 悬浮时卡片轻微浮起与背景柔化 */
+
+.timeline-item:hover {
+    background: linear-gradient(180deg, #fff, #fff8f8);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+
+/* 悬浮图片按原比例展示 */
+
+.timeline-img {
+    width: 100%;
+    height: auto;
+    margin-top: 8px;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    opacity: 0;
+    transform: translateY(4px) scale(.98);
+    max-height: 0;
+    overflow: hidden;
+    visibility: hidden;
+    pointer-events: none;
+    transition: max-height .35s ease, opacity .3s ease, transform .3s ease;
+}
+
+.timeline-item:hover .timeline-img {
+    opacity: 1;
+    transform: translateY(0) scale(1.02);
+    max-height: 480px;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+
+/* 时间点脉冲动画，增强交互提示 */
+
+.timeline-item:hover::before {
+    animation: pulse-dot 1.6s ease-out infinite;
+}
+
+@keyframes pulse-dot {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 2px #fff, 0 0 0 0 rgba(198, 40, 40, .35);
+    }
+    70% {
+        transform: scale(1.2);
+        box-shadow: 0 0 0 2px #fff, 0 0 0 8px rgba(198, 40, 40, .25);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 2px #fff, 0 0 0 0 rgba(198, 40, 40, .0);
+    }
+}
+
+
+/* 讨论区样式简化 */
+
+.post-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px;
+    background: var(--surface);
+}
+
+.post-card.pinned {
+    border-color: var(--accent);
+    box-shadow: 0 6px 14px rgba(198, 40, 40, .15);
+}
+
+.badge.badge-pin {
+    background: var(--accent);
+}
+
+.post-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.like-count {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+
+/* AI 歌曲生成器块 */
+
+.audio-box {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.audio-controls {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.download-link {
+    color: var(--accent);
+    text-decoration: underline;
+}
+
+
+/* 历史区块优化 */
+
+.history-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 8px 12px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.history-summary #history-title {
+    font-weight: 600;
+}
+
+#clear-history.btn-secondary {
+    padding: 6px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: #fff;
+    color: var(--text);
+    font-size: 13px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+#clear-history.btn-secondary:hover {
+    background: #f8f9fa;
+}
+
+.ai-history-list .history-item .history-answer {
+    margin-top: 6px;
+}
+
+
+/* ===== 页脚 ===== */
+
+.site-footer {
+    padding: 40px 0 24px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 60px;
+    border-top: 2px solid transparent;
+    background: linear-gradient(to right, transparent, rgba(198, 40, 40, 0.1), transparent);
+    position: relative;
+}
+
+.site-footer::before {
+    content: "★★★";
+    display: block;
+    font-size: 16px;
+    color: var(--accent);
+    margin-bottom: 12px;
+    letter-spacing: 8px;
+    opacity: 0.6;
+}
+
+.site-footer::after {
+    content: "";
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    border-radius: 2px;
+}
+
+
+/* ===== 移动端微调 ===== */
+
+@media (max-width: 640px) {
+    .wrap {
+        padding: 16px 12px;
+    }
+    .main-grid {
+        gap: 16px;
+    }
+    .card {
+        padding: 16px;
+    }
+    .site-header h1 {
+        font-size: 20px;
+    }
+    .main-nav {
+        gap: 12px;
+        font-size: 14px;
+    }
+    /* 移动端：AI 输入区纵向排列，扩大触控尺寸 */
+    .ai-box {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+    #ai-input {
+        font-size: 16px;
+        /* 避免 iOS 自动缩放 */
+        padding: 12px 14px;
+    }
+    #ai-submit {
+        width: 100%;
+        padding: 12px 14px;
+        font-size: 16px;
+    }
+    /* 移动端：登录表单布局优化 */
+    .login-form .form-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    #login-submit {
+        width: 100%;
+        padding: 12px 14px;
+        font-size: 16px;
+    }
+    /* 移动端：Markdown 字体与间距微调 */
+    .markdown-body h1 {
+        font-size: 20px;
+    }
+    .markdown-body h2 {
+        font-size: 18px;
+    }
+    .markdown-body h3 {
+        font-size: 16px;
+    }
+    .markdown-body pre {
+        max-height: 200px;
+    }
+    .markdown-body img {
+        max-width: 100%;
+        height: auto;
+    }
+    /* 历史区块在窄屏的排版与按钮布局 */
+    .history-summary {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    #clear-history.btn-secondary {
+        width: 100%;
+        text-align: center;
+    }
+    .ai-history-list .history-item {
+        padding: 10px;
+    }
+    .ai-history-list .history-item .history-answer {
+        margin-top: 8px;
+    }
+    /* 移动端情景卡片调整 */
+    .scenario-card {
+        flex-direction: column;
+        /* 小屏幕下图片和文字垂直堆叠 */
+        text-align: center;
+        padding: 12px;
+    }
+    .scenario-card img {
+        width: 100%;
+        /* 图片宽度填充卡片 */
+        height: 120px;
+        /* 调整高度 */
+        margin-bottom: 10px;
+        /* 图片和文字间距 */
+    }
+    .scenario-card .title {
+        font-size: 16px;
+    }
+    .scenario-card .desc {
+        font-size: 13px;
+    }
+    .scenarios-actions {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+    }
+}
+
+
+/* 回答卡片：图片与内容并排 */
+
+.answer-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.answer-card .ai-logo {
+    height: 64px;
+    width: 64px;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.answer-card .ai-response {
+    flex: 1;
+}
+
+
+/* 讨论区工具条与标签美化 */
+
+.forum-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    background: var(--card-alt, #f7f7f9);
+    border: 1px solid var(--border, #e4e6eb);
+    border-radius: 8px;
+    margin-bottom: 12px;
+}
+
+.forum-toolbar .toolbar-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.forum-toolbar .toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.toolbar-input {
+    height: 32px;
+    padding: 4px 8px;
+    border: 1px solid var(--border, #e4e6eb);
+    border-radius: 6px;
+    min-width: 220px;
+}
+
+.toolbar-select {
+    height: 32px;
+    padding: 4px 8px;
+    border: 1px solid var(--border, #e4e6eb);
+    border-radius: 6px;
+}
+
+.toolbar-label {
+    font-size: 12px;
+    color: #666;
+}
+
+.tag-filter .tag,
+.tag-select .tag {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    background: #f0f3f7;
+    color: #333;
+    border: 1px solid #d8dee9;
+    cursor: pointer;
+    user-select: none;
+}
+
+.tag-filter .tag.active,
+.tag-select .tag.active {
+    background: var(--accent, #4c8bf5);
+    color: #fff;
+    border-color: var(--accent, #4c8bf5);
+}
+
+.tag-select {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+.post-header .meta {
+    font-size: 12px;
+    color: #666;
+}
+
+.post-header .tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.tag.small {
+    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    background: #eef2f7;
+    border: 1px solid #dde3ea;
+}
+
+.reaction-bar {
+    display: flex;
+    gap: 8px;
+    margin-top: 6px;
+}
+
+.reaction-btn {
+    border: 1px solid #e0e6ef;
+    background: #fff;
+    border-radius: 14px;
+    padding: 4px 8px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.reaction-btn .cnt {
+    color: #666;
+    margin-left: 4px;
+    font-size: 12px;
+}
+
+.post-card .btn.pin-btn {
+    margin-left: 8px;
+}
+
+
+/* 讨论区增强样式 */
+
+.forum-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 12px;
+    align-items: start;
+}
+
+.forum-sidebar .sidebar-card {
+    border: 1px solid var(--border, #e4e6eb);
+    border-radius: 8px;
+    padding: 10px;
+    background: var(--bg, #fafbfc);
+}
+
+.sidebar-title {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 6px;
+}
+
+.hot-tag {
+    cursor: pointer;
+}
+
+.hot-tag .cnt {
+    color: #666;
+    margin-left: 4px;
+    font-size: 12px;
+}
+
+.post-img {
+    max-width: 100%;
+    border-radius: 6px;
+    border: 1px solid #e4e6eb;
+    margin-top: 6px;
+}
+
+.image-preview img {
+    max-height: 80px;
+    border-radius: 6px;
+    border: 1px solid #e4e6eb;
+}
+
+.badge {
+    display: inline-block;
+    font-size: 11px;
+    color: #fff;
+    background: #8f97a3;
+    padding: 2px 6px;
+    border-radius: 10px;
+    margin-left: 6px;
+}
+
+.advanced-filter label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+
+/* Markdown 内容容器，可适当微调 */
+
+.markdown-body p {
+    margin: 6px 0;
+}
+
+.markdown-body blockquote {
+    margin: 6px 0;
+    padding: 6px 10px;
+    border-left: 3px solid #d0d7de;
+    background: #f6f8fa;
+    color: #555;
+}
+
+.markdown-body a {
+    color: var(--accent, #4c8bf5);
+    text-decoration: underline;
+}
+
+
+/* ===== 讨论区增强控件 ===== */
+
+.md-toolbar {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px;
+}
+
+.md-toolbar .btn {
+    padding: 6px 10px;
+    font-size: 13px;
+}
+
+.image-status {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px;
+}
+
+.image-progress {
+    background: #eee;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.guide-card .meta {
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.guide-card {
+    border-left: 3px solid var(--accent);
+}
+
+
+/* 弹窗 */
+
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .35);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.modal .modal-content {
+    position: relative;
+    background: var(--surface);
+    color: var(--text);
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: var(--shadow-lg);
+    width: 92vw;
+    max-width: 720px;
+}
+
+@media (max-width: 900px) {
+    .forum-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* 登录表单移动端增强 */
+
+@media (max-width: 640px) {
+    .login-form .form-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    #login-submit {
+        width: 100%;
+        padding: 12px 14px;
+        font-size: 16px;
+    }
+}
+
+
+/* ===== 动画效果 ===== */
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%,
+    100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+
+/* 卡片出现动画 */
+
+.card-link {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.card-link:nth-child(1) {
+    animation-delay: 0.1s;
+    opacity: 0;
+    animation-fill-mode: forwards;
+}
+
+.card-link:nth-child(2) {
+    animation-delay: 0.2s;
+    opacity: 0;
+    animation-fill-mode: forwards;
+}
+
+.card-link:nth-child(3) {
+    animation-delay: 0.3s;
+    opacity: 0;
+    animation-fill-mode: forwards;
+}
+
+.card-link:nth-child(4) {
+    animation-delay: 0.4s;
+    opacity: 0;
+    animation-fill-mode: forwards;
+}
+
+.card-link:nth-child(5) {
+    animation-delay: 0.5s;
+    opacity: 0;
+    animation-fill-mode: forwards;
+}
+
+.card-link:nth-child(6) {
+    animation-delay: 0.6s;
+    opacity: 0;
+    animation-fill-mode: forwards;
+}
+
+
+/* 页面加载动画 */
+
+.hero {
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.site-header {
+    animation: fadeInUp 0.6s ease-out;
+}

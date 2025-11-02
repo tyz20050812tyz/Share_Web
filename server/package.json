@@ -1,0 +1,14 @@
+{
+    "name": "xishixiang-server-sample",
+    "version": "1.0.0",
+    "description": "示例后端，用于接收前端问题并调用 OpenAI API（或返回示例答案）。",
+    "main": "index.js",
+    "scripts": {
+        "start": "node index.js"
+    },
+    "dependencies": {
+        "express": "^4.18.2",
+        "node-fetch": "^2.6.7",
+        "open": "^10.2.0"
+    }
+}

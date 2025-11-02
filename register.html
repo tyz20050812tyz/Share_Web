@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>账号注册 — 以史为鉴，凝聚力量</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="login.css">
+    <style>
+      .form-tip small { color: var(--text-secondary, #666); }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="wrap">
+            <h1>账号注册</h1>
+        </div>
+    </header>
+
+    <main class="wrap">
+        <section class="card login-card">
+            <h2>创建新账户</h2>
+            <form id="register-form" class="login-form" novalidate>
+                <div class="form-field">
+                    <label for="account">用户名</label>
+                    <input id="account" name="account" type="text" class="form-input" placeholder="请输入用户名（至少 2 个字符）" autocomplete="username" required>
+                </div>
+
+                <div class="form-field">
+                    <label for="password">密码</label>
+                    <div class="password-wrapper">
+                        <input id="password" name="password" type="password" class="form-input" placeholder="至少 6 位" autocomplete="new-password" required minlength="6">
+                        <button type="button" id="togglePwd" class="toggle-pwd" aria-label="显示或隐藏密码">显示</button>
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <label for="confirm">确认密码</label>
+                    <div class="password-wrapper">
+                        <input id="confirm" name="confirm" type="password" class="form-input" placeholder="请再次输入密码" autocomplete="new-password" required minlength="6">
+                        <button type="button" id="toggleConfirm" class="toggle-pwd" aria-label="显示或隐藏密码">显示</button>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary" id="registerBtn">注册</button>
+                    <a href="login.html" class="forgot-link">已有账号？去登录</a>
+                </div>
+                <p class="form-tip">注册后默认角色为普通用户（user）。</p>
+                <p class="form-tip"><small>提示：注册仅用于演示，密码以明文保存到后端 <code>server/users.json</code>。</small></p>
+                <div class="form-message" id="registerMessage" role="alert" aria-live="polite"></div>
+            </form>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="wrap">© 2025 以史为鉴，凝聚力量 — 注册页面</div>
+    </footer>
+
+    <script src="main.js"></script>
+    <script src="register.js"></script>
+</body>
+</html>

@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>趣味射击 - 以史为鉴，凝聚力量</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body.game-page {
+            margin: 0;
+            overflow: hidden;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+        }
+        
+        #game-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            cursor: none;
+        }
+        
+        #game-canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, #0f3460 0%, #1a1a2e 100%);
+        }
+        
+        #crosshair {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 100;
+        }
+        
+        #crosshair::before,
+        #crosshair::after {
+            content: '';
+            position: absolute;
+            background: #ff0000;
+            box-shadow: 0 0 10px #ff0000;
+        }
+        
+        #crosshair::before {
+            width: 2px;
+            height: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        #crosshair::after {
+            height: 2px;
+            width: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        #game-ui {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            color: white;
+            font-family: Arial, sans-serif;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            z-index: 10;
+            pointer-events: none;
+        }
+        
+        #score-display,
+        #health-display {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: 2px solid #c62828;
+        }
+        
+        #health-display {
+            color: #ff4444;
+        }
+        
+        #quiz-modal {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(22, 33, 62, 0.95);
+            border: 3px solid #c62828;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            z-index: 1000;
+            box-shadow: 0 0 30px rgba(198, 40, 40, 0.5);
+        }
+        
+        #quiz-modal h2 {
+            color: #fff;
+            margin-top: 0;
+            font-size: 28px;
+            text-align: center;
+        }
+        
+        #quiz-question {
+            color: #fff;
+            font-size: 20px;
+            margin: 20px 0;
+            line-height: 1.6;
+        }
+        
+        .quiz-option {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #c62828;
+            border-radius: 10px;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .quiz-option:hover {
+            background: rgba(198, 40, 40, 0.3);
+            transform: translateX(10px);
+        }
+        
+        #game-over-screen {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white;
+        }
+        
+        #game-over-screen h1 {
+            font-size: 60px;
+            color: #c62828;
+            margin-bottom: 20px;
+        }
+        
+        #final-score {
+            font-size: 36px;
+            margin-bottom: 30px;
+        }
+        
+        .game-button {
+            padding: 15px 40px;
+            font-size: 20px;
+            background: #c62828;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 10px;
+        }
+        
+        .game-button:hover {
+            background: #e53935;
+            transform: scale(1.1);
+        }
+        
+        #start-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 1000;
+            color: white;
+        }
+        
+        #start-screen h1 {
+            font-size: 50px;
+            color: #c62828;
+            margin-bottom: 20px;
+        }
+        
+        #start-screen p {
+            font-size: 18px;
+            margin: 10px 0;
+            max-width: 600px;
+            text-align: center;
+        }
+        
+        #back-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: rgba(198, 40, 40, 0.8);
+            color: white;
+            border: 2px solid #c62828;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            z-index: 1001;
+            transition: all 0.3s;
+        }
+        
+        #back-button:hover {
+            background: #c62828;
+            transform: scale(1.05);
+        }
+        /* 连杀提示 */
+        
+        #combo-display {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 48px;
+            font-weight: bold;
+            color: #ffd700;
+            text-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 999;
+            animation: comboFade 2s ease-out;
+        }
+        
+        @keyframes comboFade {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.5);
+            }
+            20% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.2);
+            }
+            80% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+        }
+        /* 历史名言 */
+        
+        #quote-display {
+            position: absolute;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 600px;
+            padding: 15px 30px;
+            background: rgba(198, 40, 40, 0.9);
+            border: 2px solid #ffd700;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 18px;
+            text-align: center;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 998;
+            transition: opacity 0.5s;
+        }
+        
+        #quote-display.show {
+            opacity: 1;
+        }
+        /* 成就徽章 */
+        
+        #achievement-popup {
+            position: absolute;
+            top: 50%;
+            right: -400px;
+            transform: translateY(-50%);
+            width: 350px;
+            padding: 20px;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border: 3px solid #ffd700;
+            border-radius: 15px;
+            z-index: 1000;
+            transition: right 0.5s ease-out;
+        }
+        
+        #achievement-popup.show {
+            right: 20px;
+        }
+        
+        #achievement-popup h3 {
+            color: #ffd700;
+            margin: 0 0 10px 0;
+            font-size: 24px;
+            text-align: center;
+        }
+        
+        #achievement-popup p {
+            color: #fff;
+            margin: 5px 0;
+            font-size: 16px;
+            text-align: center;
+        }
+        
+        #achievement-icon {
+            font-size: 60px;
+            text-align: center;
+            margin: 10px 0;
+        }
+        /* 成就列表按钮 */
+        
+        #achievements-button {
+            position: absolute;
+            top: 80px;
+            right: 20px;
+            padding: 10px 20px;
+            background: rgba(255, 215, 0, 0.2);
+            color: #ffd700;
+            border: 2px solid #ffd700;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            z-index: 1001;
+            transition: all 0.3s;
+        }
+        
+        #achievements-button:hover {
+            background: rgba(255, 215, 0, 0.4);
+            transform: scale(1.05);
+        }
+        /* 成就面板 */
+        
+        #achievements-panel {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 700px;
+            max-height: 80vh;
+            overflow-y: auto;
+            background: rgba(22, 33, 62, 0.98);
+            border: 3px solid #ffd700;
+            border-radius: 20px;
+            padding: 30px;
+            z-index: 1002;
+        }
+        
+        #achievements-panel h2 {
+            color: #ffd700;
+            text-align: center;
+            margin-top: 0;
+        }
+        
+        .achievement-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin: 10px 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            border-left: 5px solid #666;
+        }
+        
+        .achievement-item.unlocked {
+            border-left-color: #ffd700;
+            background: rgba(255, 215, 0, 0.1);
+        }
+        
+        .achievement-item .icon {
+            font-size: 40px;
+            margin-right: 20px;
+            filter: grayscale(100%);
+        }
+        
+        .achievement-item.unlocked .icon {
+            filter: grayscale(0%);
+        }
+        
+        .achievement-item .info {
+            flex: 1;
+        }
+        
+        .achievement-item .title {
+            color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .achievement-item .desc {
+            color: #aaa;
+            font-size: 14px;
+        }
+        
+        .achievement-item.unlocked .desc {
+            color: #ffd700;
+        }
+        
+        #close-achievements {
+            display: block;
+            margin: 20px auto 0;
+            padding: 10px 30px;
+            background: #c62828;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        #close-achievements:hover {
+            background: #e53935;
+        }
+        /* 特殊事件提示 */
+        
+        #event-notification {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 500px;
+            padding: 30px;
+            background: linear-gradient(135deg, #c62828, #8b0000);
+            border: 4px solid #ffd700;
+            border-radius: 20px;
+            text-align: center;
+            z-index: 1003;
+            display: none;
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.5);
+        }
+        
+        #event-notification h2 {
+            color: #ffd700;
+            font-size: 36px;
+            margin: 0 0 15px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+        
+        #event-notification p {
+            color: #fff;
+            font-size: 18px;
+            margin: 10px 0;
+        }
+        /* 连杀计数器 */
+        
+        #combo-counter {
+            position: absolute;
+            top: 80px;
+            left: 20px;
+            padding: 10px 20px;
+            background: rgba(255, 69, 0, 0.8);
+            border: 2px solid #ffd700;
+            border-radius: 10px;
+            color: #ffd700;
+            font-size: 20px;
+            font-weight: bold;
+            display: none;
+            z-index: 10;
+        }
+    </style>
+</head>
+
+<body class="game-page">
+    <div id="game-container">
+        <canvas id="game-canvas"></canvas>
+        <div id="crosshair"></div>
+
+        <button id="back-button" onclick="window.location.href='index.html'">返回主页</button>
+        <button id="achievements-button">🏆 成就徽章</button>
+        <button id="sound-toggle" style="position: absolute; top: 20px; left: 50%; transform: translateX(-80px); padding: 10px 20px; background: rgba(198, 40, 40, 0.8); color: white; border: 2px solid #c62828; border-radius: 10px; cursor: pointer; font-size: 16px; z-index: 1001;">🔊 音效</button>
+        <button id="music-toggle" style="position: absolute; top: 20px; left: 50%; transform: translateX(80px); padding: 10px 20px; background: rgba(198, 40, 40, 0.8); color: white; border: 2px solid #c62828; border-radius: 10px; cursor: pointer; font-size: 16px; z-index: 1001;">🎵 音乐</button>
+
+        <div id="game-ui">
+            <div id="score-display">分数: <span id="score">0</span></div>
+            <div id="health-display">生命值: <span id="health">100</span></div>
+        </div>
+
+        <div id="combo-counter" style="display: none;">
+            连杀: <span id="combo-count">0</span>
+        </div>
+
+        <div id="combo-display"></div>
+        <div id="quote-display"></div>
+
+        <div id="achievement-popup">
+            <h3>🎉 成就解锁！</h3>
+            <div id="achievement-icon"></div>
+            <p id="achievement-title"></p>
+            <p id="achievement-desc"></p>
+        </div>
+
+        <div id="event-notification">
+            <h2 id="event-title"></h2>
+            <p id="event-desc"></p>
+            <p id="event-countdown"></p>
+        </div>
+
+        <div id="achievements-panel">
+            <h2>🏆 成就徽章</h2>
+            <div id="achievements-list"></div>
+            <button id="close-achievements">关闭</button>
+        </div>
+
+        <div id="start-screen">
+            <h1>🎯 趣味射击游戏</h1>
+            <p>📌 游戏说明：</p>
+            <p>使用鼠标瞄准并点击消灭出现的敌军士兵</p>
+            <p>每击杀一个敌人获得10分</p>
+            <p>敌人会向你发起攻击，每次攻击减少10点生命值</p>
+            <p>当生命值归零时，需要回答题目才能继续游戏</p>
+            <button class="game-button" id="start-button">开始游戏</button>
+        </div>
+
+        <div id="quiz-modal">
+            <h2>💡 答题复活</h2>
+            <p id="quiz-question"></p>
+            <div id="quiz-options"></div>
+        </div>
+
+        <div id="game-over-screen">
+            <h1>游戏结束</h1>
+            <p id="final-score"></p>
+            <button class="game-button" onclick="window.location.href='index.html'">重新开始</button>
+            <button class="game-button" onclick="window.location.href='index.html'">返回主页</button>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+
+</html>

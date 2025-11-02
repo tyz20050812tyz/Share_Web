@@ -1,0 +1,57 @@
+/* 登录页专用样式（与全站风格一致，使用主题变量） */
+.login-card { max-width: 520px; margin: 28px auto; }
+.login-card h2 { margin: 0 0 12px; font-size: 22px; font-weight: 800; }
+.login-form { display: flex; flex-direction: column; gap: 12px; }
+
+.form-field { display: grid; gap: 6px; }
+.form-input {
+  height: 40px;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  font-size: 15px;
+  transition: var(--transition);
+}
+.form-input:focus {
+  outline: none;
+  border-color: var(--accent-light);
+  box-shadow: 0 0 0 3px rgba(198,40,40,.15);
+}
+.form-input.error {
+  border-color: #e5484d;
+  box-shadow: 0 0 0 3px rgba(229,72,77,.12);
+}
+
+.password-wrapper { display: flex; align-items: center; gap: 8px; }
+.password-wrapper .form-input { flex: 1; }
+.toggle-pwd {
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  cursor: pointer;
+  font-size: 13px;
+  transition: var(--transition);
+}
+.toggle-pwd:hover { background: var(--bg); }
+
+.form-actions { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 8px; }
+.btn-primary { background: var(--accent); color: #fff; border: none; }
+.btn-primary:hover { background: var(--accent-light); }
+.btn-primary:active { transform: scale(.98); }
+
+.forgot-link { color: var(--accent); text-decoration: underline; font-size: 13px; }
+.form-tip { color: var(--muted); font-size: 12px; margin-top: 4px; }
+.form-message { margin-top: 8px; font-size: 14px; color: var(--text); background: rgba(198,40,40,.08); border: 1px solid var(--border); padding: 8px 10px; border-radius: 8px; display: none; }
+.form-message.show { display: block; }
+.form-message.success { background: rgba(92,184,92,.10); border-color: #cfe8cf; }
+.form-message.error { background: rgba(229,72,77,.10); border-color: #f3c5c8; }
+
+@media (max-width: 640px) {
+  .login-card { margin: 12px auto; padding: 16px; }
+  .form-actions { flex-direction: column; align-items: stretch; }
+  .btn-primary { width: 100%; padding: 12px 14px; font-size: 16px; }
+  .forgot-link { text-align: center; }
+}
