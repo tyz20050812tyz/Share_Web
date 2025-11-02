@@ -174,7 +174,7 @@ app.post('/api/register', (req, res) => {
 });
 
 app.post('/api/ask', async(req, res) => {
-    const { question } = req.body || {};
+    const { question, systemPrompt: customSystemPrompt } = req.body || {};
     if (!question) return res.status(400).json({ error: '缺少 question 字段' });
 
     // 未配置时走本地 mock（可开关）
@@ -193,7 +193,8 @@ app.post('/api/ask', async(req, res) => {
         if (deepseekKeyHeader.toLowerCase() === 'authorization') headers['Authorization'] = `Bearer ${deepseekKey}`;
         else headers[deepseekKeyHeader] = deepseekKey;
 
-        const systemPrompt = `你是一位专注于研究"反法西斯战争胜利精神与中华民族伟大复兴内在逻辑"的历史学者和思政教育专家，名叫"小史鉴"。
+        // 如果提供了自定义 systemPrompt，使用自定义的；否则使用默认的
+        const systemPrompt = customSystemPrompt || `你是一位专注于研究"反法西斯战争胜利精神与中华民族伟大复兴内在逻辑"的历史学者和思政教育专家，名叫"小史鉴"。
 
 # 你的核心使命
 帮助用户深入理解反法西斯战争胜利精神的当代价值，揭示其与中华民族伟大复兴之间的历史传承与逻辑联系。
