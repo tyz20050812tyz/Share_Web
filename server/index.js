@@ -173,6 +173,42 @@ app.post('/api/register', (req, res) => {
     return res.json({ ok: true, role: newUser.role, user: { name: newUser.account } });
 });
 
+// 检查账号是否存在（重置密码第一步）
+app.post('/api/check-account', (req, res) => {
+    const { account } = req.body || {};
+    const name = String(account || '').trim();
+    if (!name) return res.status(400).json({ ok: false, error: '缺少账号' });
+    const exists = users.some(u => String(u.account) === name);
+    return res.json({ ok: true, exists });
+});
+
+// 验证旧密码（重置密码第二步）
+app.post('/api/verify-password', (req, res) => {
+    const { account, password } = req.body || {};
+    if (!account || !password) return res.status(400).json({ ok: false, error: '缺少账号或密码' });
+    const found = users.find(u => String(u.account) === String(account) && String(u.password) === String(password));
+    return res.json({ ok: true, valid: !!found });
+});
+
+// 重置密码（重置密码第三步）
+app.post('/api/reset-password', (req, res) => {
+    const { account, newPassword } = req.body || {};
+    const name = String(account || '').trim();
+    const pwd = String(newPassword || '').trim();
+
+    if (!name || !pwd) return res.status(400).json({ ok: false, error: '缺少账号或新密码' });
+    if (pwd.length < 6) return res.status(400).json({ ok: false, error: '新密码长度至少 6 位' });
+
+    const userIndex = users.findIndex(u => String(u.account) === name);
+    if (userIndex === -1) return res.status(404).json({ ok: false, error: '账号不存在' });
+
+    // 更新密码
+    users[userIndex].password = pwd;
+    saveUsers();
+
+    return res.json({ ok: true, message: '密码重置成功' });
+});
+
 app.post('/api/ask', async(req, res) => {
     const { question, systemPrompt: customSystemPrompt } = req.body || {};
     if (!question) return res.status(400).json({ error: '缺少 question 字段' });
@@ -981,6 +1017,35 @@ app.put('/api/submissions/:id', (req, res) => {
     saveSubmissions(submissions);
 
     res.json({ ok: true, submission: submissions[index] });
+});
+
+// 获取所有投稿作品（支持按用户名筛选）
+app.get('/api/submissions', (req, res) => {
+    try {
+        const submissions = loadSubmissions();
+        const { userId, author, contestId } = req.query;
+
+        let filtered = submissions;
+
+        // 按用户ID筛选
+        if (userId) {
+            filtered = filtered.filter(s => s.userId === userId || s.author === userId);
+        }
+
+        // 按作者名筛选
+        if (author) {
+            filtered = filtered.filter(s => s.author === author);
+        }
+
+        // 按竞赛ID筛选
+        if (contestId) {
+            filtered = filtered.filter(s => s.contestId === contestId);
+        }
+
+        res.json({ ok: true, submissions: filtered });
+    } catch (error) {
+        res.status(500).json({ ok: false, error: error.message });
+    }
 });
 
 // 删除作品（作者本人或管理员）
