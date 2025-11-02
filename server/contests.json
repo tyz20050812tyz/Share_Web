@@ -1,0 +1,18 @@
+{
+  "contests": [
+    {
+      "id": "id_1762062484855_6f88ofwci",
+      "title": "我眼中的抗战精神",
+      "description": "用文字描绘你对抗战精神的理解,展现不屈不挠、团结一心、视死如归的民族精神在当代的传承与发扬。",
+      "category": "文章",
+      "startDate": "2025-11-02",
+      "endDate": "2025-12-02",
+      "status": "ongoing",
+      "rules": "原创",
+      "prize": "一等奖5名，二等奖8名，三等奖10名",
+      "createdBy": "佟雨泽",
+      "createdAt": "2025-11-02T05:48:04.855Z",
+      "submissionCount": 1
+    }
+  ]
+}

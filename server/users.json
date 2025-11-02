@@ -23,5 +23,15 @@
     "account": "11",
     "password": "111111",
     "role": "user"
+  },
+  {
+    "account": "user1",
+    "password": "cbBpk7nHgK7g9zA",
+    "role": "user"
+  },
+  {
+    "account": "user2",
+    "password": "123456",
+    "role": "user"
   }
 ]

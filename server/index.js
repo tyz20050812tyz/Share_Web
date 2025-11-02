@@ -484,8 +484,602 @@ app.post('/api/forum/delete', (req, res) => {
     return res.json({ ok: true });
 });
 
+// ===== 历史上的今天 API =====
+const HISTORY_EVENTS_PATH = path.resolve(__dirname, 'history_events.json');
+
+function loadHistoryEvents() {
+    try {
+        if (fs.existsSync(HISTORY_EVENTS_PATH)) {
+            const raw = fs.readFileSync(HISTORY_EVENTS_PATH, 'utf8');
+            const data = JSON.parse(raw);
+            return data.events || [];
+        }
+    } catch {}
+    return [];
+}
+
+function saveHistoryEvents(events) {
+    try {
+        fs.writeFileSync(HISTORY_EVENTS_PATH, JSON.stringify({ events }, null, 2), 'utf8');
+    } catch {}
+}
+
+function generateId() {
+    return 'id_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+}
+
+// 获取所有历史事件
+app.get('/api/history/events', (_req, res) => {
+    const events = loadHistoryEvents();
+    res.json({ ok: true, events });
+});
+
+// 获取今天的历史事件
+app.get('/api/history/today', (_req, res) => {
+    const now = new Date();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const today = `${month}-${day}`;
+
+    const events = loadHistoryEvents().filter(e => e.date === today);
+    res.json({ ok: true, date: today, events });
+});
+
+// 获取指定日期的历史事件
+app.get('/api/history/date/:date', (req, res) => {
+    const { date } = req.params;
+    const events = loadHistoryEvents().filter(e => e.date === date);
+    res.json({ ok: true, date, events });
+});
+
+// 创建历史事件（仅管理员）
+app.post('/api/history/events', (req, res) => {
+    if (!isAdminReq(req)) return res.status(403).json({ ok: false, error: '只有管理员可以添加历史事件' });
+
+    const { date, year, title, category, tags, summary, detail, image, importance, relatedPeople, relatedEvents } = req.body || {};
+
+    if (!date || !year || !title || !summary) {
+        return res.status(400).json({ ok: false, error: '缺少必填字段' });
+    }
+
+    const event = {
+        id: generateId(),
+        date,
+        year: Number(year),
+        title,
+        category: category || '其他',
+        tags: Array.isArray(tags) ? tags : [],
+        summary,
+        detail: detail || '',
+        image: image || '',
+        importance: importance || 'medium',
+        relatedPeople: Array.isArray(relatedPeople) ? relatedPeople : [],
+        relatedEvents: Array.isArray(relatedEvents) ? relatedEvents : [],
+        createdBy: decodeHeaderVal(req.headers['x-auth-user']),
+        createdAt: new Date().toISOString()
+    };
+
+    const events = loadHistoryEvents();
+    events.push(event);
+    saveHistoryEvents(events);
+
+    res.json({ ok: true, event });
+});
+
+// 编辑历史事件（仅管理员）
+app.put('/api/history/events/:id', (req, res) => {
+    if (!isAdminReq(req)) return res.status(403).json({ ok: false, error: '只有管理员可以编辑历史事件' });
+
+    const { id } = req.params;
+    const updates = req.body || {};
+
+    const events = loadHistoryEvents();
+    const index = events.findIndex(e => e.id === id);
+
+    if (index === -1) {
+        return res.status(404).json({ ok: false, error: '事件不存在' });
+    }
+
+    events[index] = {...events[index], ...updates, updatedAt: new Date().toISOString() };
+    saveHistoryEvents(events);
+
+    res.json({ ok: true, event: events[index] });
+});
+
+// 删除历史事件（仅管理员）
+app.delete('/api/history/events/:id', (req, res) => {
+    if (!isAdminReq(req)) return res.status(403).json({ ok: false, error: '只有管理员可以删除历史事件' });
+
+    const { id } = req.params;
+    const events = loadHistoryEvents();
+    const filtered = events.filter(e => e.id !== id);
+
+    if (filtered.length === events.length) {
+        return res.status(404).json({ ok: false, error: '事件不存在' });
+    }
+
+    saveHistoryEvents(filtered);
+    res.json({ ok: true });
+});
+
+// ===== 答题挑战排行榜 API =====
+const QUIZ_RANKINGS_PATH = path.resolve(__dirname, 'quiz_rankings.json');
+
+function loadQuizRankings() {
+    try {
+        if (fs.existsSync(QUIZ_RANKINGS_PATH)) {
+            const raw = fs.readFileSync(QUIZ_RANKINGS_PATH, 'utf8');
+            const data = JSON.parse(raw);
+            return data.rankings || [];
+        }
+    } catch {}
+    return [];
+}
+
+function saveQuizRankings(rankings) {
+    try {
+        fs.writeFileSync(QUIZ_RANKINGS_PATH, JSON.stringify({ rankings }, null, 2), 'utf8');
+    } catch {}
+}
+
+// 获取排行榜（TOP 100）
+app.get('/api/quiz/rankings', (_req, res) => {
+    const rankings = loadQuizRankings();
+    // 按得分降序排列，返回前100名
+    const sorted = rankings.sort((a, b) => b.score - a.score).slice(0, 100);
+    res.json({ ok: true, rankings: sorted });
+});
+
+// 提交成绩（需登录）
+app.post('/api/quiz/submit', (req, res) => {
+    const authUser = decodeHeaderVal(req.headers['x-auth-user']);
+    if (!authUser) {
+        return res.status(401).json({ ok: false, error: '请先登录' });
+    }
+
+    const { score, correct, total, timestamp } = req.body || {};
+
+    if (typeof score !== 'number' || typeof correct !== 'number' || typeof total !== 'number') {
+        return res.status(400).json({ ok: false, error: '缺少必填字段' });
+    }
+
+    const rankings = loadQuizRankings();
+
+    // 查找用户现有记录
+    const userIndex = rankings.findIndex(r => r.user === authUser);
+
+    if (userIndex >= 0) {
+        // 更新用户记录（保留最高分）
+        const existing = rankings[userIndex];
+        if (score > existing.score) {
+            rankings[userIndex] = {
+                user: authUser,
+                score,
+                correct,
+                total,
+                timestamp: timestamp || Date.now(),
+                updatedAt: new Date().toISOString()
+            };
+        }
+    } else {
+        // 新增用户记录
+        rankings.push({
+            user: authUser,
+            score,
+            correct,
+            total,
+            timestamp: timestamp || Date.now(),
+            createdAt: new Date().toISOString()
+        });
+    }
+
+    saveQuizRankings(rankings);
+
+    // 返回用户排名
+    const sorted = rankings.sort((a, b) => b.score - a.score);
+    const userRank = sorted.findIndex(r => r.user === authUser) + 1;
+
+    res.json({ ok: true, rank: userRank, totalUsers: sorted.length });
+});
+
+// 获取用户个人成绩（需登录）
+app.get('/api/quiz/my-score', (req, res) => {
+    const authUser = decodeHeaderVal(req.headers['x-auth-user']);
+    if (!authUser) {
+        return res.status(401).json({ ok: false, error: '请先登录' });
+    }
+
+    const rankings = loadQuizRankings();
+    const userRecord = rankings.find(r => r.user === authUser);
+
+    if (!userRecord) {
+        return res.json({ ok: true, record: null });
+    }
+
+    // 计算排名
+    const sorted = rankings.sort((a, b) => b.score - a.score);
+    const rank = sorted.findIndex(r => r.user === authUser) + 1;
+
+    res.json({ ok: true, record: userRecord, rank, totalUsers: sorted.length });
+});
+
+// ===== 创作竞赛 API =====
+const CONTESTS_PATH = path.resolve(__dirname, 'contests.json');
+const SUBMISSIONS_PATH = path.resolve(__dirname, 'submissions.json');
+
+function loadContests() {
+    try {
+        if (fs.existsSync(CONTESTS_PATH)) {
+            const raw = fs.readFileSync(CONTESTS_PATH, 'utf8');
+            const data = JSON.parse(raw);
+            return data.contests || [];
+        }
+    } catch {}
+    return [];
+}
+
+function saveContests(contests) {
+    try {
+        fs.writeFileSync(CONTESTS_PATH, JSON.stringify({ contests }, null, 2), 'utf8');
+    } catch {}
+}
+
+function loadSubmissions() {
+    try {
+        if (fs.existsSync(SUBMISSIONS_PATH)) {
+            const raw = fs.readFileSync(SUBMISSIONS_PATH, 'utf8');
+            const data = JSON.parse(raw);
+            return data.submissions || [];
+        }
+    } catch {}
+    return [];
+}
+
+function saveSubmissions(submissions) {
+    try {
+        fs.writeFileSync(SUBMISSIONS_PATH, JSON.stringify({ submissions }, null, 2), 'utf8');
+    } catch {}
+}
+
+// 获取所有竞赛
+app.get('/api/contests', (_req, res) => {
+    const contests = loadContests();
+    res.json({ ok: true, contests });
+});
+
+// 获取单个竞赛详情
+app.get('/api/contests/:id', (req, res) => {
+    const { id } = req.params;
+    const contests = loadContests();
+    const contest = contests.find(c => c.id === id);
+
+    if (!contest) {
+        return res.status(404).json({ ok: false, error: '竞赛不存在' });
+    }
+
+    res.json({ ok: true, contest });
+});
+
+// 创建竞赛（仅管理员）
+app.post('/api/contests', (req, res) => {
+    if (!isAdminReq(req)) return res.status(403).json({ ok: false, error: '只有管理员可以创建竞赛' });
+
+    const { title, description, category, startDate, endDate, rules, prize } = req.body || {};
+
+    if (!title || !description || !startDate || !endDate) {
+        return res.status(400).json({ ok: false, error: '缺少必填字段' });
+    }
+
+    const contest = {
+        id: generateId(),
+        title,
+        description,
+        category: category || '综合',
+        startDate,
+        endDate,
+        status: 'ongoing',
+        rules: rules || '',
+        prize: prize || '',
+        createdBy: decodeHeaderVal(req.headers['x-auth-user']),
+        createdAt: new Date().toISOString(),
+        submissionCount: 0
+    };
+
+    const contests = loadContests();
+    contests.push(contest);
+    saveContests(contests);
+
+    res.json({ ok: true, contest });
+});
+
+// 编辑竞赛（仅管理员）
+app.put('/api/contests/:id', (req, res) => {
+    if (!isAdminReq(req)) return res.status(403).json({ ok: false, error: '只有管理员可以编辑竞赛' });
+
+    const { id } = req.params;
+    const updates = req.body || {};
+
+    const contests = loadContests();
+    const index = contests.findIndex(c => c.id === id);
+
+    if (index === -1) {
+        return res.status(404).json({ ok: false, error: '竞赛不存在' });
+    }
+
+    contests[index] = {...contests[index], ...updates, updatedAt: new Date().toISOString() };
+    saveContests(contests);
+
+    res.json({ ok: true, contest: contests[index] });
+});
+
+// 删除竞赛（仅管理员）
+app.delete('/api/contests/:id', (req, res) => {
+    if (!isAdminReq(req)) return res.status(403).json({ ok: false, error: '只有管理员可以删除竞赛' });
+
+    const { id } = req.params;
+
+    // 删除竞赛
+    const contests = loadContests();
+    const filtered = contests.filter(c => c.id !== id);
+
+    if (filtered.length === contests.length) {
+        return res.status(404).json({ ok: false, error: '竞赛不存在' });
+    }
+
+    saveContests(filtered);
+
+    // 同时删除关联的所有作品
+    const submissions = loadSubmissions();
+    const filteredSubs = submissions.filter(s => s.contestId !== id);
+    saveSubmissions(filteredSubs);
+
+    res.json({ ok: true });
+});
+
+// 结束竞赛（仅管理员）
+app.post('/api/contests/:id/end', (req, res) => {
+    if (!isAdminReq(req)) return res.status(403).json({ ok: false, error: '只有管理员可以结束竞赛' });
+
+    const { id } = req.params;
+    const contests = loadContests();
+    const index = contests.findIndex(c => c.id === id);
+
+    if (index === -1) {
+        return res.status(404).json({ ok: false, error: '竞赛不存在' });
+    }
+
+    contests[index].status = 'ended';
+    contests[index].endedAt = new Date().toISOString();
+    saveContests(contests);
+
+    res.json({ ok: true, contest: contests[index] });
+});
+
+// 提交作品（需登录）
+app.post('/api/contests/submit', (req, res) => {
+    const authUser = decodeHeaderVal(req.headers['x-auth-user']);
+    if (!authUser) {
+        return res.status(401).json({ ok: false, error: '请先登录' });
+    }
+
+    const { contestId, title, content, type, category, tags, coverImage } = req.body || {};
+
+    if (!contestId || !title || !content) {
+        return res.status(400).json({ ok: false, error: '缺少必填字段' });
+    }
+
+    // 检查竞赛是否存在且进行中
+    const contests = loadContests();
+    const contest = contests.find(c => c.id === contestId);
+
+    if (!contest) {
+        return res.status(404).json({ ok: false, error: '竞赛不存在' });
+    }
+
+    if (contest.status !== 'ongoing') {
+        return res.status(400).json({ ok: false, error: '竞赛已结束，无法提交作品' });
+    }
+
+    const submission = {
+        id: generateId(),
+        contestId,
+        author: authUser,
+        userId: authUser,
+        title,
+        content,
+        type: type || 'article',
+        category: category || '其他',
+        tags: Array.isArray(tags) ? tags : [],
+        coverImage: coverImage || '',
+        votes: 0,
+        views: 0,
+        status: 'published',
+        featured: false,
+        createdAt: new Date().toISOString(),
+        voters: []
+    };
+
+    const submissions = loadSubmissions();
+    submissions.push(submission);
+    saveSubmissions(submissions);
+
+    // 更新竞赛投稿数
+    contest.submissionCount = (contest.submissionCount || 0) + 1;
+    saveContests(contests);
+
+    res.json({ ok: true, submission });
+});
+
+// 获取竞赛的作品列表
+app.get('/api/contests/:contestId/submissions', (req, res) => {
+    const { contestId } = req.params;
+    const { sort = 'time', category } = req.query;
+
+    let submissions = loadSubmissions().filter(s => s.contestId === contestId);
+
+    // 分类筛选
+    if (category && category !== 'all') {
+        submissions = submissions.filter(s => s.category === category);
+    }
+
+    // 排序
+    if (sort === 'votes') {
+        submissions.sort((a, b) => b.votes - a.votes);
+    } else if (sort === 'views') {
+        submissions.sort((a, b) => b.views - a.views);
+    } else {
+        submissions.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    }
+
+    res.json({ ok: true, submissions });
+});
+
+// 获取作品详情
+app.get('/api/submissions/:id', (req, res) => {
+    const { id } = req.params;
+    const submissions = loadSubmissions();
+    const submission = submissions.find(s => s.id === id);
+
+    if (!submission) {
+        return res.status(404).json({ ok: false, error: '作品不存在' });
+    }
+
+    // 增加浏览量
+    submission.views = (submission.views || 0) + 1;
+    saveSubmissions(submissions);
+
+    res.json({ ok: true, submission });
+});
+
+// 编辑作品（作者本人或管理员）
+app.put('/api/submissions/:id', (req, res) => {
+    const authUser = decodeHeaderVal(req.headers['x-auth-user']);
+    const authRole = req.headers['x-auth-role'];
+
+    if (!authUser) {
+        return res.status(401).json({ ok: false, error: '请先登录' });
+    }
+
+    const { id } = req.params;
+    const updates = req.body || {};
+
+    const submissions = loadSubmissions();
+    const index = submissions.findIndex(s => s.id === id);
+
+    if (index === -1) {
+        return res.status(404).json({ ok: false, error: '作品不存在' });
+    }
+
+    const submission = submissions[index];
+
+    // 检查权限：作者本人或管理员
+    if (submission.userId !== authUser && authRole !== 'admin') {
+        return res.status(403).json({ ok: false, error: '无权限编辑此作品' });
+    }
+
+    submissions[index] = {...submission, ...updates, updatedAt: new Date().toISOString() };
+    saveSubmissions(submissions);
+
+    res.json({ ok: true, submission: submissions[index] });
+});
+
+// 删除作品（作者本人或管理员）
+app.delete('/api/submissions/:id', (req, res) => {
+    const authUser = decodeHeaderVal(req.headers['x-auth-user']);
+    const authRole = req.headers['x-auth-role'];
+
+    if (!authUser) {
+        return res.status(401).json({ ok: false, error: '请先登录' });
+    }
+
+    const { id } = req.params;
+    const submissions = loadSubmissions();
+    const submission = submissions.find(s => s.id === id);
+
+    if (!submission) {
+        return res.status(404).json({ ok: false, error: '作品不存在' });
+    }
+
+    // 检查权限：作者本人或管理员
+    if (submission.userId !== authUser && authRole !== 'admin') {
+        return res.status(403).json({ ok: false, error: '无权限删除此作品' });
+    }
+
+    const filtered = submissions.filter(s => s.id !== id);
+    saveSubmissions(filtered);
+
+    // 更新竞赛投稿数
+    const contests = loadContests();
+    const contest = contests.find(c => c.id === submission.contestId);
+    if (contest) {
+        contest.submissionCount = Math.max(0, (contest.submissionCount || 0) - 1);
+        saveContests(contests);
+    }
+
+    res.json({ ok: true });
+});
+
+// 投票（需登录）
+app.post('/api/contests/vote', (req, res) => {
+    const authUser = decodeHeaderVal(req.headers['x-auth-user']);
+    if (!authUser) {
+        return res.status(401).json({ ok: false, error: '请先登录' });
+    }
+
+    const { submissionId } = req.body || {};
+    if (!submissionId) {
+        return res.status(400).json({ ok: false, error: '缺少作品ID' });
+    }
+
+    const submissions = loadSubmissions();
+    const submission = submissions.find(s => s.id === submissionId);
+
+    if (!submission) {
+        return res.status(404).json({ ok: false, error: '作品不存在' });
+    }
+
+    // 检查是否已投票
+    if (submission.voters.includes(authUser)) {
+        return res.status(400).json({ ok: false, error: '您已经投过票了' });
+    }
+
+    // 投票
+    submission.votes = (submission.votes || 0) + 1;
+    submission.voters.push(authUser);
+    saveSubmissions(submissions);
+
+    res.json({ ok: true, votes: submission.votes });
+});
+
+// 设置精选作品（仅管理员）
+app.post('/api/submissions/:id/feature', (req, res) => {
+    if (!isAdminReq(req)) return res.status(403).json({ ok: false, error: '只有管理员可以设置精选作品' });
+
+    const { id } = req.params;
+    const { featured } = req.body || {};
+
+    const submissions = loadSubmissions();
+    const submission = submissions.find(s => s.id === id);
+
+    if (!submission) {
+        return res.status(404).json({ ok: false, error: '作品不存在' });
+    }
+
+    submission.featured = Boolean(featured);
+    saveSubmissions(submissions);
+
+    res.json({ ok: true, submission });
+});
+
 app.listen(PORT, async() => {
     console.log(`Server started on http://localhost:${PORT}`);
+    console.log('服务器功能：');
+    console.log('- 用户系统：登录/注册');
+    console.log('- 论坛互动：发帖/评论/点赞');
+    console.log('- AI问答：基于DeepSeek');
+    console.log('- 历史上的今天：事件管理');
+    console.log('- 创作竞赛：竞赛/投稿/投票');
+    console.log('- 答题排行榜：多用户排名系统');
     try {
         const { default: open } = await
         import ('open');
