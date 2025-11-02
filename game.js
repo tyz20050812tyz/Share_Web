@@ -901,7 +901,7 @@ class ShootingGame {
     // 初始化音频系统
     initAudio() {
         // 创建背景音乐（使用项目中的歌曲）
-        this.sounds.bgm = new Audio('./audio/背景音乐.mp3');
+        this.sounds.bgm = new Audio('./歌曲/2黄河在呐喊.mp3');
         this.sounds.bgm.loop = true;
         this.sounds.bgm.volume = 0.3; // 背景音乐音量30%
 
