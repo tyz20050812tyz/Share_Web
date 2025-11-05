@@ -38,5 +38,15 @@
     "account": "22",
     "password": "222222",
     "role": "user"
+  },
+  {
+    "account": "zh",
+    "password": "123456",
+    "role": "user"
+  },
+  {
+    "account": "手机",
+    "password": "123456",
+    "role": "user"
   }
 ]
