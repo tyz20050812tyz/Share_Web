@@ -160,17 +160,50 @@ document.addEventListener('DOMContentLoaded', () => {
         clearBtn.addEventListener('click', () => { saveHistory([]); renderHistory([]); });
     }
 
+    function appendChatMessage(role, html) {
+        if (!aiResponse) return;
+        const wrapper = document.createElement('div');
+        wrapper.className = `chat-msg ${role}`;
+        const avatar = document.createElement('div');
+        avatar.className = 'chat-msg-avatar';
+        avatar.textContent = role === 'user' ? '我' : 'AI';
+        const bubble = document.createElement('div');
+        bubble.className = 'chat-msg-bubble';
+        bubble.innerHTML = html;
+        wrapper.appendChild(avatar);
+        wrapper.appendChild(bubble);
+        aiResponse.appendChild(wrapper);
+        aiResponse.scrollTop = aiResponse.scrollHeight;
+    }
+
     aiSubmit.addEventListener('click', async () => {
         const q = aiInput.value.trim();
-        if (!q) { aiResponse.textContent = '请先输入你的问题。'; return }
-        aiResponse.textContent = '正在处理，请稍候...';
+        if (!q) {
+            appendChatMessage('ai', escapeHtml('请先输入你的问题。'));
+            return;
+        }
+        appendChatMessage('user', escapeHtml(q));
+
+        const loadingId = `loading-${Date.now()}`;
+        appendChatMessage('ai', `<span id="${loadingId}">正在处理，请稍候...</span>`);
         aiSubmit.disabled = true;
+
         const result = await askOnline(q);
         const ans = result && result.answer ? result.answer : '未获得有效回答。';
         const rawData = result && (result.raw || result);
-        const rawBlock = `<details style="margin-top:10px"><summary>查看原始数据</summary><pre class="ai-raw" style="max-height:240px;overflow:auto;background:#f7fafc;padding:10px;border-radius:6px;border:1px solid #e2e8f0">${prettyJSON(rawData)}</pre></details>`;
         const mdHtml = renderMarkdown(ans);
-        aiResponse.innerHTML = `<div class="ai-answer markdown-body">${mdHtml}</div>${rawBlock}`;
+        const rawBlock = `<details style="margin-top:8px"><summary>查看原始数据</summary><pre class="ai-raw" style="max-height:200px;overflow:auto;background:#f7fafc;padding:8px;border-radius:6px;border:1px solid #e2e8f0">${prettyJSON(rawData)}</pre></details>`;
+
+        // 替换刚才的“正在处理”气泡内容
+        const loadingEl = document.getElementById(loadingId);
+        if (loadingEl) {
+            const parent = loadingEl.parentElement;
+            if (parent) {
+                parent.innerHTML = `<div class="markdown-body">${mdHtml}</div>${rawBlock}`;
+            }
+        } else {
+            appendChatMessage('ai', `<div class="markdown-body">${mdHtml}</div>${rawBlock}`);
+        }
         if (window.hljs && typeof window.hljs.highlightAll === 'function') { window.hljs.highlightAll(); }
 
         // 记录最新回答并自动朗读（可通过“停止”按钮中断）
@@ -189,7 +222,6 @@ document.addEventListener('DOMContentLoaded', () => {
         saveHistory(history);
         renderHistory(history);
 
-        // 问答完成后，清空输入框并聚焦，便于继续提问
         aiInput.value = '';
         aiInput.focus();
         aiSubmit.disabled = false;

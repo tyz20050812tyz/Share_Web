@@ -1,22 +1,21 @@
 /* ===== 设计令牌（自动暗黑） ===== */
 
 :root {
-    /* 主色（红色，契合爱国与历史主题）*/
-    --accent: #c62828;
-    --accent-light: #e53935;
-    --accent-dark: #8e0000;
-    /* 灰阶 */
-    --bg: #c62828;
-    /* 全站红色背景 */
+    /* 主色：参考示例页面，采用柔和红橙渐变 */
+    --accent: #b91c1c;
+    --accent-light: #dc2626;
+    --accent-dark: #7f1d1d;
+    /* 灰阶：以浅灰为主背景，弱化大面积红色 */
+    --bg: #f3f4f6;
     --surface: #ffffff;
     --border: #e5e9f2;
     --muted: #6b7280;
     --text: #111827;
     /* 圆角 & 阴影 */
     --radius: 12px;
-    --shadow-sm: 0 1px 2px 0 rgba(0 0 0 / .05);
-    --shadow: 0 4px 12px -2px rgba(0 0 0 / .08);
-    --shadow-lg: 0 10px 24px -4px rgba(0 0 0 / .12);
+    --shadow-sm: 0 1px 2px 0 rgba(15 23 42 / .04);
+    --shadow: 0 4px 12px -2px rgba(15 23 42 / .08);
+    --shadow-lg: 0 10px 24px -4px rgba(15 23 42 / .12);
     /* 动效 */
     --transition: all .25s cubic-bezier(.4, 0, .2, 1);
 }
@@ -56,13 +55,13 @@ body {
 /* ===== 全站红色层次背景（渐变与光斑） ===== */
 
 :root {
-    /* 页面背景渐变：柔和红色层次与高亮光斑 */
-    --bg-page: radial-gradient(1000px 500px at 10% 0%, #fff5f5 0%, #ffe8e8 35%, transparent 60%), radial-gradient(800px 400px at 95% 10%, #fff0f0 0%, #ffdede 40%, transparent 65%), linear-gradient(135deg, #fff7f7, #ffe5e5);
+    /* 页面背景渐变：改为柔和灰蓝色层次，整体更素雅 */
+    --bg-page: radial-gradient(1000px 500px at 10% 0%, #f9fafb 0%, #e5e7eb 35%, transparent 60%), radial-gradient(800px 400px at 95% 10%, #eef2ff 0%, #e0e7ff 40%, transparent 65%), linear-gradient(135deg, #f9fafb, #e5e7eb);
 }
 
 @media (prefers-color-scheme: dark) {
      :root {
-        --bg-page: radial-gradient(1000px 500px at 12% 2%, rgba(255, 220, 220, .18) 0%, rgba(255, 200, 200, .10) 35%, transparent 60%), linear-gradient(135deg, #8e0000, #c62828);
+        --bg-page: radial-gradient(1000px 500px at 12% 2%, rgba(148, 163, 184, .25) 0%, rgba(51, 65, 85, .4) 35%, transparent 60%), linear-gradient(135deg, #020617, #0f172a);
     }
 }
 
@@ -170,7 +169,7 @@ a {
     position: relative;
     padding: 8px 16px;
     border-radius: 8px;
-    background: linear-gradient(135deg, rgba(198, 40, 40, 0.05), rgba(198, 40, 40, 0.1));
+    background: linear-gradient(135deg, rgba(185, 28, 28, 0.05), rgba(185, 28, 28, 0.12));
 }
 
 .main-nav a::before {
@@ -186,8 +185,8 @@ a {
 .main-nav a:hover {
     opacity: 1;
     transform: translateY(-2px);
-    background: linear-gradient(135deg, rgba(198, 40, 40, 0.1), rgba(198, 40, 40, 0.15));
-    box-shadow: 0 4px 12px rgba(198, 40, 40, 0.2);
+    background: linear-gradient(135deg, rgba(185, 28, 28, 0.12), rgba(217, 119, 6, 0.16));
+    box-shadow: 0 4px 12px rgba(185, 28, 28, 0.2);
 }
 
 .main-nav a:hover::before {
@@ -199,8 +198,8 @@ a {
 /* 导航栏活跃状态 */
 
 .main-nav a.active {
-    background: linear-gradient(135deg, rgba(198, 40, 40, 0.15), rgba(198, 40, 40, 0.25));
-    border-bottom: 3px solid #c62828;
+    background: linear-gradient(135deg, rgba(185, 28, 28, 0.18), rgba(217, 119, 6, 0.28));
+    border-bottom: 3px solid #b91c1c;
     font-weight: 700;
 }
 
@@ -243,13 +242,13 @@ a {
 }
 
 .main-nav a.nav-profile {
-    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(198, 40, 40, 0.2));
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(37, 99, 235, 0.16));
     border: 2px solid #ffd700;
 }
 
 .main-nav a.nav-profile:hover {
-    background: linear-gradient(135deg, rgba(255, 215, 0, 0.3), rgba(198, 40, 40, 0.3));
-    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.28), rgba(37, 99, 235, 0.22));
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
 }
 
 
@@ -443,7 +442,7 @@ body.index-page::after {
     left: -2px;
     right: -2px;
     bottom: -2px;
-    background: linear-gradient(135deg, #c62828, #e53935, #ff5252);
+    background: linear-gradient(135deg, #b91c1c, #dc2626, #d97706);
     border-radius: var(--radius);
     opacity: 0;
     transition: var(--transition);
@@ -457,7 +456,7 @@ body.index-page::after {
 .card-link:hover {
     box-shadow: var(--shadow-lg);
     transform: translateY(-4px) scale(1.02);
-    border-color: rgba(198, 40, 40, 0.3);
+    border-color: rgba(185, 28, 28, 0.28);
 }
 
 .card-link .title {
@@ -1015,22 +1014,201 @@ body.index-page::after {
     transform: scale(.98);
 }
 
-.ai-response {
-    margin-top: 16px;
+/* ===== AI 对话页：对话式布局 ===== */
+
+.ai-page .site-header h1 {
+    font-size: 22px;
+}
+
+.ai-chat-card {
+    margin-top: 24px;
+    padding: 0;
+    overflow: hidden;
+}
+
+.ai-chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background: linear-gradient(135deg, #b91c1c, #d97706);
+    color: #fff;
+}
+
+.ai-chat-title-block {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.ai-chat-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: rgba(15, 23, 42, .2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+}
+
+.ai-chat-title {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.ai-chat-subtitle {
+    font-size: 13px;
+    opacity: .9;
+}
+
+.ai-chat-back {
+    font-size: 13px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, .16);
+}
+
+.ai-chat-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 2.2fr) minmax(260px, 1fr);
+    gap: 16px;
     padding: 16px;
-    border-left: 3px solid var(--accent);
+}
+
+.ai-chat-main {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.ai-chat-window {
+    background: #f9fafb;
+    border-radius: var(--radius);
+    padding: 16px;
+    min-height: 260px;
+    max-height: 520px;
+    overflow-y: auto;
+}
+
+.ai-chat-input-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 4px;
+}
+
+.ai-chat-input {
+    flex: 1;
+    height: 42px;
+    padding: 10px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
     background: var(--surface);
-    border-radius: 0 var(--radius) var(--radius) 0;
-    white-space: pre-wrap;
-    font-size: 15px;
-    animation: fade-in .4s;
+    font-size: 14px;
+}
+
+.ai-chat-input:focus {
+    outline: none;
+    border-color: var(--accent-light);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, .16);
+}
+
+.ai-chat-send {
+    padding: 0 18px;
+    border-radius: 999px;
+    border: none;
+    background: var(--accent);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ai-chat-send:hover {
+    background: var(--accent-light);
+}
+
+.ai-chat-aside {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.ai-history-panel {
+    margin-top: 8px;
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    padding: 10px 12px;
+}
+
+.ai-chat-window .chat-msg {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+    animation: fade-in .25s;
+}
+
+.ai-chat-window .chat-msg-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+.ai-chat-window .chat-msg-bubble {
+    max-width: 80%;
+    padding: 8px 12px;
+    border-radius: 12px;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.ai-chat-window .chat-msg.ai .chat-msg-avatar {
+    background: rgba(37, 99, 235, .12);
+}
+
+.ai-chat-window .chat-msg.ai .chat-msg-bubble {
+    background: #ffffff;
+    border: 1px solid var(--border);
+}
+
+.ai-chat-window .chat-msg.user {
+    flex-direction: row-reverse;
+}
+
+.ai-chat-window .chat-msg.user .chat-msg-avatar {
+    background: rgba(37, 99, 235, .18);
+    color: #fff;
+}
+
+.ai-chat-window .chat-msg.user .chat-msg-bubble {
+    background: linear-gradient(135deg, var(--accent), var(--accent-light));
+    color: #fff;
+}
+
+.ai-chat-window .chat-msg .markdown-body {
+    font-size: 14px;
 }
 
 @keyframes fade-in {
     from {
         opacity: 0;
-        transform: translateY(6px);
+        transform: translateY(4px);
     }
+}
+
+/* 兼容旧 .ai-response class：作为聊天窗口容器 */
+.ai-response {
+    border: none;
+    background: transparent;
+    padding: 0;
 }
 
 
