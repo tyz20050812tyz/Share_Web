@@ -30,7 +30,7 @@ function loadLocalConfig() {
 
 const localCfg = loadLocalConfig();
 const deepseekUrl = process.env.DEEPSEEK_API_URL || localCfg.DEEPSEEK_API_URL || 'https://api.deepseek.com/v1/chat/completions';
-const deepseekKey = process.env.DEEPSEEK_API_KEY || localCfg.DEEPSEEK_API_KEY || '';
+const deepseekKey = process.env.DEEPSEEK_API_KEY || localCfg.DEEPSEEK_API_KEY || 'sk-07693a33ce604f358190ea01434ab958';
 const deepseekKeyHeader = process.env.DEEPSEEK_API_KEY_HEADER || localCfg.DEEPSEEK_API_KEY_HEADER || 'Authorization';
 const model = process.env.DEEPSEEK_MODEL || localCfg.DEEPSEEK_MODEL || 'deepseek-chat';
 const enableMock = String(process.env.ENABLE_MOCK || localCfg.ENABLE_MOCK || 'false').toLowerCase() === 'true';
