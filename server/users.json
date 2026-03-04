@@ -5,48 +5,8 @@
     "role": "admin"
   },
   {
-    "account": "张洪",
-    "password": "abaaba",
-    "role": "user"
-  },
-  {
-    "account": "admin",
+    "account": "张若雯",
     "password": "123456",
-    "role": "user"
-  },
-  {
-    "account": "马鸣",
-    "password": "123456",
-    "role": "user"
-  },
-  {
-    "account": "11",
-    "password": "111111",
-    "role": "user"
-  },
-  {
-    "account": "user1",
-    "password": "cbBpk7nHgK7g9zA",
-    "role": "user"
-  },
-  {
-    "account": "user2",
-    "password": "123456",
-    "role": "user"
-  },
-  {
-    "account": "22",
-    "password": "222222",
-    "role": "user"
-  },
-  {
-    "account": "zh",
-    "password": "123456",
-    "role": "user"
-  },
-  {
-    "account": "手机",
-    "password": "123456",
-    "role": "user"
+    "role": "admin"
   }
 ]

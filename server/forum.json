@@ -2,7 +2,7 @@
   "posts": [
     {
       "id": 1762054523845,
-      "author": "佟雨泽",
+      "author": "张若雯",
       "content": "# 中华民族万岁！！！",
       "ts": 1762054523845,
       "likes": 20,
@@ -10,21 +10,6 @@
       "tags": [
         "抗战意志",
         "民族团结"
-      ],
-      "reactions": {},
-      "pinned": true,
-      "images": []
-    },
-    {
-      "id": 1762054560687,
-      "author": "佟雨泽",
-      "content": "代码已上传到github，# https://github.com/tyz20050812tyz/Share_Web.git",
-      "ts": 1762054560687,
-      "likes": 44,
-      "comments": [],
-      "tags": [
-        "文化传承",
-        "复兴之路"
       ],
       "reactions": {},
       "pinned": true,
