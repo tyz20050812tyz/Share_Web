@@ -1168,6 +1168,7 @@ body.index-page::after {
     border-radius: 12px;
     font-size: 14px;
     line-height: 1.6;
+    color: #111827;
 }
 
 .ai-chat-window .chat-msg.ai .chat-msg-avatar {
@@ -1177,6 +1178,7 @@ body.index-page::after {
 .ai-chat-window .chat-msg.ai .chat-msg-bubble {
     background: #ffffff;
     border: 1px solid var(--border);
+    color: #111827;
 }
 
 .ai-chat-window .chat-msg.user {
@@ -1190,7 +1192,7 @@ body.index-page::after {
 
 .ai-chat-window .chat-msg.user .chat-msg-bubble {
     background: linear-gradient(135deg, var(--accent), var(--accent-light));
-    color: #fff;
+    color: #111827;
 }
 
 .ai-chat-window .chat-msg .markdown-body {
