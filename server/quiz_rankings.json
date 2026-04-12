@@ -7,6 +7,14 @@
       "total": 20,
       "timestamp": 1762139464452,
       "createdAt": "2025-11-03T03:11:04.462Z"
+    },
+    {
+      "user": "张若雯",
+      "score": 100,
+      "correct": 10,
+      "total": 20,
+      "timestamp": 1775984318166,
+      "createdAt": "2026-04-12T08:58:38.240Z"
     }
   ]
 }

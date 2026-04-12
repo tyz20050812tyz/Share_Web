@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 智能知识问答 — 以史为鉴，凝聚力量</title>
+    <title>AI 智能知识问答 — 学习毛泽东思想，传承红色基因</title>
     <link rel="stylesheet" href="style.css">
 
 </head>
@@ -15,9 +15,9 @@
 
             <h1>智能知识问答</h1>
             <div>
-                <h1>你好！我是“小史鉴”</h1>
-                <p>我专注解答“以史为鉴，凝聚力量——反法西斯战争胜利精神与中华民族伟大复兴的内在逻辑”相关问题，涵盖胜利精神的核心要素（抗争精神、团结统一、牺牲奉献、国际主义）及其在新中国建设、改革开放、科技经济发展、文化自信等方面的历史传承与现实转化。</p>
-
+                <h1>你好！我是"小思源"</h1>
+                <p>我是你的毛泽东思想与马克思主义中国化理论学习助手，专注于解答毛泽东思想理论体系相关问题，包括新民主主义革命理论、社会主义建设理论、实事求是思想路线、群众路线工作方法等，帮助你深入理解和学习马克思主义中国化的理论成果。</p>
+            
             </div>
             <nav class="main-nav">
                 <a href="index.html">主页</a>
@@ -25,7 +25,7 @@
                 <a href="knowledge.html">知识分享</a>
                 <a href="culture.html">文化传播</a>
                 <a href="discuss.html">讨论区</a>
-                <a href="game.html">趣味射击</a>
+                <a href="tower_defense.html">三大法宝</a>
                 <a href="models.html">3D展馆</a>
                 <a href="challenge.html" class="nav-challenge">🎯 互动学习</a>
                 <a href="history_today.html" class="nav-history">📅 历史上的今天</a>
@@ -39,7 +39,7 @@
     <main class="wrap ai-page">
         <div class="card ai-card" style="padding-top:16px">
             <div class="ai-box" style="gap:10px">
-                <input id="ai-input" type="text" placeholder="输入你的问题，例如：反法西斯胜利精神如何转化为复兴动力？胜利精神的核心要素有哪些？与现代化建设之间的逻辑关系是什么？">
+                <input id="ai-input" type="text" placeholder="输入你的问题，例如：毛泽东思想的核心内容是什么？什么是新民主主义革命理论？三大法宝和三大作风分别是什么？">
                 <button id="ai-submit">提问</button>
             </div>
 
@@ -51,12 +51,22 @@
         </div>
 
         <div class="card answer-card" style="margin-top:12px">
-            <div class="digital-human theme-soldier" id="digital-human" aria-label="数字人 小史鉴 军人主题">
+            <div class="digital-human theme-scholar" id="digital-human" aria-label="数字人 小思源 学者主题">
                 <div class="dh-avatar">
-                    <!-- 军帽（含帽檐与红星） -->
-                    <div class="dh-hat"><span class="brim"></span><span class="star"></span></div>
-                    <!-- 英雄主题装饰：头带与之字金星（军人主题下隐藏） -->
-                    <div class="dh-headband"><span class="star"></span></div>
+                    <!-- 红军帽 -->
+                    <div class="dh-hat">
+                        <div class="hat-top"></div>
+                        <div class="hat-red-band"></div>
+                        <div class="hat-brim"></div>
+                    </div>
+                    <!-- 头发 -->
+                    <div class="dh-hair">
+                        <div class="hair-left"></div>
+                        <div class="hair-right"></div>
+                        <div class="hair-top"></div>
+                    </div>
+                    <!-- 学者主题：眼镜装饰 -->
+                    <div class="dh-glasses"><span class="frame left"></span><span class="frame right"></span><span class="bridge"></span></div>
                     <!-- 眉毛与腮红，让表情更可爱 -->
                     <div class="dh-brow left"></div>
                     <div class="dh-brow right"></div>
@@ -65,14 +75,8 @@
                     <div class="dh-eye left"><span class="pupil"></span></div>
                     <div class="dh-eye right"><span class="pupil"></span></div>
                     <div class="dh-mouth"></div>
-                    <!-- 肩章与军装领口 -->
-                    <div class="dh-epaulet left"></div>
-                    <div class="dh-epaulet right"></div>
-                    <div class="dh-collar left"></div>
-                    <div class="dh-collar right"></div>
-                    <!-- 英雄徽章与披风（军人主题下隐藏） -->
-                    <div class="dh-badge"></div>
-                    <div class="dh-cape"></div>
+                    <!-- 学者领结装饰 -->
+                    <div class="dh-bowtie"></div>
                 </div>
                 <div class="dh-controls" aria-label="数字人控制区">
                     <div class="dh-voice">
@@ -94,6 +98,17 @@
             <div id="ai-response" class="ai-response"></div>
         </div>
 
+        <div class="card examples-card" style="margin-top:12px">
+            <div class="section-title">示例问题</div>
+            <div class="example-questions">
+                <button class="example-btn" data-q="毛泽东思想的核心内容是什么？">毛泽东思想的核心内容是什么？</button>
+                <button class="example-btn" data-q="什么是新民主主义革命理论？">什么是新民主主义革命理论？</button>
+                <button class="example-btn" data-q="三大法宝和三大作风分别是什么？">三大法宝和三大作风分别是什么？</button>
+                <button class="example-btn" data-q="延安整风运动的历史意义是什么？">延安整风运动的历史意义是什么？</button>
+                <button class="example-btn" data-q="如何理解马克思主义中国化？">如何理解马克思主义中国化？</button>
+            </div>
+        </div>
+
         <div class="card history-card">
             <details id="history-details" open>
                 <summary class="history-summary">
@@ -108,7 +123,7 @@
     </main>
 
     <footer class="site-footer">
-        <div class="wrap">© 2025 以史为鉴，凝聚力量</div>
+        <div class="wrap">© 2025 学习毛泽东思想，传承红色基因</div>
     </footer>
     <script src="main.js"></script>
     <!-- Markdown 解析与安全过滤 -->

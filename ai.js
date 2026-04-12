@@ -86,9 +86,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // 基于回答文本的情绪识别（简易规则）
     function detectMood(text = '') {
         const t = String(text);
-        if (/胜利|成功|喜悦|振奋|大捷|光辉|希望/.test(t)) return 'smile';
-        if (/牺牲|战争|抗战|纪念|严峻|相持|苦难|伤亡|烈士|困难/.test(t)) return 'serious';
-        if (/震惊|突发|首次|重要|意外|惊/.test(t)) return 'surprise';
+        if (/真理|智慧|启发|创新|发展|进步|成就/.test(t)) return 'smile';
+        if (/理论|思想|学习|研究|探索|思考|分析/.test(t)) return 'serious';
+        if (/重要|关键|核心|突破|发现|深刻/.test(t)) return 'surprise';
         return 'serious';
     }
 
@@ -166,7 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
         wrapper.className = `chat-msg ${role}`;
         const avatar = document.createElement('div');
         avatar.className = 'chat-msg-avatar';
-        avatar.textContent = role === 'user' ? '我' : 'AI';
+        avatar.textContent = role === 'user' ? '我' : '小思源';
         const bubble = document.createElement('div');
         bubble.className = 'chat-msg-bubble';
         bubble.innerHTML = html;
@@ -261,4 +261,15 @@ document.addEventListener('DOMContentLoaded', () => {
             try { localStorage.setItem(PITCH_PREF_KEY, pitchInput.value || '1.0'); } catch {}
         });
     }
+
+    // 示例问题按钮点击事件
+    document.querySelectorAll('.example-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const q = btn.dataset.q;
+            if (aiInput && q) {
+                aiInput.value = q;
+                aiInput.focus();
+            }
+        });
+    });
 });

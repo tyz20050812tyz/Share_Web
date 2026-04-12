@@ -36,13 +36,14 @@
         "故事"
       ],
       "coverImage": "",
-      "votes": 1,
+      "votes": 2,
       "views": 3,
       "status": "published",
       "featured": false,
       "createdAt": "2025-11-02T06:41:15.172Z",
       "voters": [
-        "user2"
+        "user2",
+        "张若雯"
       ]
     }
   ]

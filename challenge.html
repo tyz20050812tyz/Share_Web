@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>互动学习中心 - 以史为鉴 凝聚力量</title>
+    <title>互动学习中心 - 学习毛泽东思想</title>
     <link rel="stylesheet" href="style.css">
     <style>
         /* 页面整体布局 */
@@ -216,50 +216,119 @@
         }
         
         .character-card {
-            background: white;
-            border: 3px solid rgba(198, 40, 40, 0.2);
-            border-radius: 15px;
-            padding: 20px;
+            background: linear-gradient(145deg, #ffffff 0%, #fff8f8 100%);
+            border: 2px solid rgba(198, 40, 40, 0.15);
+            border-radius: 20px;
+            padding: 25px 20px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .character-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #c62828, #e53935, #ff6b6b);
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
         
         .character-card:hover {
-            border-color: #c62828;
-            transform: scale(1.05);
-            box-shadow: 0 8px 20px rgba(198, 40, 40, 0.3);
+            border-color: rgba(198, 40, 40, 0.4);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(198, 40, 40, 0.2),
+                        0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .character-card:hover::before {
+            opacity: 1;
         }
         
         .character-card.active {
-            background: linear-gradient(135deg, #c62828, #e53935);
+            background: linear-gradient(145deg, #c62828 0%, #e53935 100%);
             color: white;
             border-color: #c62828;
+            box-shadow: 0 15px 35px rgba(198, 40, 40, 0.4),
+                        0 0 0 3px rgba(198, 40, 40, 0.2);
+        }
+        
+        .character-card.active::before {
+            opacity: 1;
+            background: linear-gradient(90deg, #ffd700, #ffed4e, #ffb300);
         }
         
         .character-avatar {
-            width: 80px;
-            height: 80px;
+            width: 90px;
+            height: 90px;
             border-radius: 50%;
             object-fit: cover;
-            margin: 0 auto 10px;
+            margin: 0 auto 12px;
             display: block;
-            border: 3px solid rgba(198, 40, 40, 0.3);
+            border: 4px solid transparent;
+            background: linear-gradient(white, white) padding-box,
+                        linear-gradient(135deg, #c62828, #e53935, #ff6b6b) border-box;
+            box-shadow: 0 6px 20px rgba(198, 40, 40, 0.25),
+                        0 0 0 4px rgba(198, 40, 40, 0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .character-card:hover .character-avatar {
+            transform: scale(1.08) rotate(3deg);
+            box-shadow: 0 8px 30px rgba(198, 40, 40, 0.4),
+                        0 0 0 6px rgba(198, 40, 40, 0.15);
+        }
+        
+        .character-card.active .character-avatar {
+            background: linear-gradient(white, white) padding-box,
+                        linear-gradient(135deg, #ffd700, #ffed4e, #ffb300) border-box;
+            box-shadow: 0 8px 30px rgba(255, 215, 0, 0.4),
+                        0 0 0 6px rgba(255, 215, 0, 0.2);
+            animation: avatarGlow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes avatarGlow {
+            from {
+                box-shadow: 0 8px 30px rgba(255, 215, 0, 0.4),
+                            0 0 0 6px rgba(255, 215, 0, 0.2);
+            }
+            to {
+                box-shadow: 0 10px 40px rgba(255, 215, 0, 0.6),
+                            0 0 0 8px rgba(255, 215, 0, 0.3);
+            }
         }
         
         .character-name {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: bold;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
+            color: #333;
+            letter-spacing: 1px;
+        }
+        
+        .character-card:hover .character-name {
+            color: #c62828;
         }
         
         .character-title {
-            font-size: 14px;
-            color: #666;
+            font-size: 13px;
+            color: #888;
+            line-height: 1.5;
+            padding: 0 5px;
+        }
+        
+        .character-card.active .character-name {
+            color: #fff;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
         
         .character-card.active .character-title {
-            color: rgba(255, 255, 255, 0.9);
+            color: rgba(255, 255, 255, 0.95);
         }
         
         .chat-area {
@@ -295,12 +364,22 @@
         }
         
         .message-avatar {
-            width: 48px;
-            height: 48px;
+            width: 52px;
+            height: 52px;
             border-radius: 50%;
             object-fit: cover;
             flex-shrink: 0;
-            border: 2px solid rgba(198, 40, 40, 0.3);
+            border: 3px solid transparent;
+            background: linear-gradient(white, white) padding-box,
+                        linear-gradient(135deg, #c62828, #e53935) border-box;
+            box-shadow: 0 4px 15px rgba(198, 40, 40, 0.2);
+        }
+        
+        .message.character .message-avatar {
+            background: linear-gradient(white, white) padding-box,
+                        linear-gradient(135deg, #c62828, #e53935, #ff6b6b) border-box;
+            box-shadow: 0 4px 15px rgba(198, 40, 40, 0.3),
+                        0 0 0 3px rgba(198, 40, 40, 0.1);
         }
         
         .message-avatar.emoji {
@@ -505,7 +584,7 @@
                 <a href="knowledge.html">知识分享</a>
                 <a href="culture.html">文化传播</a>
                 <a href="discuss.html">讨论区</a>
-                <a href="game.html">趣味射击</a>
+                <a href="tower_defense.html">三大法宝</a>
                 <a href="models.html">3D展馆</a>
                 <a href="challenge.html" class="nav-challenge active">🎯 互动学习</a>
                 <a href="history_today.html" class="nav-history">📅 历史上的今天</a>
@@ -534,7 +613,7 @@
                     <div class="mode-icon">🎭</div>
                     <div class="mode-title">AI历史对话</div>
                     <div class="mode-desc">
-                        与英雄人物对话<br> 💬 AI角色扮演<br> 📜 基于真实史料<br> 🎬 沉浸式体验<br> 🌟 历史场景还原
+                        与历史人物对话<br> 💬 AI角色扮演<br> 📜 基于真实史料<br> 🎬 沉浸式体验<br> 🌟 七大代表风采
                     </div>
                 </div>
             </div>
@@ -589,7 +668,7 @@
             </button>
 
             <h2 style="text-align: center; color: #c62828; margin-bottom: 30px;">
-                选择您想对话的历史人物
+                选择您想对话的七大代表
             </h2>
 
             <div class="character-selector" id="character-selector"></div>

@@ -2,9 +2,12 @@
 
 :root {
     /* 主色：参考示例页面，采用柔和红橙渐变 */
-    --accent: #b91c1c;
-    --accent-light: #dc2626;
-    --accent-dark: #7f1d1d;
+    --accent: #c41230;
+    --accent-light: #e53e3e;
+    --accent-dark: #9b1b30;
+    /* 金色点缀 */
+    --gold: #d4a017;
+    --gold-light: #f0d060;
     /* 灰阶：以浅灰为主背景，弱化大面积红色 */
     --bg: #f3f4f6;
     --surface: #ffffff;
@@ -22,8 +25,8 @@
 
 @media (prefers-color-scheme: dark) {
      :root {
-        --bg: #c62828;
-        /* 暗色模式亦保持红色背景 */
+        --bg: #8b0000;
+        /* 暗色模式使用更深沉的红 */
         --surface: #161b22;
         --border: #30363d;
         --muted: #8b949e;
@@ -169,7 +172,7 @@ a {
     position: relative;
     padding: 8px 16px;
     border-radius: 8px;
-    background: linear-gradient(135deg, rgba(185, 28, 28, 0.05), rgba(185, 28, 28, 0.12));
+    background: linear-gradient(135deg, rgba(196, 18, 48, 0.05), rgba(196, 18, 48, 0.12));
 }
 
 .main-nav a::before {
@@ -185,8 +188,8 @@ a {
 .main-nav a:hover {
     opacity: 1;
     transform: translateY(-2px);
-    background: linear-gradient(135deg, rgba(185, 28, 28, 0.12), rgba(217, 119, 6, 0.16));
-    box-shadow: 0 4px 12px rgba(185, 28, 28, 0.2);
+    background: linear-gradient(135deg, rgba(196, 18, 48, 0.12), rgba(217, 119, 6, 0.16));
+    box-shadow: 0 4px 12px rgba(196, 18, 48, 0.2);
 }
 
 .main-nav a:hover::before {
@@ -198,8 +201,8 @@ a {
 /* 导航栏活跃状态 */
 
 .main-nav a.active {
-    background: linear-gradient(135deg, rgba(185, 28, 28, 0.18), rgba(217, 119, 6, 0.28));
-    border-bottom: 3px solid #b91c1c;
+    background: linear-gradient(135deg, rgba(196, 18, 48, 0.18), rgba(217, 119, 6, 0.28));
+    border-bottom: 3px solid #c41230;
     font-weight: 700;
 }
 
@@ -258,7 +261,7 @@ a {
     margin-top: 8px;
     padding: 24px;
     /* 红色主题渐变背景 */
-    background: linear-gradient(135deg, #fff5f5, #fde7e7);
+    background: linear-gradient(135deg, #fff5f5, #fdf2e9);
     border-radius: var(--radius);
     display: flex;
     flex-direction: column;
@@ -442,7 +445,7 @@ body.index-page::after {
     left: -2px;
     right: -2px;
     bottom: -2px;
-    background: linear-gradient(135deg, #b91c1c, #dc2626, #d97706);
+    background: linear-gradient(135deg, #c41230, #e53e3e, #d97706);
     border-radius: var(--radius);
     opacity: 0;
     transition: var(--transition);
@@ -456,7 +459,7 @@ body.index-page::after {
 .card-link:hover {
     box-shadow: var(--shadow-lg);
     transform: translateY(-4px) scale(1.02);
-    border-color: rgba(185, 28, 28, 0.28);
+    border-color: rgba(196, 18, 48, 0.28);
 }
 
 .card-link .title {
@@ -798,7 +801,7 @@ body.index-page::after {
 }
 
 
-/* ===== 数字人（小史鉴） ===== */
+/* ===== 数字人（AI助手） ===== */
 
 .digital-human {
     width: 180px;
@@ -817,19 +820,142 @@ body.index-page::after {
     width: 160px;
     height: 160px;
     border-radius: 50%;
-    background: radial-gradient(70% 70% at 40% 35%, #ffe8e8 0%, #ffcccc 45%, #ffb3b3 100%);
-    box-shadow: var(--shadow);
+    background: radial-gradient(70% 70% at 40% 35%, #fff0f0 0%, #ffd4d4 40%, #ffb8b8 100%);
+    box-shadow: 
+        0 8px 32px rgba(198, 40, 40, 0.15),
+        0 4px 16px rgba(0, 0, 0, 0.08),
+        inset 0 -4px 20px rgba(198, 40, 40, 0.1);
     animation: dh-breathe 6s ease-in-out infinite;
+    border: 3px solid rgba(255, 255, 255, 0.6);
+}
+
+/* 红军帽 */
+.dh-hat {
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 140px;
+    height: 70px;
+    z-index: 20;
+}
+
+.dh-hat .hat-top {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 55px;
+    background: linear-gradient(180deg, #8b4513 0%, #654321 50%, #4a3728 100%);
+    border-radius: 50px 50px 0 0;
+    box-shadow: 
+        0 4px 8px rgba(0, 0, 0, 0.3),
+        inset 0 2px 4px rgba(255, 255, 255, 0.1);
+}
+
+.dh-hat .hat-top::before {
+    content: '';
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #daa520 100%);
+    border-radius: 50%;
+    box-shadow: 
+        0 2px 4px rgba(0, 0, 0, 0.3),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.dh-hat .hat-top::after {
+    content: '★';
+    position: absolute;
+    top: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 14px;
+    color: #c62828;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.dh-hat .hat-brim {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 140px;
+    height: 20px;
+    background: linear-gradient(180deg, #654321 0%, #4a3728 100%);
+    border-radius: 0 0 70px 70px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+}
+
+.dh-hat .hat-red-band {
+    position: absolute;
+    top: 38px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 12px;
+    background: linear-gradient(180deg, #c62828 0%, #8b0000 100%);
+    border-radius: 2px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* 头发 */
+.dh-hair {
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 150px;
+    height: 60px;
+    z-index: 15;
+}
+
+.dh-hair .hair-left,
+.dh-hair .hair-right {
+    position: absolute;
+    top: 0;
+    width: 40px;
+    height: 50px;
+    background: linear-gradient(180deg, #2c2c2c 0%, #1a1a1a 100%);
+    border-radius: 50% 50% 30% 30%;
+}
+
+.dh-hair .hair-left {
+    left: 15px;
+    transform: rotate(-15deg);
+}
+
+.dh-hair .hair-right {
+    right: 15px;
+    transform: rotate(15deg);
+}
+
+.dh-hair .hair-top {
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70px;
+    height: 30px;
+    background: linear-gradient(180deg, #2c2c2c 0%, #1a1a1a 100%);
+    border-radius: 50% 50% 0 0;
 }
 
 .dh-eye {
     position: absolute;
     top: 42%;
-    width: 18px;
-    height: 18px;
-    background: #fff;
-    border: 2px solid rgba(0, 0, 0, .12);
-    box-shadow: inset 0 0 0 2px rgba(0, 0, 0, .06);
+    width: 20px;
+    height: 20px;
+    background: linear-gradient(145deg, #ffffff 0%, #f8f8f8 100%);
+    border: 2px solid rgba(0, 0, 0, .1);
+    box-shadow: 
+        inset 0 1px 3px rgba(0, 0, 0, .08),
+        0 2px 4px rgba(0, 0, 0, .1);
     border-radius: 50%;
     transform-origin: center;
     animation: dh-blink 4s ease-in-out infinite;
@@ -850,11 +976,23 @@ body.index-page::after {
     position: absolute;
     left: 50%;
     top: 50%;
-    width: 8px;
-    height: 8px;
-    background: #1a1a1a;
+    width: 9px;
+    height: 9px;
+    background: radial-gradient(30% 30% at 30% 30%, #4a4a4a 0%, #1a1a1a 100%);
     border-radius: 50%;
     transform: translate(-50%, -50%) translate(var(--look-x, 0), var(--look-y, 0));
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .3);
+}
+
+.dh-eye .pupil::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 3px;
+    height: 3px;
+    background: rgba(255, 255, 255, .8);
+    border-radius: 50%;
 }
 
 @keyframes dh-blink {
@@ -870,14 +1008,16 @@ body.index-page::after {
 
 .dh-mouth {
     position: absolute;
-    bottom: 32px;
+    bottom: 34px;
     left: 50%;
     transform: translateX(-50%);
-    width: 60px;
-    height: 16px;
-    border-radius: 30px/16px;
-    background: #d84343;
-    box-shadow: inset 0 -4px 0 rgba(0, 0, 0, .1);
+    width: 56px;
+    height: 14px;
+    border-radius: 28px/14px;
+    background: linear-gradient(180deg, #e04848 0%, #c62828 100%);
+    box-shadow: 
+        inset 0 -3px 0 rgba(0, 0, 0, .12),
+        0 2px 4px rgba(198, 40, 40, .2);
 }
 
 .digital-human.speaking .dh-mouth {
@@ -1031,7 +1171,7 @@ body.index-page::after {
     justify-content: space-between;
     align-items: center;
     padding: 16px 20px;
-    background: linear-gradient(135deg, #b91c1c, #d97706);
+    background: linear-gradient(135deg, #c41230, #d97706);
     color: #fff;
 }
 
@@ -1270,21 +1410,22 @@ body.index-page::after {
 
 .dh-brow {
     position: absolute;
-    top: 36%;
-    width: 34px;
-    height: 8px;
-    background: rgba(0, 0, 0, .12);
-    border-radius: 30px/10px;
+    top: 35%;
+    width: 32px;
+    height: 6px;
+    background: linear-gradient(180deg, rgba(80, 40, 40, .25) 0%, rgba(80, 40, 40, .15) 100%);
+    border-radius: 16px/3px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
 }
 
 .dh-brow.left {
-    left: 26px;
-    transform: rotate(-6deg);
+    left: 28px;
+    transform: rotate(-8deg);
 }
 
 .dh-brow.right {
-    right: 26px;
-    transform: rotate(6deg);
+    right: 28px;
+    transform: rotate(8deg);
 }
 
 .digital-human.mood-smile .dh-brow {
@@ -1302,11 +1443,12 @@ body.index-page::after {
 
 .dh-cheek {
     position: absolute;
-    bottom: 52px;
-    width: 26px;
-    height: 26px;
+    bottom: 54px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
-    background: radial-gradient(10px 10px at 50% 50%, rgba(255, 120, 120, .45), rgba(255, 120, 120, 0));
+    background: radial-gradient(12px 12px at 50% 50%, rgba(255, 130, 130, .5), rgba(255, 130, 130, 0));
+    filter: blur(1px);
 }
 
 .dh-cheek.left {
@@ -1318,7 +1460,116 @@ body.index-page::after {
 }
 
 .digital-human.speaking .dh-cheek {
-    filter: brightness(1.05);
+    filter: brightness(1.08);
+}
+
+
+/* 学者主题：眼镜装饰 */
+
+.dh-glasses {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 28px;
+    z-index: 10;
+}
+
+.dh-glasses .frame {
+    position: absolute;
+    top: 0;
+    width: 38px;
+    height: 26px;
+    border: 3px solid rgba(60, 40, 40, .7);
+    border-radius: 50% / 45%;
+    background: rgba(255, 255, 255, .15);
+    box-shadow: 
+        inset 0 1px 3px rgba(255, 255, 255, .3),
+        0 2px 4px rgba(0, 0, 0, .1);
+}
+
+.dh-glasses .frame.left {
+    left: 5px;
+}
+
+.dh-glasses .frame.right {
+    right: 5px;
+}
+
+.dh-glasses .bridge {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 16px;
+    height: 3px;
+    background: rgba(60, 40, 40, .7);
+    border-radius: 2px;
+}
+
+.dh-glasses::before,
+.dh-glasses::after {
+    content: '';
+    position: absolute;
+    top: 8px;
+    width: 8px;
+    height: 3px;
+    background: rgba(60, 40, 40, .5);
+    border-radius: 2px;
+}
+
+.dh-glasses::before {
+    left: -2px;
+    transform: rotate(-20deg);
+}
+
+.dh-glasses::after {
+    right: -2px;
+    transform: rotate(20deg);
+}
+
+
+/* 学者主题：领结装饰 */
+
+.dh-bowtie {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 20px;
+    z-index: 5;
+}
+
+.dh-bowtie::before,
+.dh-bowtie::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+}
+
+.dh-bowtie::before {
+    left: 0;
+    border-right: 16px solid #c62828;
+}
+
+.dh-bowtie::after {
+    right: 0;
+    border-left: 16px solid #c62828;
+}
+
+.dh-bowtie {
+    background: radial-gradient(ellipse at center, #8b0000 0%, #c62828 100%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .2);
 }
 
 

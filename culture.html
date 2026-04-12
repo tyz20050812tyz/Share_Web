@@ -4,21 +4,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>文化传播 — 以史为鉴，凝聚力量</title>
+    <title>文化传播 — 毛泽东思想主题歌曲</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
     <header class="site-header">
         <div class="wrap">
-            <h1>文化传播（主题歌曲与历史记忆）</h1>
+            <h1>文化传播（毛泽东思想主题歌曲）</h1>
             <nav class="main-nav">
                 <a href="index.html">主页</a>
                 <a href="ai.html">智能问答</a>
                 <a href="knowledge.html">知识分享</a>
                 <a href="culture.html" class="active">文化传播</a>
                 <a href="discuss.html">讨论区</a>
-                <a href="game.html">趣味射击</a>
+                <a href="tower_defense.html">三大法宝</a>
                 <a href="models.html">3D展馆</a>
                 <a href="challenge.html" class="nav-challenge">🎯 互动学习</a>
                 <a href="history_today.html" class="nav-history">📅 历史上的今天</a>
@@ -32,51 +32,102 @@
     <div class="user-bar" id="userBar"></div>
 
     <main class="wrap">
+        <!-- 专辑介绍 -->
         <section class="card">
-            <div class="section-title">主题曲精选（本地播放）</div>
-            <div class="subsection-desc">以下为“歌曲”目录中的六首曲目，按序号排列，可在线播放或下载。</div>
+            <div class="section-title">《传响：从宝塔山到大黑山》</div>
+            <div class="subsection-desc">Resonance: From Pagoda Hill to Mount Dahei</div>
+            <div style="background: linear-gradient(135deg, rgba(198, 40, 40, 0.05), rgba(255, 250, 250, 0.8)); border-radius: 15px; padding: 25px; margin: 20px 0; border-left: 4px solid #c62828;">
+                <p style="font-size: 16px; line-height: 1.8; color: #333; margin-bottom: 15px;">
+                    <strong>核心意象：</strong>延安的宝塔山象征着毛泽东思想确立的起点；大连的大黑山象征着新时代青年扎根实践、勇攀高峰的现场。
+                </p>
+                <p style="font-size: 15px; line-height: 1.7; color: #666;">
+                    本专辑共6首歌曲，以史诗交响、律动说唱、现代民谣、抒情摇滚、流行摇滚、华丽交响摇滚等多元曲风，
+                    歌颂毛泽东思想从延安时期的确立到新时代传承的伟大历程，展现理论创新、思想统一和实事求是的精神内核。
+                </p>
+            </div>
+        </section>
+
+        <!-- 歌曲列表 -->
+        <section class="card">
+            <div class="section-title">专辑歌曲</div>
+            <div class="subsection-desc">以下为本专辑六首歌曲，可在线播放或下载。</div>
             <div class="grid-3" style="grid-template-columns: 1fr;">
                 <div class="post-card">
-                    <h3>1 家园不再</h3>
-                    <audio controls src="/songs/1家园不再.mp3"></audio>
-                    <a class="download-link" href="/songs/1家园不再.mp3" download>下载《1家园不再.mp3》</a>
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+                        <span style="background: linear-gradient(135deg, #c62828, #e53935); color: white; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold;">序曲</span>
+                        <h3 style="margin: 0;">1945·光辉集结</h3>
+                    </div>
+                    <p style="color:#666;font-size:14px;margin:5px 0;"><strong>曲风：</strong>史诗交响 + 氛围电子 (Ambient)</p>
+                    <p style="color:#888;font-size:13px;margin:5px 0;line-height:1.6;">以延安杨家岭的钟声拉开序幕，描绘抗战胜利前夜全党代表奔赴延安的情景，隐喻革命力量在毛泽东思想旗帜下达成思想统一。</p>
+                    <audio controls src="audio/歌曲/1945·光辉集结(1).mp3"></audio>
+                    <a class="download-link" href="audio/歌曲/1945·光辉集结(1).mp3" download>下载《1945·光辉集结》</a>
                 </div>
+
                 <div class="post-card">
-                    <h3>2 黄河在呐喊</h3>
-                    <audio controls src="/songs/2黄河在呐喊.mp3"></audio>
-                    <a class="download-link" href="/songs/2黄河在呐喊.mp3" download>下载《2黄河在呐喊.mp3》</a>
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+                        <span style="background: linear-gradient(135deg, #c62828, #e53935); color: white; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold;">Remix</span>
+                        <h3 style="margin: 0;">三大法宝·2.0</h3>
+                    </div>
+                    <p style="color:#666;font-size:14px;margin:5px 0;"><strong>曲风：</strong>律动说唱 (Hip-Hop / Boom Bap)</p>
+                    <p style="color:#888;font-size:13px;margin:5px 0;line-height:1.6;">将统一战线、武装斗争、党的建设比作支撑革命成功的"底层算法"，用软件工程视角重构理论。</p>
+                    <audio controls src="audio/歌曲/三大法宝·2.0.mp3"></audio>
+                    <a class="download-link" href="audio/歌曲/三大法宝·2.0.mp3" download>下载《三大法宝·2.0》</a>
                 </div>
+
                 <div class="post-card">
-                    <h3>3 星星之火</h3>
-                    <audio controls src="/songs/3星星之火.mp3"></audio>
-                    <a class="download-link" href="/songs/3星星之火.mp3" download>下载《3星星之火.mp3》</a>
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+                        <span style="background: linear-gradient(135deg, #c62828, #e53935); color: white; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold;">民谣</span>
+                        <h3 style="margin: 0;">实事求是</h3>
+                    </div>
+                    <p style="color:#666;font-size:14px;margin:5px 0;"><strong>曲风：</strong>现代民谣 (Acoustic Folk)</p>
+                    <p style="color:#888;font-size:13px;margin:5px 0;line-height:1.6;">纯净木吉他伴奏，探讨毛泽东思想最精髓的思想路线——"不看云端的幻影，只看田间的真情"。</p>
+                    <audio controls src="audio/歌曲/实事求是.mp3"></audio>
+                    <a class="download-link" href="audio/歌曲/实事求是.mp3" download>下载《实事求是》</a>
                 </div>
+
                 <div class="post-card">
-                    <h3>4 长城下的誓言</h3>
-                    <audio controls src="/songs/4长城下的誓言.mp3"></audio>
-                    <a class="download-link" href="/songs/4长城下的誓言.mp3" download>下载《4长城下的誓言.mp3》</a>
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+                        <span style="background: linear-gradient(135deg, #c62828, #e53935); color: white; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold;">对唱</span>
+                        <h3 style="margin: 0;">山巅的对话</h3>
+                    </div>
+                    <p style="color:#666;font-size:14px;margin:5px 0;"><strong>曲风：</strong>抒情摇滚 (Ballad Rock)</p>
+                    <p style="color:#888;font-size:13px;margin:5px 0;line-height:1.6;">两位主唱声部交织，一场跨越81年的时空通联——1945宝塔山与2026大黑山的对话。</p>
+                    <audio controls src="audio/歌曲/山巅的对话.mp3"></audio>
+                    <a class="download-link" href="audio/歌曲/山巅的对话.mp3" download>下载《山巅的对话》</a>
                 </div>
+
                 <div class="post-card">
-                    <h3>5 向着光辉的彼岸</h3>
-                    <audio controls src="/songs/5向着光辉的彼岸.mp3"></audio>
-                    <a class="download-link" href="/songs/5向着光辉的彼岸.mp3" download>下载《5向着光辉的彼岸.mp3》</a>
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+                        <span style="background: linear-gradient(135deg, #c62828, #e53935); color: white; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold;">摇滚</span>
+                        <h3 style="margin: 0;">三大作风·新乐章</h3>
+                    </div>
+                    <p style="color:#666;font-size:14px;margin:5px 0;"><strong>曲风：</strong>流行摇滚 (Pop Rock)</p>
+                    <p style="color:#888;font-size:13px;margin:5px 0;line-height:1.6;">阐释理论联系实际、密切联系群众、批评与自我批评，将"自我批评"写成"自我迭代"与"Debug"的精神。</p>
+                    <audio controls src="audio/歌曲/三大作风·新乐章.mp3"></audio>
+                    <a class="download-link" href="audio/歌曲/三大作风·新乐章.mp3" download>下载《三大作风·新乐章》</a>
                 </div>
+
                 <div class="post-card">
-                    <h3>6 百年回响</h3>
-                    <audio controls src="/songs/6百年回响.mp3"></audio>
-                    <a class="download-link" href="/songs/6百年回响.mp3" download>下载《6百年回响.mp3》</a>
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+                        <span style="background: linear-gradient(135deg, #c62828, #e53935); color: white; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold;">终章</span>
+                        <h3 style="margin: 0;">攀登者的合鸣</h3>
+                    </div>
+                    <p style="color:#666;font-size:14px;margin:5px 0;"><strong>曲风：</strong>华丽交响摇滚 (Symphonic Rock)</p>
+                    <p style="color:#888;font-size:13px;margin:5px 0;line-height:1.6;">全组大合唱，"从延安的黄土到大连的海风，山脉在变，信仰的共振从未停顿"，展现新时代"登山者"的决心。</p>
+                    <audio controls src="audio/歌曲/攀登者的合鸣.mp3"></audio>
+                    <a class="download-link" href="audio/歌曲/攀登者的合鸣.mp3" download>下载《攀登者的合鸣》</a>
                 </div>
             </div>
         </section>
 
         <div class="scenarios-actions">
-            <p class="tip">提示：生成过程在本地完成，无需联网。你也可以将合成旋律或本地曲目用于主题宣传素材。</p>
+            <p class="tip">提示：生成过程在本地完成，无需联网。你也可以将合成旋律或本地曲目用于毛泽东思想主题宣传素材。</p>
             <a href="index.html" class="btn btn-secondary">← 返回主页</a>
         </div>
     </main>
 
     <footer class="site-footer">
-        <div class="wrap">© 2025 以史为鉴，凝聚力量</div>
+        <div class="wrap">© 2025 毛泽东思想学习平台</div>
     </footer>
 
     <script>
